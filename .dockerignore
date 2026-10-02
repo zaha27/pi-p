@@ -1,0 +1,12 @@
+.git
+.venv
+.claude
+.env
+datasets
+runs
+eda_out
+tests
+*.pt
+**/__pycache__
+frontend/node_modules
+frontend/dist
