@@ -1,4 +1,5 @@
 import csv
+import threading
 import time
 from collections import Counter, defaultdict, deque
 from dataclasses import dataclass
@@ -22,6 +23,7 @@ CONGESTION_EVERY = 1.0
 PREDICT_CONF = 0.05
 OVERLAP = 0.2
 JPEG = [cv2.IMWRITE_JPEG_QUALITY, 82]
+GPU = threading.Lock()
 
 
 def device() -> str:
@@ -55,7 +57,8 @@ class Session:
         self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.dev = device()
         self.model = YOLO(weights)
-        self.model.predict(np.zeros((64, 64, 3), dtype=np.uint8), device=self.dev, verbose=False)
+        with GPU:
+            self.model.predict(np.zeros((64, 64, 3), dtype=np.uint8), device=self.dev, verbose=False)
         self.scores = ScoreMap(self.model.predictor.model.model)
         self.slice = slice_size
         self.track = track and not slice_size
@@ -97,16 +100,18 @@ class Session:
         ok, frame = self.cap.read()
         if not ok:
             return None
-        t = time.perf_counter()
-        xyxy, conf, cls, ids = self.detect(frame)
-        ms = (time.perf_counter() - t) * 1000
+        small, s = resize_to(frame, DISPLAY_WIDTH)
+        with GPU:
+            t = time.perf_counter()
+            xyxy, conf, cls, ids = self.detect(frame)
+            ms = (time.perf_counter() - t) * 1000
+            cam = self.scores.heatmap(*small.shape[:2]) if self.params.view == "scores" else None
         keep = conf >= self.params.conf
         xyxy, conf, cls = xyxy[keep], conf[keep], cls[keep]
         ids = ids[keep] if ids is not None else None
         self.analytics.update(xyxy, cls, ids, ms)
 
-        small, s = resize_to(frame, DISPLAY_WIDTH)
-        base = heat_overlay(small, self.scores.heatmap(*small.shape[:2])) if self.params.view == "scores" else small
+        base = small if cam is None else heat_overlay(small, cam)
         view = draw_frame(base, xyxy * s, conf, cls, ids, self.trails, self.model.names)
         if self.slice:
             draw_grid(view, [tuple(round(v * s) for v in win) for win in windows(self.width, self.height, self.slice, OVERLAP)])

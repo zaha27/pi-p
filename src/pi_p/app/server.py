@@ -1,11 +1,14 @@
 import argparse
 import asyncio
+import os
 import re
 import shutil
 import tempfile
 import time
 import uuid
 from pathlib import Path
+
+os.environ.setdefault("WEBSOCKETS_MAX_LINE_LENGTH", str(64 * 1024))
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
@@ -108,6 +111,8 @@ async def run_session(ws: WebSocket, video: Path, weights: str, track: bool, sli
         return
     session.params.conf = conf
     stop = asyncio.Event()
+    playing = asyncio.Event()
+    playing.set()
 
     async def listen() -> None:
         try:
@@ -115,12 +120,18 @@ async def run_session(ws: WebSocket, video: Path, weights: str, track: bool, sli
                 msg = await ws.receive_json()
                 if msg.get("action") == "stop":
                     stop.set()
+                    playing.set()
+                elif msg.get("action") == "pause":
+                    playing.clear()
+                elif msg.get("action") == "resume":
+                    playing.set()
                 elif msg.get("action") == "params":
                     session.params.conf = min(max(float(msg.get("conf", session.params.conf)), 0.05), 0.95)
                     if msg.get("view") in ("detections", "scores"):
                         session.params.view = msg["view"]
         except (WebSocketDisconnect, RuntimeError, ValueError):
             stop.set()
+            playing.set()
 
     listener = asyncio.create_task(listen())
     connected = True
@@ -128,6 +139,11 @@ async def run_session(ws: WebSocket, video: Path, weights: str, track: bool, sli
         await ws.send_json(session.meta(weights))
         t0, i = time.perf_counter(), 0
         while not stop.is_set():
+            if not playing.is_set():
+                paused_at = time.perf_counter()
+                await playing.wait()
+                t0 += time.perf_counter() - paused_at
+                continue
             out = await asyncio.to_thread(session.step)
             if out is None:
                 break
@@ -150,8 +166,11 @@ async def run_session(ws: WebSocket, video: Path, weights: str, track: bool, sli
         files = await asyncio.to_thread(session.close)
     if connected:
         vid = video.parent.name
-        await ws.send_json({"type": "done", "files": {f: f"/api/results/{vid}/{f}" for f in files}})
-        await ws.close()
+        try:
+            await ws.send_json({"type": "done", "files": {f: f"/api/results/{vid}/{f}" for f in files}})
+            await ws.close()
+        except (WebSocketDisconnect, RuntimeError):
+            pass
 
 
 def cleanup() -> None:
