@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proiect Prelucrarea Imaginilor</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232b4c7e'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div class="sheet">
+      <header class="masthead">
+        <h1>Proiect Prelucrarea Imaginilor</h1>
+        <dl class="status">
+          <div><dt>model</dt><dd id="status-model">—</dd></div>
+          <div><dt>cadru</dt><dd id="status-frame">0 / 0</dd></div>
+          <div><dt>timp</dt><dd id="status-time">00:00</dd></div>
+        </dl>
+      </header>
+
+      <form class="controls" id="controls">
+        <label class="file">
+          <input type="file" id="file" accept="video/*" />
+          <span class="button">Alege video</span>
+          <span class="file-name" id="file-name">niciun fișier</span>
+        </label>
+        <label class="field">
+          <span>Model</span>
+          <select id="model"></select>
+        </label>
+        <label class="field">
+          <span>Inferență</span>
+          <select id="slice">
+            <option value="0">imagine întreagă</option>
+            <option value="640">ferestre 640 px</option>
+            <option value="960">ferestre 960 px</option>
+          </select>
+        </label>
+        <label class="field range">
+          <span>Prag de încredere <output id="conf-value">0.25</output></span>
+          <input type="range" id="conf" min="0.05" max="0.95" step="0.05" value="0.25" />
+        </label>
+        <label class="check"><input type="checkbox" id="track" checked /> urmărire</label>
+        <label class="check"><input type="checkbox" id="realtime" checked /> timp real</label>
+        <div class="actions">
+          <button type="submit" id="start" class="primary" disabled>Pornește</button>
+          <button type="button" id="stop" disabled>Oprește</button>
+        </div>
+        <p class="message" id="message" role="status"></p>
+      </form>
+
+      <main class="board">
+        <div class="col-main">
+          <section class="panel live">
+            <header>
+              <h2>Detecție live</h2>
+              <div class="segmented" role="group" aria-label="Vizualizare">
+                <button type="button" data-view="detections" class="on">detecții</button>
+                <button type="button" data-view="scores">hartă de scoruri</button>
+              </div>
+            </header>
+            <div class="stage">
+              <canvas id="live"></canvas>
+              <div class="placeholder" id="placeholder">Alege un video și apasă Pornește</div>
+              <div class="badge" id="tracked" hidden></div>
+            </div>
+            <p class="note" id="live-note"></p>
+          </section>
+          <div class="row">
+            <section class="panel">
+              <header><h2>Flux în timp</h2><span class="hint">stivuit pe clase</span></header>
+              <canvas id="timeline" class="chart"></canvas>
+            </section>
+            <section class="panel">
+              <header><h2>Câmp de mișcare</h2><span class="hint">vectori de viteză</span></header>
+              <canvas id="flow" class="chart"></canvas>
+            </section>
+          </div>
+        </div>
+
+        <div class="col-side">
+          <section class="panel summary">
+            <header><h2>Sumar detecții</h2><span class="hint">ultimele 10 s</span></header>
+            <div class="kpis">
+              <div class="kpi"><span class="label">în cadru</span><span class="value" id="kpi-frame">0</span><span class="unit">obiecte</span></div>
+              <div class="kpi"><span class="label">obiecte unice</span><span class="value" id="kpi-unique">—</span><span class="unit">urmărite</span></div>
+              <div class="kpi"><span class="label">flux mediu</span><span class="value" id="kpi-flow">—</span><span class="unit">px/cadru</span></div>
+              <div class="kpi"><span class="label">inferență</span><span class="value" id="kpi-ms">—</span><span class="unit">ms</span></div>
+            </div>
+            <div class="share" id="share"></div>
+            <ul class="classes" id="classes"></ul>
+          </section>
+          <section class="panel congestion">
+            <header><h2>Hartă de congestie</h2><span class="hint">ponderată cu staționarea</span></header>
+            <div class="map">
+              <img id="congestion" alt="Hartă de congestie" hidden />
+              <div class="placeholder" id="congestion-empty">în așteptare</div>
+            </div>
+            <footer class="legend">
+              <div>
+                <div class="ramp"></div>
+                <div class="ramp-labels"><span>flux liber</span><span>blocaj</span></div>
+              </div>
+              <div class="saturation">saturație <b id="saturation">0.0%</b></div>
+            </footer>
+          </section>
+        </div>
+      </main>
+
+      <footer class="downloads" id="downloads" hidden>
+        Rezultate: <a id="dl-video" download>video adnotat</a> · <a id="dl-csv" download>numărătoare CSV</a>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
