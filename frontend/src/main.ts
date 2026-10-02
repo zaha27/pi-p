@@ -21,6 +21,9 @@ const ui = {
   realtime: $<HTMLInputElement>("realtime"),
   start: $<HTMLButtonElement>("start"),
   stop: $<HTMLButtonElement>("stop"),
+  pause: $<HTMLButtonElement>("pause"),
+  pausedLabel: $("paused-label"),
+  stage: document.querySelector(".stage") as HTMLElement,
   message: $("message"),
   live: $<HTMLCanvasElement>("live"),
   placeholder: $("placeholder"),
@@ -54,6 +57,7 @@ let congestionUrl: string | null = null;
 let classKeys = "";
 let view = "detections";
 let scheduled = false;
+let paused = false;
 
 const color = (id: number) => meta?.colors[id] ?? "#8c887c";
 const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
@@ -95,7 +99,24 @@ function upload(file: File): Promise<string> {
   });
 }
 
+function setPaused(value: boolean): void {
+  paused = value;
+  ui.pause.classList.toggle("paused", paused);
+  ui.pause.setAttribute("aria-label", paused ? "Continuă" : "Pauză");
+  ui.pausedLabel.hidden = !paused;
+}
+
+function togglePause(): void {
+  if (socket?.readyState !== WebSocket.OPEN || !meta) return;
+  socket.send(JSON.stringify({ action: paused ? "resume" : "pause" }));
+  setPaused(!paused);
+  say(paused ? "Pauză" : "Procesare în curs");
+}
+
 function setRunning(running: boolean): void {
+  ui.pause.hidden = !running;
+  ui.stage.classList.toggle("running", running);
+  if (!running) setPaused(false);
   ui.start.disabled = running || !videoId;
   ui.stop.disabled = !running;
   for (const input of [ui.file, ui.model, ui.slice, ui.track, ui.realtime]) input.disabled = running;
@@ -143,6 +164,7 @@ function start(): void {
   ws.onmessage = (e) => (typeof e.data === "string" ? onMessage(JSON.parse(e.data)) : onImage(e.data));
   ws.onerror = () => say("Conexiunea cu serverul s-a întrerupt", true);
   ws.onclose = () => {
+    if (!meta && !ui.message.classList.contains("error")) say("Serverul a închis conexiunea înainte de pornire", true);
     socket = null;
     setRunning(false);
   };
@@ -279,6 +301,14 @@ ui.form.addEventListener("submit", (e) => {
 });
 
 ui.stop.addEventListener("click", () => socket?.send(JSON.stringify({ action: "stop" })));
+
+ui.stage.addEventListener("click", togglePause);
+
+document.addEventListener("keydown", (e) => {
+  if (e.code !== "Space" || (e.target instanceof Element && e.target.closest("input, select, button"))) return;
+  e.preventDefault();
+  togglePause();
+});
 
 ui.conf.addEventListener("input", () => {
   ui.confValue.value = Number(ui.conf.value).toFixed(2);
