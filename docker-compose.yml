@@ -1,0 +1,27 @@
+services:
+  app:
+    build: .
+    image: pi-p
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./runs:/app/runs:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on:
+      - app
+    restart: unless-stopped
+    profiles:
+      - tunnel
