@@ -1,0 +1,10 @@
+model: yolo26n.pt
+data: datasets/VisDrone/data.yaml
+epochs: 100
+imgsz: 640
+batch: 16
+device: 0
+workers: 8
+patience: 20
+project: runs
+name: yolo26n_640

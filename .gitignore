@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+datasets/
+runs/
+*.pt
+.DS_Store
+eda_out/
