@@ -62,3 +62,22 @@ def test_stream_end_to_end(client, video, monkeypatch):
     files = data["files"]
     assert client.get(files["numaratoare.csv"]).text.startswith("frame,")
     assert client.get(f"/api/results/{vid}/../../etc").status_code == 404
+
+
+def test_pause_stops_frames_until_resume(client, video, monkeypatch):
+    monkeypatch.setattr("pi_p.app.session.device", lambda: "cpu")
+    vid = client.post("/api/videos", files={"file": ("clip.mp4", video.read_bytes())}).json()["id"]
+    with client.websocket_connect("/api/stream") as ws:
+        ws.send_json({"action": "start", "video": vid, "weights": "yolo26n.yaml", "realtime": True})
+        assert ws.receive_json()["type"] == "meta"
+        ws.send_json({"action": "pause"})
+        frames = []
+        while True:
+            msg = ws.receive()
+            if msg.get("text") and json.loads(msg["text"])["type"] == "metrics":
+                frames.append(json.loads(msg["text"])["frame"])
+                if len(frames) == 1:
+                    ws.send_json({"action": "resume"})
+            if msg.get("text") and json.loads(msg["text"])["type"] == "done":
+                break
+    assert frames == list(range(1, 7))

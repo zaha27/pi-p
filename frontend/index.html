@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Proiect Prelucrarea Imaginilor</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232b4c7e'/%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23c8461b'/%3E%3C/svg%3E" />
   </head>
   <body>
     <div class="sheet">
@@ -41,11 +41,14 @@
         </label>
         <label class="check"><input type="checkbox" id="track" checked /> urmărire</label>
         <label class="check"><input type="checkbox" id="realtime" checked /> timp real</label>
+        <p class="message" id="message" role="status"></p>
+        <p class="downloads" id="downloads" hidden>
+          <a id="dl-video" download>video adnotat</a> · <a id="dl-csv" download>CSV</a>
+        </p>
         <div class="actions">
           <button type="submit" id="start" class="primary" disabled>Pornește</button>
           <button type="button" id="stop" disabled>Oprește</button>
         </div>
-        <p class="message" id="message" role="status"></p>
       </form>
 
       <main class="board">
@@ -53,6 +56,7 @@
           <section class="panel live">
             <header>
               <h2>Detecție live</h2>
+              <span class="hint grow" id="live-note"></span>
               <div class="segmented" role="group" aria-label="Vizualizare">
                 <button type="button" data-view="detections" class="on">detecții</button>
                 <button type="button" data-view="scores">hartă de scoruri</button>
@@ -62,8 +66,11 @@
               <canvas id="live"></canvas>
               <div class="placeholder" id="placeholder">Alege un video și apasă Pornește</div>
               <div class="badge" id="tracked" hidden></div>
+              <button type="button" class="play" id="pause" hidden aria-label="Pauză">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path class="icon-pause" d="M4 3h3v10H4zM9 3h3v10H9z" /><path class="icon-play" d="M4 2.5v11l9-5.5z" /></svg>
+              </button>
+              <div class="paused-label" id="paused-label" hidden>pauză</div>
             </div>
-            <p class="note" id="live-note"></p>
           </section>
           <div class="row">
             <section class="panel">
@@ -106,9 +113,6 @@
         </div>
       </main>
 
-      <footer class="downloads" id="downloads" hidden>
-        Rezultate: <a id="dl-video" download>video adnotat</a> · <a id="dl-csv" download>numărătoare CSV</a>
-      </footer>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
