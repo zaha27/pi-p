@@ -10,9 +10,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
+from pi_p.data import COLORS as CLASS_COLORS
 from pi_p.data import NAMES, ROOT, image_size, images, label_path, read_labels
 
-COLORS = (np.array(plt.get_cmap("tab10").colors) * 255).astype(int)
+COLORS = np.array(CLASS_COLORS)
 
 
 def collect(imgs: list[Path]) -> tuple[np.ndarray, np.ndarray]:

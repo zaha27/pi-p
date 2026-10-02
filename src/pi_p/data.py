@@ -5,6 +5,8 @@ import yaml
 from PIL import Image
 
 NAMES = ["pedestrian", "people", "bicycle", "car", "van", "truck", "tricycle", "awning-tricycle", "bus", "motor"]
+COLORS = [(142, 85, 114), (212, 119, 138), (122, 139, 58), (42, 157, 143), (233, 162, 59),
+          (200, 85, 61), (176, 141, 87), (92, 107, 115), (61, 90, 152), (74, 165, 192)]
 ROOT = Path("datasets/VisDrone")
 IMG_EXT = {".jpg", ".jpeg", ".png"}
 
