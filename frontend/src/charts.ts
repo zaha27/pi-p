@@ -1,9 +1,9 @@
 import type { FlowVector } from "./types";
 
-const MUTED = "#8c887c";
-const GRID = "#e3dfd3";
-const FIELD = "#ebe8df";
-const MONO = '10px "IBM Plex Mono", monospace';
+const MUTED = "#a1a1aa";
+const GRID = "#f0f0f2";
+const FIELD = "#fafafa";
+const MONO = '11px "Inter Variable", system-ui, sans-serif';
 
 export function fit(canvas: HTMLCanvasElement): [CanvasRenderingContext2D, number, number] {
   const dpr = window.devicePixelRatio || 1;
@@ -100,7 +100,7 @@ export function stackedArea(canvas: HTMLCanvasElement, series: number[][], color
   });
   ctx.beginPath();
   ctx.arc(x(n - 1), y(totals[n - 1]), 3, 0, Math.PI * 2);
-  ctx.fillStyle = "#232320";
+  ctx.fillStyle = "#18181b";
   ctx.fill();
 }
 

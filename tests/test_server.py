@@ -1,4 +1,5 @@
 import json
+import time
 
 import cv2
 import numpy as np
@@ -11,6 +12,7 @@ from pi_p.app import server
 @pytest.fixture
 def client(tmp_path, monkeypatch):
     monkeypatch.setattr(server, "WORK", tmp_path / "work")
+    monkeypatch.setattr(server, "LIBRARY", tmp_path / "videos")
     monkeypatch.setattr(server, "model_choices", lambda: ["yolo26n.yaml"])
     return TestClient(server.app)
 
@@ -64,20 +66,45 @@ def test_stream_end_to_end(client, video, monkeypatch):
     assert client.get(f"/api/results/{vid}/../../etc").status_code == 404
 
 
-def test_pause_stops_frames_until_resume(client, video, monkeypatch):
+def test_pause_holds_frames_until_resume(client, video, monkeypatch):
     monkeypatch.setattr("pi_p.app.session.device", lambda: "cpu")
     vid = client.post("/api/videos", files={"file": ("clip.mp4", video.read_bytes())}).json()["id"]
     with client.websocket_connect("/api/stream") as ws:
         ws.send_json({"action": "start", "video": vid, "weights": "yolo26n.yaml", "realtime": True})
         assert ws.receive_json()["type"] == "meta"
         ws.send_json({"action": "pause"})
+        time.sleep(0.5)
+        ws.send_json({"action": "resume"})
         frames = []
         while True:
             msg = ws.receive()
-            if msg.get("text") and json.loads(msg["text"])["type"] == "metrics":
-                frames.append(json.loads(msg["text"])["frame"])
-                if len(frames) == 1:
-                    ws.send_json({"action": "resume"})
-            if msg.get("text") and json.loads(msg["text"])["type"] == "done":
+            data = json.loads(msg["text"]) if msg.get("text") else {}
+            if data.get("type") == "metrics":
+                frames.append(data)
+            if data.get("type") == "done":
                 break
-    assert frames == list(range(1, 7))
+    assert [m["frame"] for m in frames] == list(range(1, 7))
+    assert frames[-1]["time"] == 0.6
+
+
+def test_library_lists_and_streams_server_side_videos(client, video, tmp_path, monkeypatch):
+    monkeypatch.setattr("pi_p.app.session.device", lambda: "cpu")
+    (tmp_path / "videos").mkdir()
+    (tmp_path / "videos" / "drona.mp4").write_bytes(video.read_bytes())
+    (tmp_path / "videos" / "notite.txt").write_text("x")
+    videos = client.get("/api/library").json()["videos"]
+    assert [v["name"] for v in videos] == ["drona.mp4"]
+    assert videos[0]["width"] == 320 and videos[0]["duration"] == 0.6
+    assert client.get("/api/library/drona.mp4/thumbnail").headers["content-type"] == "image/jpeg"
+    assert client.get("/api/library/..%2Fclip.mp4/thumbnail").status_code == 404
+    with client.websocket_connect("/api/stream") as ws:
+        ws.send_json({"action": "start", "library": "../clip.mp4", "weights": "yolo26n.yaml"})
+        assert ws.receive_json()["type"] == "error"
+    with client.websocket_connect("/api/stream") as ws:
+        ws.send_json({"action": "start", "library": "drona.mp4", "weights": "yolo26n.yaml", "realtime": False})
+        while (data := ws.receive()).get("bytes") or json.loads(data["text"])["type"] not in ("done", "error"):
+            pass
+        done = json.loads(data["text"])
+    assert done["type"] == "done"
+    assert client.get(done["files"]["numaratoare.csv"]).status_code == 200
+    assert (tmp_path / "videos" / "drona.mp4").is_file()
