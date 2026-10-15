@@ -69,6 +69,7 @@ class Session:
         self.writer = None
         self.rows: list[dict] = []
         self.last_congestion = 0.0
+        self.last = None
 
     def meta(self, weights: str) -> dict:
         return {
@@ -106,19 +107,14 @@ class Session:
             xyxy, conf, cls, ids = self.detect(frame)
             ms = (time.perf_counter() - t) * 1000
             cam = self.scores.heatmap(*small.shape[:2]) if self.params.view == "scores" else None
+        self.last = (small, s, xyxy, conf, cls, ids)
         keep = conf >= self.params.conf
-        xyxy, conf, cls = xyxy[keep], conf[keep], cls[keep]
-        ids = ids[keep] if ids is not None else None
-        self.analytics.update(xyxy, cls, ids, ms)
-
-        base = small if cam is None else heat_overlay(small, cam)
-        view = draw_frame(base, xyxy * s, conf, cls, ids, self.trails, self.model.names)
-        if self.slice:
-            draw_grid(view, [tuple(round(v * s) for v in win) for win in windows(self.width, self.height, self.slice, OVERLAP)])
+        self.analytics.update(xyxy[keep], cls[keep], ids[keep] if ids is not None else None, ms)
+        view = self.render(cam)
         if self.writer is None:
             self.writer = self._open_writer(view.shape[1], view.shape[0])
         self.writer.write(view)
-        counts = Counter(cls.tolist())
+        counts = Counter(cls[keep].tolist())
         self.rows.append({"frame": len(self.rows), **{name: counts.get(k, 0) for k, name in self.model.names.items()}})
 
         congestion = None
@@ -128,6 +124,25 @@ class Session:
             occ = self.analytics.occupancy()
             congestion = encode(congestion_overlay(resize_to(frame, CONGESTION_WIDTH)[0], occ, self.analytics.peak(occ)))
         return encode(view), congestion, self.analytics.summary()
+
+    def render(self, cam: np.ndarray | None) -> np.ndarray:
+        small, s, xyxy, conf, cls, ids = self.last
+        keep = conf >= self.params.conf
+        base = small if cam is None else heat_overlay(small, cam)
+        view = draw_frame(base, xyxy[keep] * s, conf[keep], cls[keep], ids[keep] if ids is not None else None,
+                          self.trails, self.model.names)
+        if self.slice:
+            draw_grid(view, [tuple(round(v * s) for v in win) for win in windows(self.width, self.height, self.slice, OVERLAP)])
+        return view
+
+    def redraw(self) -> bytes | None:
+        if self.last is None:
+            return None
+        cam = None
+        if self.params.view == "scores":
+            with GPU:
+                cam = self.scores.heatmap(*self.last[0].shape[:2])
+        return encode(self.render(cam))
 
     def _open_writer(self, w: int, h: int) -> cv2.VideoWriter:
         for codec in ("avc1", "mp4v"):
