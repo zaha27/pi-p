@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+datasets/
+runs/
+*.pt
+.DS_Store
+eda_out/
+infrastructure/frontend/node_modules/
+infrastructure/frontend/dist/
+.env
+videos/

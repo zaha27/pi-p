@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/Dockerfile
+    image: pi-p
+    environment:
+      PI_P_TOTP_SECRET: ${PI_P_TOTP_SECRET:?rulează uv run pi-totp și pune PI_P_TOTP_SECRET în .env}
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ../../runs:/app/runs:ro
+      - ../../videos:/app/videos:ro
+    restart: unless-stopped
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on:
+      - app
+    restart: unless-stopped
+    profiles:
+      - tunnel
