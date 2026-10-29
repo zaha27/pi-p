@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proiect Prelucrarea Imaginilor</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23c8461b'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div class="login" id="login" hidden>
+      <form class="login-panel" id="login-form">
+        <p class="eyebrow">Proiect Prelucrarea Imaginilor</p>
+        <h2 class="login-title">Autentificare</h2>
+        <p class="login-hint">Introdu codul de 6 cifre din Google Authenticator.</p>
+        <input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" aria-label="Cod de autentificare" />
+        <button type="submit" class="primary">Intră</button>
+        <p class="login-message" id="login-message" role="status"></p>
+      </form>
+    </div>
+    <div class="sheet" id="app" hidden>
+      <header class="masthead">
+        <div class="brand">
+          <h1>Proiect Prelucrarea Imaginilor</h1>
+          <nav class="tabs" aria-label="Secțiuni">
+            <button type="button" data-tab="analysis" class="on">Analiză</button>
+            <button type="button" data-tab="library">Bibliotecă</button>
+          </nav>
+        </div>
+        <dl class="status">
+          <div><dt>Model</dt><dd id="status-model">—</dd></div>
+          <div><dt>Cadru</dt><dd id="status-frame">0 / 0</dd></div>
+          <div><dt>Timp</dt><dd id="status-time">00:00</dd></div>
+          <div><button type="button" class="link" id="logout" hidden>Ieșire</button></div>
+        </dl>
+      </header>
+
+      <div class="view" id="tab-analysis">
+      <form class="controls" id="controls">
+        <label class="file">
+          <input type="file" id="file" accept="video/*" />
+          <span class="button">Alege video</span>
+          <span class="file-name" id="file-name">niciun fișier</span>
+        </label>
+        <label class="field">
+          <span>Model</span>
+          <select id="model"></select>
+        </label>
+        <label class="field">
+          <span>Inferență</span>
+          <select id="slice">
+            <option value="0">imagine întreagă</option>
+            <option value="640">ferestre 640 px</option>
+            <option value="960">ferestre 960 px</option>
+          </select>
+        </label>
+        <label class="field range">
+          <span>Prag de încredere <output id="conf-value">0.25</output></span>
+          <input type="range" id="conf" min="0.05" max="0.95" step="0.05" value="0.25" />
+        </label>
+        <label class="check"><input type="checkbox" id="track" checked /> Urmărire</label>
+        <label class="check"><input type="checkbox" id="realtime" checked /> Timp real</label>
+        <p class="message" id="message" role="status"></p>
+        <p class="downloads" id="downloads" hidden>
+          <a id="dl-video" download>video adnotat</a> · <a id="dl-csv" download>CSV</a>
+        </p>
+        <div class="actions">
+          <button type="submit" id="start" class="primary" disabled>Pornește</button>
+          <button type="button" id="stop" disabled>Oprește</button>
+        </div>
+      </form>
+
+      <main class="board">
+        <div class="col-main">
+          <section class="panel live">
+            <header>
+              <h2>Detecție live</h2>
+              <span class="hint grow" id="live-note"></span>
+              <div class="segmented" role="group" aria-label="Vizualizare">
+                <button type="button" data-view="detections" class="on">Detecții</button>
+                <button type="button" data-view="scores">Hartă de scoruri</button>
+              </div>
+            </header>
+            <div class="stage">
+              <canvas id="live"></canvas>
+              <div class="placeholder" id="placeholder">Alege un video și apasă Pornește</div>
+              <div class="badge" id="tracked" hidden></div>
+              <button type="button" class="play" id="pause" hidden aria-label="Pauză">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path class="icon-pause" d="M4 3h3v10H4zM9 3h3v10H9z" /><path class="icon-play" d="M4 2.5v11l9-5.5z" /></svg>
+              </button>
+              <div class="paused-label" id="paused-label" hidden>Pauză</div>
+            </div>
+          </section>
+          <div class="row">
+            <section class="panel">
+              <header><h2>Flux în timp</h2><span class="hint">stivuit pe clase</span></header>
+              <canvas id="timeline" class="chart"></canvas>
+            </section>
+            <section class="panel">
+              <header><h2>Câmp de mișcare</h2><span class="hint">vectori de viteză</span></header>
+              <canvas id="flow" class="chart"></canvas>
+            </section>
+          </div>
+        </div>
+
+        <div class="col-side">
+          <section class="panel summary">
+            <header><h2>Sumar detecții</h2><span class="hint">ultimele 10 s</span></header>
+            <div class="kpis">
+              <div class="kpi"><span class="label">În cadru</span><span class="value" id="kpi-frame">0</span><span class="unit">obiecte</span></div>
+              <div class="kpi"><span class="label">Obiecte unice</span><span class="value" id="kpi-unique">—</span><span class="unit">urmărite</span></div>
+              <div class="kpi"><span class="label">Flux mediu</span><span class="value" id="kpi-flow">—</span><span class="unit">px/cadru</span></div>
+              <div class="kpi"><span class="label">Inferență</span><span class="value" id="kpi-ms">—</span><span class="unit">ms</span></div>
+            </div>
+            <div class="share" id="share"></div>
+            <ul class="classes" id="classes"></ul>
+          </section>
+          <section class="panel congestion">
+            <header><h2>Hartă de congestie</h2><span class="hint">ponderată cu staționarea</span></header>
+            <div class="map">
+              <img id="congestion" alt="Hartă de congestie" hidden />
+              <div class="placeholder" id="congestion-empty">în așteptare</div>
+            </div>
+            <footer class="legend">
+              <div>
+                <div class="ramp"></div>
+                <div class="ramp-labels"><span>Flux liber</span><span>Blocaj</span></div>
+              </div>
+              <div class="saturation">Saturație <b id="saturation">0.0%</b></div>
+            </footer>
+          </section>
+        </div>
+      </main>
+      </div>
+
+      <section class="view library" id="tab-library" hidden>
+        <header class="library-head">
+          <div>
+            <h2>Bibliotecă</h2>
+            <p class="hint">Video-urile din folderul <code>videos/</code> de pe server. Clipurile peste 100 MB se copiază acolo, nu prin upload.</p>
+          </div>
+          <button type="button" id="library-refresh">Reîmprospătează</button>
+        </header>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr><th></th><th>Nume</th><th>Rezoluție</th><th>Durată</th><th>Mărime</th><th>Modificat</th><th></th></tr>
+            </thead>
+            <tbody id="library-rows"></tbody>
+          </table>
+          <p class="empty" id="library-empty" hidden>Biblioteca e goală. Copiază fișiere video în <code>videos/</code> pe server.</p>
+        </div>
+      </section>
+
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
