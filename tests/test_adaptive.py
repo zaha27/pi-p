@@ -1,12 +1,15 @@
 from dataclasses import replace
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
+import torch
 
 from pi_p.adaptive import (
     MASK_ON,
     AdaptiveParams,
+    adaptive_predict,
     boxes_to_mask,
     boxes_to_windows,
     dilate_mask,
@@ -17,7 +20,15 @@ from pi_p.adaptive import (
 
 W, H = 20, 10
 IMG_W, IMG_H = 2000, 1200
-PARAMS = AdaptiveParams(mask_size=500, dilate_kernel=5, margin=0, min_size=0)
+PARAMS = AdaptiveParams(
+    mask_size=500, dilate_kernel=5, margin=0, min_size=0,
+    prelim_imgsz=640, prelim_conf=0.25, window_imgsz=640, conf=0.25, iou=0.5,
+)
+ADAPTIVE_PARAMS = AdaptiveParams(
+    mask_size=500, dilate_kernel=5, margin=0, min_size=640,
+    prelim_imgsz=1280, prelim_conf=0.1, window_imgsz=640, conf=0.25, iou=0.5,
+)
+PRELIM = [[400, 200, 720, 520, 0.9, 3], [736, 200, 1056, 520, 0.8, 3]]
 
 
 def blank_mask():
@@ -223,12 +234,70 @@ def test_boxes_to_windows_small_box_grows_to_min_size_inside_image():
     assert windows_from([[400, 200, 480, 240]], replace(PARAMS, min_size=640)) == [[120, 0, 760, 640]]
 
 
-def test_load_params_reads_all_four_keys(tmp_path):
+def test_load_params_reads_all_nine_keys(tmp_path):
     path = tmp_path / "adaptive.yaml"
-    path.write_text("mask_size: 300\ndilate_kernel: 7\nmargin: 12.5\nmin_size: 320\n")
-    assert load_params(str(path)) == AdaptiveParams(300, 7, 12.5, 320)
+    path.write_text(
+        "mask_size: 300\ndilate_kernel: 7\nmargin: 12.5\nmin_size: 320\n"
+        "prelim_imgsz: 1280\nprelim_conf: 0.1\nwindow_imgsz: 960\nconf: 0.3\niou: 0.6\n"
+    )
+    assert load_params(str(path)) == AdaptiveParams(
+        mask_size=300, dilate_kernel=7, margin=12.5, min_size=320,
+        prelim_imgsz=1280, prelim_conf=0.1, window_imgsz=960, conf=0.3, iou=0.6,
+    )
 
 
 def test_load_params_reads_project_config():
     path = Path(__file__).resolve().parents[1] / "configs" / "adaptive.yaml"
     assert isinstance(load_params(str(path)), AdaptiveParams)
+
+
+class StubModel:
+    def __init__(self, prelim, per_window):
+        self.outputs = [[prelim], per_window]
+        self.calls = []
+
+    def predict(self, source, imgsz, conf, device, verbose):
+        self.calls.append((imgsz, conf))
+        return [
+            SimpleNamespace(boxes=SimpleNamespace(data=torch.tensor(d, dtype=torch.float32).reshape(len(d), 6)))
+            for d in self.outputs[len(self.calls) - 1]
+        ]
+
+
+def run_adaptive(prelim, per_window):
+    model = StubModel(prelim, per_window)
+    img = np.zeros((IMG_H, IMG_W, 3), np.uint8)
+    det, windows = adaptive_predict(model, img, ADAPTIVE_PARAMS, "cpu")
+    return model, det, windows
+
+
+def test_adaptive_predict_no_prelim_detections_skips_window_call():
+    model, det, windows = run_adaptive([], [])
+    assert windows.shape == (0, 4)
+    assert det.shape == (0, 6)
+    assert len(model.calls) == 1
+
+
+def test_adaptive_predict_moves_window_detections_to_image_coordinates():
+    model, det, windows = run_adaptive(PRELIM, [[[100, 50, 150, 100, 0.7, 0]]])
+    assert windows.tolist() == [[392, 40, 1064, 680]]
+    assert len(det) == 3
+    assert torch.allclose(det[det[:, 5] == 0], torch.tensor([[492, 90, 542, 140, 0.7, 0]]))
+    assert model.calls == [(1280, 0.1), (640, 0.25)]
+
+
+def test_adaptive_predict_merge_suppresses_window_duplicate_of_prelim():
+    _, det, _ = run_adaptive(PRELIM, [[[8, 160, 328, 480, 0.6, 3]]])
+    assert len(det) == 2
+    assert torch.allclose(det[:, 4], torch.tensor([0.9, 0.8]))
+
+
+def test_adaptive_predict_drops_window_detection_cut_by_window_edge():
+    _, det, _ = run_adaptive(PRELIM, [[[0, 100, 40, 150, 0.7, 0]]])
+    assert len(det) == 2
+
+
+def test_adaptive_predict_prelim_below_conf_builds_window_but_is_not_returned():
+    _, det, windows = run_adaptive([[400, 200, 720, 520, 0.2, 3]], [[]])
+    assert windows.tolist() == [[240, 40, 880, 680]]
+    assert det.shape == (0, 6)
