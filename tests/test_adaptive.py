@@ -356,3 +356,32 @@ def test_keep_confident_keeps_scores_at_or_above_threshold():
 
 def test_keep_confident_empty_gives_empty():
     assert keep_confident(torch.zeros((0, 6)), 0.25).shape == (0, 6)
+
+
+def test_adaptive_trace_boxes_between_conf_and_prelim_conf_are_returned_but_build_no_window():
+    params = replace(ADAPTIVE_PARAMS, prelim_conf=0.25, conf=0.05)
+    prelim = [[400, 200, 720, 520, 0.9, 3], [1500, 800, 1560, 880, 0.1, 0]]
+    trace = adaptive_trace(StubModel(prelim, [[]]), blank_image(), params, "cpu")
+    assert trace.stages.windows.tolist() == [[240, 40, 880, 680]]
+    assert len(trace.seeds) == 1
+    assert len(trace.prelim) == 2
+    assert torch.allclose(trace.detections[:, 4], torch.tensor([0.9, 0.1]))
+
+
+def test_adaptive_trace_equal_confs_gives_same_result_as_before():
+    params = replace(ADAPTIVE_PARAMS, prelim_conf=0.25)
+    model = StubModel(PRELIM, [[[100, 50, 150, 100, 0.7, 0]]])
+    trace = adaptive_trace(model, blank_image(), params, "cpu")
+    assert trace.stages.windows.tolist() == [[392, 40, 1064, 680]]
+    assert len(trace.detections) == 3
+    moved = trace.detections[trace.detections[:, 5] == 0]
+    assert torch.allclose(moved, torch.tensor([[492, 90, 542, 140, 0.7, 0]]))
+    assert model.calls == [(1280, 0.25), (640, 0.25)]
+    assert len(trace.seeds) == len(trace.prelim) == 2
+
+
+@pytest.mark.parametrize("prelim_conf, conf, expected", [(0.25, 0.05, 0.05), (0.1, 0.25, 0.1), (0.25, 0.25, 0.25)])
+def test_adaptive_trace_first_pass_runs_once_at_min_of_confs(prelim_conf, conf, expected):
+    model = StubModel([], [])
+    adaptive_trace(model, blank_image(), replace(ADAPTIVE_PARAMS, prelim_conf=prelim_conf, conf=conf), "cpu")
+    assert model.calls == [(1280, expected)]
