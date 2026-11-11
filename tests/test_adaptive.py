@@ -1,10 +1,23 @@
+from dataclasses import replace
+from pathlib import Path
+
 import numpy as np
 import pytest
 
-from pi_p.adaptive import MASK_ON, boxes_to_mask, dilate_mask, mask_to_rects, rects_to_windows
+from pi_p.adaptive import (
+    MASK_ON,
+    AdaptiveParams,
+    boxes_to_mask,
+    boxes_to_windows,
+    dilate_mask,
+    load_params,
+    mask_to_rects,
+    rects_to_windows,
+)
 
 W, H = 20, 10
 IMG_W, IMG_H = 2000, 1200
+PARAMS = AdaptiveParams(mask_size=500, dilate_kernel=5, margin=0, min_size=0)
 
 
 def blank_mask():
@@ -183,3 +196,39 @@ def test_rects_to_windows_rounds_outward():
 
 def test_rects_to_windows_no_rects_gives_empty():
     assert rects_to_windows(np.zeros((0, 4)), 4, 0, 640, IMG_W, IMG_H).shape == (0, 4)
+
+
+def windows_from(boxes, params=PARAMS):
+    return boxes_to_windows(np.array(boxes, dtype=np.float32), IMG_W, IMG_H, params).tolist()
+
+
+def test_boxes_to_windows_no_boxes_gives_empty():
+    assert boxes_to_windows(np.zeros((0, 4)), IMG_W, IMG_H, PARAMS).shape == (0, 4)
+
+
+def test_boxes_to_windows_single_box_grows_by_kernel_radius():
+    assert windows_from([[400, 200, 720, 520]]) == [[392, 192, 728, 528]]
+
+
+def test_boxes_to_windows_merges_boxes_with_small_gap():
+    assert windows_from([[400, 200, 720, 520], [736, 200, 1056, 520]]) == [[392, 192, 1064, 528]]
+
+
+def test_boxes_to_windows_keeps_distant_boxes_separate():
+    out = windows_from([[400, 200, 720, 520], [1200, 200, 1520, 520]])
+    assert sorted(out) == [[392, 192, 728, 528], [1192, 192, 1528, 528]]
+
+
+def test_boxes_to_windows_small_box_grows_to_min_size_inside_image():
+    assert windows_from([[400, 200, 480, 240]], replace(PARAMS, min_size=640)) == [[120, 0, 760, 640]]
+
+
+def test_load_params_reads_all_four_keys(tmp_path):
+    path = tmp_path / "adaptive.yaml"
+    path.write_text("mask_size: 300\ndilate_kernel: 7\nmargin: 12.5\nmin_size: 320\n")
+    assert load_params(str(path)) == AdaptiveParams(300, 7, 12.5, 320)
+
+
+def test_load_params_reads_project_config():
+    path = Path(__file__).resolve().parents[1] / "configs" / "adaptive.yaml"
+    assert isinstance(load_params(str(path)), AdaptiveParams)

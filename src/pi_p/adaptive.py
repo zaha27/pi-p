@@ -1,8 +1,25 @@
+import math
+from dataclasses import dataclass
+
 import cv2
 import numpy as np
 
+from pi_p.config import load
+
 MASK_ON = 255
 CONNECTIVITY = 8
+
+
+@dataclass(frozen=True)
+class AdaptiveParams:
+    mask_size: int
+    dilate_kernel: int
+    margin: float
+    min_size: int
+
+
+def load_params(path: str, overrides: tuple[str, ...] = ()) -> AdaptiveParams:
+    return AdaptiveParams(**load(path, list(overrides)))
 
 
 def boxes_to_mask(boxes_xyxy: np.ndarray, width: int, height: int) -> np.ndarray:
@@ -59,3 +76,11 @@ def rects_to_windows(
     grown = grow_rects(scale_rects(rects, scale), margin)
     fitted = fit_in_image(enforce_min_size(grown, min_size), width, height)
     return np.hstack([np.floor(fitted[:, :2]), np.ceil(fitted[:, 2:])]).astype(np.int32)
+
+
+def boxes_to_windows(boxes_xyxy: np.ndarray, width: int, height: int, params: AdaptiveParams) -> np.ndarray:
+    # max(..., 1.0): masca nu e niciodată mai mare decât imaginea
+    scale = max(max(width, height) / params.mask_size, 1.0)
+    mask = boxes_to_mask(boxes_xyxy / scale, math.ceil(width / scale), math.ceil(height / scale))
+    rects = mask_to_rects(dilate_mask(mask, params.dilate_kernel))
+    return rects_to_windows(rects, scale, params.margin, params.min_size, width, height)
