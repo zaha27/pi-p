@@ -1,5 +1,6 @@
 import math
 from dataclasses import dataclass
+from typing import NamedTuple
 
 import cv2
 import numpy as np
@@ -86,12 +87,32 @@ def rects_to_windows(
     return np.hstack([np.floor(fitted[:, :2]), np.ceil(fitted[:, 2:])]).astype(np.int32)
 
 
-def boxes_to_windows(boxes_xyxy: np.ndarray, width: int, height: int, params: AdaptiveParams) -> np.ndarray:
+class WindowStages(NamedTuple):
+    scale: float
+    mask: np.ndarray
+    dilated: np.ndarray
+    rects: np.ndarray
+    windows: np.ndarray
+
+
+class AdaptiveTrace(NamedTuple):
+    prelim: torch.Tensor
+    stages: WindowStages
+    detections: torch.Tensor
+
+
+def window_stages(boxes_xyxy: np.ndarray, width: int, height: int, params: AdaptiveParams) -> WindowStages:
     # max(..., 1.0): masca nu e niciodată mai mare decât imaginea
     scale = max(max(width, height) / params.mask_size, 1.0)
     mask = boxes_to_mask(boxes_xyxy / scale, math.ceil(width / scale), math.ceil(height / scale))
-    rects = mask_to_rects(dilate_mask(mask, params.dilate_kernel))
-    return rects_to_windows(rects, scale, params.margin, params.min_size, width, height)
+    dilated = dilate_mask(mask, params.dilate_kernel)
+    rects = mask_to_rects(dilated)
+    windows = rects_to_windows(rects, scale, params.margin, params.min_size, width, height)
+    return WindowStages(scale, mask, dilated, rects, windows)
+
+
+def boxes_to_windows(boxes_xyxy: np.ndarray, width: int, height: int, params: AdaptiveParams) -> np.ndarray:
+    return window_stages(boxes_xyxy, width, height, params).windows
 
 
 def detect(model: YOLO, imgs: list[np.ndarray], imgsz: int, conf: float, device) -> list[torch.Tensor]:
@@ -106,11 +127,16 @@ def window_detections(model: YOLO, img: np.ndarray, windows: np.ndarray, params:
     return [drop_cut(d, tuple(win), w, h) + torch.tensor([win[0], win[1], win[0], win[1], 0, 0]) for d, win in zip(dets, wins)]
 
 
-def adaptive_predict(model: YOLO, img: np.ndarray, params: AdaptiveParams, device) -> tuple[torch.Tensor, np.ndarray]:
+def adaptive_trace(model: YOLO, img: np.ndarray, params: AdaptiveParams, device) -> AdaptiveTrace:
     h, w = img.shape[:2]
     prelim = detect(model, [img], params.prelim_imgsz, params.prelim_conf, device)[0]
-    windows = boxes_to_windows(prelim[:, :4].numpy(), w, h, params)
-    dets = window_detections(model, img, windows, params, device) if len(windows) else []
+    stages = window_stages(prelim[:, :4].numpy(), w, h, params)
+    dets = window_detections(model, img, stages.windows, params, device) if len(stages.windows) else []
     # prelim sub conf servesc doar la construirea ferestrelor, nu apar în rezultat
     kept = prelim[prelim[:, 4] >= params.conf]
-    return merge(torch.cat([kept, *dets]), params.iou), windows
+    return AdaptiveTrace(prelim, stages, merge(torch.cat([kept, *dets]), params.iou))
+
+
+def adaptive_predict(model: YOLO, img: np.ndarray, params: AdaptiveParams, device) -> tuple[torch.Tensor, np.ndarray]:
+    trace = adaptive_trace(model, img, params, device)
+    return trace.detections, trace.stages.windows

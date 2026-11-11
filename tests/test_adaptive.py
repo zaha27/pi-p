@@ -10,12 +10,14 @@ from pi_p.adaptive import (
     MASK_ON,
     AdaptiveParams,
     adaptive_predict,
+    adaptive_trace,
     boxes_to_mask,
     boxes_to_windows,
     dilate_mask,
     load_params,
     mask_to_rects,
     rects_to_windows,
+    window_stages,
 )
 
 W, H = 20, 10
@@ -301,3 +303,41 @@ def test_adaptive_predict_prelim_below_conf_builds_window_but_is_not_returned():
     _, det, windows = run_adaptive([[400, 200, 720, 520, 0.2, 3]], [[]])
     assert windows.tolist() == [[240, 40, 880, 680]]
     assert det.shape == (0, 6)
+
+
+def blank_image():
+    return np.zeros((IMG_H, IMG_W, 3), np.uint8)
+
+
+def test_window_stages_windows_match_boxes_to_windows():
+    boxes = np.array([[400, 200, 720, 520], [736, 200, 1056, 520]], dtype=np.float32)
+    stages = window_stages(boxes, IMG_W, IMG_H, PARAMS)
+    np.testing.assert_array_equal(stages.windows, boxes_to_windows(boxes, IMG_W, IMG_H, PARAMS))
+    assert stages.scale == 4.0
+    assert stages.rects.tolist() == [[98, 48, 266, 132]]
+
+
+@pytest.mark.parametrize("prelim, per_window", [
+    (PRELIM, [[[100, 50, 150, 100, 0.7, 0]]]),
+    ([[400, 200, 720, 520, 0.2, 3]], [[]]),
+])
+def test_adaptive_trace_matches_adaptive_predict(prelim, per_window):
+    det, windows = adaptive_predict(StubModel(prelim, per_window), blank_image(), ADAPTIVE_PARAMS, "cpu")
+    trace = adaptive_trace(StubModel(prelim, per_window), blank_image(), ADAPTIVE_PARAMS, "cpu")
+    assert torch.equal(trace.detections, det)
+    np.testing.assert_array_equal(trace.stages.windows, windows)
+    assert len(trace.prelim) == len(prelim)
+
+
+def test_adaptive_trace_without_prelim_detections_has_empty_stages():
+    model = StubModel([], [])
+    trace = adaptive_trace(model, blank_image(), ADAPTIVE_PARAMS, "cpu")
+    assert trace.prelim.shape == (0, 6)
+    assert trace.detections.shape == (0, 6)
+    assert trace.stages.rects.shape == (0, 4)
+    assert trace.stages.windows.shape == (0, 4)
+    assert trace.stages.scale == 4.0
+    assert trace.stages.mask.shape == trace.stages.dilated.shape == (300, 500)
+    assert not trace.stages.mask.any()
+    assert not trace.stages.dilated.any()
+    assert len(model.calls) == 1
