@@ -3,8 +3,11 @@ from dataclasses import dataclass
 
 import cv2
 import numpy as np
+import torch
+from ultralytics import YOLO
 
 from pi_p.config import load
+from pi_p.predict import drop_cut, merge
 
 MASK_ON = 255
 CONNECTIVITY = 8
@@ -16,6 +19,11 @@ class AdaptiveParams:
     dilate_kernel: int
     margin: float
     min_size: int
+    prelim_imgsz: int
+    prelim_conf: float
+    window_imgsz: int
+    conf: float
+    iou: float
 
 
 def load_params(path: str, overrides: tuple[str, ...] = ()) -> AdaptiveParams:
@@ -84,3 +92,25 @@ def boxes_to_windows(boxes_xyxy: np.ndarray, width: int, height: int, params: Ad
     mask = boxes_to_mask(boxes_xyxy / scale, math.ceil(width / scale), math.ceil(height / scale))
     rects = mask_to_rects(dilate_mask(mask, params.dilate_kernel))
     return rects_to_windows(rects, scale, params.margin, params.min_size, width, height)
+
+
+def detect(model: YOLO, imgs: list[np.ndarray], imgsz: int, conf: float, device) -> list[torch.Tensor]:
+    preds = model.predict(imgs, imgsz=imgsz, conf=conf, device=device, verbose=False)
+    return [p.boxes.data.cpu() for p in preds]
+
+
+def window_detections(model: YOLO, img: np.ndarray, windows: np.ndarray, params: AdaptiveParams, device) -> list[torch.Tensor]:
+    h, w = img.shape[:2]
+    wins = windows.tolist()
+    dets = detect(model, [img[y1:y2, x1:x2] for x1, y1, x2, y2 in wins], params.window_imgsz, params.conf, device)
+    return [drop_cut(d, tuple(win), w, h) + torch.tensor([win[0], win[1], win[0], win[1], 0, 0]) for d, win in zip(dets, wins)]
+
+
+def adaptive_predict(model: YOLO, img: np.ndarray, params: AdaptiveParams, device) -> tuple[torch.Tensor, np.ndarray]:
+    h, w = img.shape[:2]
+    prelim = detect(model, [img], params.prelim_imgsz, params.prelim_conf, device)[0]
+    windows = boxes_to_windows(prelim[:, :4].numpy(), w, h, params)
+    dets = window_detections(model, img, windows, params, device) if len(windows) else []
+    # prelim sub conf servesc doar la construirea ferestrelor, nu apar în rezultat
+    kept = prelim[prelim[:, 4] >= params.conf]
+    return merge(torch.cat([kept, *dets]), params.iou), windows
