@@ -30,3 +30,32 @@ def mask_to_rects(mask: np.ndarray) -> np.ndarray:
     rects = stats[1:, :4].copy()
     rects[:, 2:] += rects[:, :2]
     return rects
+
+
+def scale_rects(rects: np.ndarray, scale: float) -> np.ndarray:
+    return rects.astype(np.float64) * scale
+
+
+def grow_rects(rects: np.ndarray, margin: float) -> np.ndarray:
+    return rects + np.array([-margin, -margin, margin, margin])
+
+
+def enforce_min_size(rects: np.ndarray, min_size: float) -> np.ndarray:
+    size = rects[:, 2:] - rects[:, :2]
+    pad = np.maximum(min_size - size, 0) / 2
+    return rects + np.hstack([-pad, pad])
+
+
+def fit_in_image(rects: np.ndarray, width: int, height: int) -> np.ndarray:
+    limit = np.array([width, height])
+    shift = np.maximum(-rects[:, :2], 0) - np.maximum(rects[:, 2:] - limit, 0)
+    moved = rects + np.hstack([shift, shift])
+    return np.clip(moved, 0, np.hstack([limit, limit]))
+
+
+def rects_to_windows(
+    rects: np.ndarray, scale: float, margin: float, min_size: float, width: int, height: int
+) -> np.ndarray:
+    grown = grow_rects(scale_rects(rects, scale), margin)
+    fitted = fit_in_image(enforce_min_size(grown, min_size), width, height)
+    return np.hstack([np.floor(fitted[:, :2]), np.ceil(fitted[:, 2:])]).astype(np.int32)
