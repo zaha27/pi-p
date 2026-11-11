@@ -1,0 +1,4 @@
+mask_size: 640
+dilate_kernel: 15
+margin: 32
+min_size: 640
