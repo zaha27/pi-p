@@ -1,3 +1,4 @@
+from dataclasses import replace
 from types import SimpleNamespace
 
 import matplotlib.pyplot as plt
@@ -53,4 +54,12 @@ def test_build_comparison_figure_has_two_axes_and_reports_counts(boxes, n_det, n
     assert f"{n_det} detecții" in left.get_title()
     assert f"{n_det} detecții" in right.get_title()
     assert f"{n_win} ferestre" in right.get_title()
+    plt.close(fig)
+
+
+def test_build_figure_first_panels_use_seed_boxes_only():
+    trace = adaptive_trace(FakeModel([[400, 200, 720, 520, 0.9, 3], [1500, 800, 1560, 880, 0.1, 0]]), blank_image(), replace(PARAMS, conf=0.05), "cpu")
+    fig = build_figure(blank_image(), trace)
+    assert "1 casete" in fig.axes[0].get_title()
+    assert "1 casete" in fig.axes[1].get_title()
     plt.close(fig)

@@ -97,6 +97,7 @@ class WindowStages(NamedTuple):
 
 class AdaptiveTrace(NamedTuple):
     prelim: torch.Tensor
+    seeds: torch.Tensor
     stages: WindowStages
     detections: torch.Tensor
 
@@ -133,12 +134,13 @@ def keep_confident(det: torch.Tensor, conf: float) -> torch.Tensor:
 
 def adaptive_trace(model: YOLO, img: np.ndarray, params: AdaptiveParams, device) -> AdaptiveTrace:
     h, w = img.shape[:2]
-    prelim = detect(model, [img], params.prelim_imgsz, params.prelim_conf, device)[0]
-    stages = window_stages(prelim[:, :4].numpy(), w, h, params)
+    # prima trecere la pragul mai mic, ca să nu taie casetele dintre conf și prelim_conf
+    prelim = detect(model, [img], params.prelim_imgsz, min(params.prelim_conf, params.conf), device)[0]
+    seeds = keep_confident(prelim, params.prelim_conf)
+    stages = window_stages(seeds[:, :4].numpy(), w, h, params)
     dets = window_detections(model, img, stages.windows, params, device) if len(stages.windows) else []
-    # prelim sub conf servesc doar la construirea ferestrelor, nu apar în rezultat
     kept = keep_confident(prelim, params.conf)
-    return AdaptiveTrace(prelim, stages, merge(torch.cat([kept, *dets]), params.iou))
+    return AdaptiveTrace(prelim, seeds, stages, merge(torch.cat([kept, *dets]), params.iou))
 
 
 def adaptive_predict(model: YOLO, img: np.ndarray, params: AdaptiveParams, device) -> tuple[torch.Tensor, np.ndarray]:

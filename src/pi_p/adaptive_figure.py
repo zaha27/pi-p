@@ -64,8 +64,8 @@ def build_figure(img_bgr: np.ndarray, trace: AdaptiveTrace) -> Figure:
     s = trace.stages
     fig, axes = plt.subplots(2, 3, figsize=FIGSIZE)
     ax = axes.flat
-    box_panel(ax[0], img, trace.prelim[:, :4].numpy(), COLOR_PRELIM, f"Detecție preliminară: {len(trace.prelim)} casete")
-    mask_panel(ax[1], s.mask, img.shape[:2], f"Mască binară din {len(trace.prelim)} casete")
+    box_panel(ax[0], img, trace.seeds[:, :4].numpy(), COLOR_PRELIM, f"Detecție preliminară: {len(trace.seeds)} casete")
+    mask_panel(ax[1], s.mask, img.shape[:2], f"Mască binară din {len(trace.seeds)} casete")
     mask_panel(ax[2], s.dilated, img.shape[:2], f"Mască dilatată: {len(s.rects)} pete")
     # rects sunt în pixeli ai măștii; scale îi duce în pixeli ai imaginii
     box_panel(ax[3], img, s.rects * s.scale, COLOR_RECTS, f"Dreptunghiuri: {len(s.rects)}")
