@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 
 MASK_ON = 255
+CONNECTIVITY = 8
 
 
 def boxes_to_mask(boxes_xyxy: np.ndarray, width: int, height: int) -> np.ndarray:
@@ -21,3 +22,11 @@ def dilate_mask(mask: np.ndarray, kernel_size: int) -> np.ndarray:
         raise ValueError(f"kernel_size must be a positive odd integer, got {kernel_size}")
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, kernel_size))
     return cv2.dilate(mask, kernel)
+
+
+def mask_to_rects(mask: np.ndarray) -> np.ndarray:
+    _, _, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=CONNECTIVITY)
+    # eticheta 0 e fundalul, nu o pată
+    rects = stats[1:, :4].copy()
+    rects[:, 2:] += rects[:, :2]
+    return rects
