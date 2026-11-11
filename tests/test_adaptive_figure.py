@@ -6,7 +6,7 @@ import pytest
 import torch
 
 from pi_p.adaptive import AdaptiveParams, adaptive_trace
-from pi_p.adaptive_figure import build_figure, save_figure
+from pi_p.adaptive_figure import build_comparison_figure, build_figure, save_figure
 
 IMG_W, IMG_H = 2000, 1200
 PARAMS = AdaptiveParams(
@@ -44,3 +44,13 @@ def test_save_figure_writes_non_empty_png(tmp_path):
     save_figure(build_figure(blank_image(), make_trace(BOXES)), out)
     assert out.stat().st_size > 0
     assert out.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
+
+
+@pytest.mark.parametrize("boxes, n_det, n_win", [(BOXES, 1, 1), ([], 0, 0)], ids=["with_boxes", "no_boxes"])
+def test_build_comparison_figure_has_two_axes_and_reports_counts(boxes, n_det, n_win):
+    fig = build_comparison_figure(blank_image(), make_trace(boxes), PARAMS)
+    left, right = fig.axes
+    assert f"{n_det} detecții" in left.get_title()
+    assert f"{n_det} detecții" in right.get_title()
+    assert f"{n_win} ferestre" in right.get_title()
+    plt.close(fig)

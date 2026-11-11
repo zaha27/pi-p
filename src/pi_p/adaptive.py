@@ -127,13 +127,17 @@ def window_detections(model: YOLO, img: np.ndarray, windows: np.ndarray, params:
     return [drop_cut(d, tuple(win), w, h) + torch.tensor([win[0], win[1], win[0], win[1], 0, 0]) for d, win in zip(dets, wins)]
 
 
+def keep_confident(det: torch.Tensor, conf: float) -> torch.Tensor:
+    return det[det[:, 4] >= conf]
+
+
 def adaptive_trace(model: YOLO, img: np.ndarray, params: AdaptiveParams, device) -> AdaptiveTrace:
     h, w = img.shape[:2]
     prelim = detect(model, [img], params.prelim_imgsz, params.prelim_conf, device)[0]
     stages = window_stages(prelim[:, :4].numpy(), w, h, params)
     dets = window_detections(model, img, stages.windows, params, device) if len(stages.windows) else []
     # prelim sub conf servesc doar la construirea ferestrelor, nu apar în rezultat
-    kept = prelim[prelim[:, 4] >= params.conf]
+    kept = keep_confident(prelim, params.conf)
     return AdaptiveTrace(prelim, stages, merge(torch.cat([kept, *dets]), params.iou))
 
 

@@ -14,6 +14,7 @@ from pi_p.adaptive import (
     boxes_to_mask,
     boxes_to_windows,
     dilate_mask,
+    keep_confident,
     load_params,
     mask_to_rects,
     rects_to_windows,
@@ -341,3 +342,17 @@ def test_adaptive_trace_without_prelim_detections_has_empty_stages():
     assert not trace.stages.mask.any()
     assert not trace.stages.dilated.any()
     assert len(model.calls) == 1
+
+
+def test_keep_confident_keeps_scores_at_or_above_threshold():
+    det = torch.tensor([
+        [0, 0, 10, 10, 0.9, 0],
+        [0, 0, 10, 10, 0.25, 1],
+        [0, 0, 10, 10, 0.1, 2],
+        [0, 0, 10, 10, 0.6, 3],
+    ])
+    assert torch.equal(keep_confident(det, 0.25), det[[0, 1, 3]])
+
+
+def test_keep_confident_empty_gives_empty():
+    assert keep_confident(torch.zeros((0, 6)), 0.25).shape == (0, 6)
