@@ -1,13 +1,18 @@
 import numpy as np
 import pytest
 
-from pi_p.adaptive import MASK_ON, boxes_to_mask, dilate_mask, mask_to_rects
+from pi_p.adaptive import MASK_ON, boxes_to_mask, dilate_mask, mask_to_rects, rects_to_windows
 
 W, H = 20, 10
+IMG_W, IMG_H = 2000, 1200
 
 
 def blank_mask():
     return np.zeros((H, W), dtype=np.uint8)
+
+
+def windows_for(rect, scale, margin, min_size, width=IMG_W, height=IMG_H):
+    return rects_to_windows(np.array([rect], dtype=np.float32), scale, margin, min_size, width, height).tolist()
 
 
 def test_boxes_to_mask_no_boxes_gives_empty_mask():
@@ -142,3 +147,39 @@ def test_mask_to_rects_l_shape_box_includes_the_gap():
 def test_boxes_dilate_rects_pipeline_merges_or_separates_by_gap(boxes, expected):
     mask = dilate_mask(boxes_to_mask(np.array(boxes, dtype=np.float32), W, H), 5)
     assert sorted(mask_to_rects(mask).tolist()) == expected
+
+
+def test_rects_to_windows_scales_rect_to_image_pixels():
+    assert windows_for([100, 50, 180, 130], 4, 0, 0) == [[400, 200, 720, 520]]
+
+
+def test_rects_to_windows_adds_margin_on_every_side():
+    assert windows_for([100, 50, 180, 130], 4, 10, 0) == [[390, 190, 730, 530]]
+
+
+def test_rects_to_windows_grows_small_rect_to_min_size_around_center():
+    assert windows_for([300, 150, 320, 160], 4, 0, 640) == [[920, 300, 1560, 940]]
+
+
+def test_rects_to_windows_keeps_rect_already_larger_than_min_size():
+    assert windows_for([100, 50, 300, 250], 4, 0, 640) == [[400, 200, 1200, 1000]]
+
+
+@pytest.mark.parametrize("rect, expected", [
+    ([0, 0, 20, 10], [[0, 0, 640, 640]]),
+    ([490, 290, 500, 300], [[1360, 560, 2000, 1200]]),
+])
+def test_rects_to_windows_shifts_rect_back_inside_image(rect, expected):
+    assert windows_for(rect, 4, 0, 640) == expected
+
+
+def test_rects_to_windows_image_smaller_than_min_size_gives_whole_image():
+    assert windows_for([10, 10, 30, 20], 1, 0, 640, width=500, height=300) == [[0, 0, 500, 300]]
+
+
+def test_rects_to_windows_rounds_outward():
+    assert windows_for([2, 3, 5, 6], 1.5, 0, 0) == [[3, 4, 8, 9]]
+
+
+def test_rects_to_windows_no_rects_gives_empty():
+    assert rects_to_windows(np.zeros((0, 4)), 4, 0, 640, IMG_W, IMG_H).shape == (0, 4)
