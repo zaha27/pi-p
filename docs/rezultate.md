@@ -82,19 +82,28 @@ Imaginile cu contrast slab nu ies mai prost decât cele normale, ba chiar puțin
 
 Măsurat pe modelul pe felii, fără CLAHE și fără reantrenare.
 
-| Testare (`--mode`) | mAP50 | mAP50-95 | Recall | ms/imagine | Ferestre pe imagine (medie) |
-|---|---|---|---|---|---|
-| `grila` | 0,483 | 0,292 | 0,506 | 35,1 | 5,2 |
-| `adaptiv` | 0,490 | 0,296 | 0,515 | 44,8 | 5,5 |
-| `adaptiv+grila` | 0,494 | 0,299 | 0,517 | 59,7 | 8,9 |
+Au fost scrise două variante de ferestre adaptive, independent. Ambele au fost măsurate cu `pi-eval`, în aceleași condiții:
+
+- **A**, ferestre fixe de 640 px puse ca o mică grilă peste fiecare grup, la rezoluția reală;
+- **B**, câte o fereastră pe grup, de mărime variabilă (cel puțin 640 px), redimensionată la 640. Este varianta păstrată în cod (`src/pi_p/adaptive.py`, explicată în [etapa 9](pipeline/09-ferestre-adaptive.md)).
+
+| Testare | mAP50 | mAP50-95 | Recall | Ferestre pe imagine | Suprafața ferestrelor | ms/imagine* |
+|---|---|---|---|---|---|---|
+| `grila` | 0,483 | 0,292 | 0,506 | 5,2 | – | 35,1 |
+| adaptiv A (scos din cod) | 0,490 | 0,296 | 0,515 | 5,5 | 2,3 × imaginea | 102 |
+| **`adaptiv` (B)** | **0,502** | **0,304** | 0,521 | 10,2 | 4,5 × imaginea | 212 |
+| `adaptiv+grila` (B + grilă) | 0,507 | 0,307 | 0,526 | – | – | 172 |
+
+\* Coloanele A și B au fost măsurate în timp ce placa video rula o antrenare, deci timpii absoluți sunt mult umflați. Comparabil este doar raportul dintre A și B, măsurate unul după altul: B e de aproximativ 2 ori mai lentă. `grila` a fost măsurată cu placa liberă.
 
 Ce arată tabelul:
 
-- **Ferestrele adaptive nu economisesc timp pe val.** Scopul lor era mai puține ferestre, dar în medie ies mai multe decât la grilă (5,5 față de 5,2). Doar în 32% dintre imagini au mai puține ferestre decât grila. Scenele din VisDrone sunt aglomerate, iar obiectele sunt răspândite în tot cadrul.
-- **mAP-ul crește foarte puțin:** +0,007 pentru `adaptiv` și +0,011 pentru `adaptiv+grila`. Diferențele sunt mici și pe o singură rulare; nu am verificat dacă sunt peste zgomotul măsurătorii.
-- **Parametrii nu au fost reglați.** `DILATE = 32` și `QUERY_CONF = 0,1` sunt valorile de pornire. O dilatare mai mică sau un prag mai mare ar da mai puține ferestre, probabil cu un mAP mai mic.
+- **Varianta B detectează cel mai bine:** +0,019 mAP50 față de grilă și +0,012 față de A. Diferențele sunt pe o singură rulare; nu am verificat dacă sunt peste zgomotul măsurătorii.
+- **Câștigul vine din mai multă muncă, nu din ferestre mai bine alese.** B rulează modelul pe aproape de 2 ori mai multe ferestre decât grila, care se suprapun mult (4,5 × suprafața imaginii). Fiecare grup mic primește o fereastră întreagă de 640 × 640.
+- **Niciuna dintre variante nu economisește timp pe val**, iar acesta era scopul ferestrelor adaptive. Scenele din VisDrone sunt aglomerate, iar obiectele sunt răspândite în tot cadrul.
+- **Parametrii nu au fost reglați.** Valorile din `configs/adaptive.yaml` sunt cele de pornire. Un nucleu de dilatare mai mare ar uni grupurile mici și ar da mai puține ferestre.
 
-Concluzia de moment: pe acest set de date, în forma actuală, ferestrele adaptive nu își ating scopul (viteza). Rămâne de văzut dacă reglarea parametrilor schimbă asta.
+Concluzia de moment: ferestrele adaptive îmbunătățesc puțin detecția, dar nu își ating scopul (viteza). Următorul pas este reglarea parametrilor cu `pi-adaptive-eval`, de exemplu `dilate_kernel` și `prelim_conf`, urmărind numărul de ferestre.
 
 ## Cum reproduci tabelele
 

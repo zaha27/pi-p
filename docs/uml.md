@@ -109,7 +109,8 @@ flowchart TB
     session --> analytics & scoremap & predict & render & slicing & YOLO
     render --> analytics & data
     predict --> slicing & fusion & adaptive & clahe & YOLO
-    adaptive --> slicing
+    adaptive --> fusion
+    adaptive_eval["adaptive_eval.py<br/>pi-adaptive-eval"] & adaptive_figure["adaptive_figure.py<br/>figuri"] --> adaptive
 
     prepare & check & eda & tile & stats & clahe --> data
     clahe --> stats
@@ -235,7 +236,9 @@ classDiagram
 
     class adaptive {
         <<module>>
-        +adaptive_windows(boxes, w, h, size, overlap, dilate) list
+        +load_params(path, overrides) AdaptiveParams
+        +adaptive_trace(model, img, params, device) AdaptiveTrace
+        +adaptive_predict(model, img, params, device) (det, windows)
     }
 
     class slicing {
