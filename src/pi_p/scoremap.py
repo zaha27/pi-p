@@ -1,3 +1,11 @@
+"""Harta de scoruri a detectorului: unde „crede” modelul că sunt obiecte.
+
+Clasa ScoreMap se agață de ultimul strat al rețelei YOLO și reține, la
+fiecare rulare, scorurile de clasă brute, înainte de a fi transformate în
+chenare. `heatmap()` le întoarce ca imagine cu valori între 0 și 1, de
+mărimea cadrului. Este folosită de dashboard, pentru vizualizarea „scoruri”.
+"""
+
 import cv2
 import numpy as np
 import torch
