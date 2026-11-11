@@ -1,3 +1,19 @@
+"""Detecția pe o imagine: întreagă, pe grilă de ferestre sau pe ferestre adaptive.
+
+Toate modurile întorc același lucru: un tabel de detecții în coordonatele
+imaginii întregi, câte o linie `x1, y1, x2, y2, scor, clasă`.
+
+Moduri (constanta MODES):
+
+  - `intreg`:        modelul vede doar imaginea întreagă, micșorată;
+  - `grila`:         imaginea întreagă + toate ferestrele grilei fixe;
+  - `adaptiv`:       imaginea întreagă + ferestre doar unde sunt obiecte;
+  - `adaptiv+grila`: ferestrele adaptive și grila, împreună.
+
+`pi-predict` rulează un model pe imagini sau video și salvează rezultatul
+desenat. Detalii în docs/pipeline/06-detectia-pe-ferestre.md.
+"""
+
 import argparse
 from collections import Counter
 from pathlib import Path
@@ -8,50 +24,90 @@ import torch
 from ultralytics import YOLO
 from ultralytics.engine.results import Results
 
+from pi_p.adaptive import adaptive_windows
+from pi_p.clahe import apply_clahe
 from pi_p.data import IMG_EXT
-from pi_p.slicing import windows
+from pi_p.fusion import drop_cut, merge
+from pi_p.slicing import Window, windows
+
+MODES = ["intreg", "grila", "adaptiv", "adaptiv+grila"]
+
+# Câte detecții pe imagine acceptăm cel mult. Imaginile VisDrone au până la
+# ~900 de obiecte, iar limita implicită din Ultralytics (300) ar pierde din ele.
+MAX_DET = 1000
+
+# Parametrii ferestrelor adaptive.
+QUERY_CONF = 0.1  # scorul minim al unei detecții preliminare ca să primească fereastră
+DILATE = 32  # raza dilatării măștii, în pixeli
 
 
-def merge(det: torch.Tensor, thr: float) -> torch.Tensor:
-    det = det[det[:, 4].argsort(descending=True)]
-    lt = torch.maximum(det[:, None, :2], det[None, :, :2])
-    rb = torch.minimum(det[:, None, 2:4], det[None, :, 2:4])
-    inter = (rb - lt).clamp(min=0).prod(2)
-    area = (det[:, 2:4] - det[:, :2]).prod(1)
-    ios = inter / torch.minimum(area[:, None], area[None, :]).clamp(min=1e-6)
-    suppress = (ios > thr) & (det[:, None, 5] == det[None, :, 5])
-    keep = torch.ones(len(det), dtype=torch.bool)
-    for i in range(len(det)):
-        if keep[i]:
-            keep[i + 1 :] &= ~suppress[i, i + 1 :]
-    return det[keep]
+def detect_whole(model: YOLO, img: np.ndarray, size: int, conf: float, device) -> torch.Tensor:
+    """Rulează modelul pe imaginea întreagă, micșorată la `size` pe latura mare."""
+    result = model.predict(img, imgsz=size, conf=conf, max_det=MAX_DET, device=device, verbose=False)[0]
+    return result.boxes.data.cpu()
 
 
-def drop_cut(det: torch.Tensor, win: tuple[int, int, int, int], w: int, h: int, margin: int = 2) -> torch.Tensor:
-    x1, y1, x2, y2 = win
-    cut = torch.zeros(len(det), dtype=torch.bool)
-    if x1 > 0:
-        cut |= det[:, 0] <= margin
-    if y1 > 0:
-        cut |= det[:, 1] <= margin
-    if x2 < w:
-        cut |= det[:, 2] >= x2 - x1 - margin
-    if y2 < h:
-        cut |= det[:, 3] >= y2 - y1 - margin
-    return det[~cut]
+def detect_in_windows(model: YOLO, img: np.ndarray, wins: list[Window], size: int, conf: float, device) -> torch.Tensor:
+    """Rulează modelul pe fiecare fereastră și mută detecțiile în coordonatele imaginii.
+
+    Detecțiile tăiate de marginea ferestrei sunt eliminate aici (vezi fusion.drop_cut).
+    """
+    if not wins:
+        return torch.zeros((0, 6))
+    h, w = img.shape[:2]
+    crops = [img[y1:y2, x1:x2] for x1, y1, x2, y2 in wins]
+    results = model.predict(crops, imgsz=size, conf=conf, max_det=MAX_DET, device=device, verbose=False)
+
+    detections = []
+    for result, win in zip(results, wins):
+        det = drop_cut(result.boxes.data.cpu(), win, w, h)
+        # Din coordonatele ferestrei în ale imaginii: adunăm colțul stânga-sus al ferestrei.
+        x1, y1 = win[0], win[1]
+        detections.append(det + torch.tensor([x1, y1, x1, y1, 0, 0]))
+    return torch.cat(detections)
 
 
 def sliced_predict(model: YOLO, img: np.ndarray, size: int, overlap: float, conf: float, iou: float, device) -> torch.Tensor:
+    """Modul `grila`: imaginea întreagă + toate ferestrele grilei, apoi fuziune."""
     h, w = img.shape[:2]
-    wins = windows(w, h, size, overlap)
-    preds = model.predict([img, *(img[y1:y2, x1:x2] for x1, y1, x2, y2 in wins)], imgsz=size, conf=conf, device=device, verbose=False)
-    dets = [preds[0].boxes.data.cpu()]
-    for p, win in zip(preds[1:], wins):
-        dets.append(drop_cut(p.boxes.data.cpu(), win, w, h) + torch.tensor([win[0], win[1], win[0], win[1], 0, 0]))
-    return merge(torch.cat(dets), iou)
+    whole = detect_whole(model, img, size, conf, device)
+    in_windows = detect_in_windows(model, img, windows(w, h, size, overlap), size, conf, device)
+    return merge(torch.cat([whole, in_windows]), iou)
+
+
+def adaptive_predict(model: YOLO, img: np.ndarray, size: int, overlap: float, conf: float, iou: float, device,
+                     with_grid: bool = False) -> torch.Tensor:
+    """Modurile `adaptiv` și `adaptiv+grila`.
+
+    Detecția pe imaginea întreagă are două roluri: găsește obiectele mari și
+    servește ca detecție preliminară, din care alegem ferestrele.
+    """
+    h, w = img.shape[:2]
+    whole = detect_whole(model, img, size, conf, device)
+
+    confident = whole[whole[:, 4] >= QUERY_CONF]
+    wins = adaptive_windows(confident[:, :4].numpy(), w, h, size, overlap, DILATE)
+    if with_grid:
+        # Grila rămâne ca plasă de siguranță pentru obiectele ratate de detecția preliminară.
+        wins = sorted(set(wins) | set(windows(w, h, size, overlap)))
+
+    in_windows = detect_in_windows(model, img, wins, size, conf, device)
+    return merge(torch.cat([whole, in_windows]), iou)
+
+
+def detect(model: YOLO, img: np.ndarray, mode: str, size: int, overlap: float, conf: float, iou: float, device) -> torch.Tensor:
+    """Rulează detecția în modul cerut. Punctul comun de intrare pentru predicție și evaluare."""
+    if mode == "intreg":
+        return detect_whole(model, img, size, conf, device)
+    if mode == "grila":
+        return sliced_predict(model, img, size, overlap, conf, iou, device)
+    if mode in ("adaptiv", "adaptiv+grila"):
+        return adaptive_predict(model, img, size, overlap, conf, iou, device, with_grid=mode == "adaptiv+grila")
+    raise ValueError(f"Mod necunoscut: {mode}; alege din {MODES}")
 
 
 def image_paths(source: Path) -> list[Path]:
+    """Imaginile de procesat: un fișier sau toate imaginile dintr-un folder."""
     if source.is_dir():
         return sorted(p for p in source.iterdir() if p.suffix.lower() in IMG_EXT)
     if source.is_file() and source.suffix.lower() in IMG_EXT:
@@ -60,33 +116,45 @@ def image_paths(source: Path) -> list[Path]:
 
 
 def report(r: Results) -> None:
+    """Afișează câte obiecte din fiecare clasă au fost găsite într-o imagine."""
     print(f"{r.path}: {dict(Counter(r.names[int(c)] for c in r.boxes.cls))}")
 
 
 def main():
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(description="Rulează un model pe imagini sau video și salvează detecțiile desenate")
     ap.add_argument("weights")
     ap.add_argument("source", help="imagine, folder, video sau URL")
     ap.add_argument("--conf", type=float, default=0.25)
     ap.add_argument("--iou", type=float, default=0.5, help="prag IOS la combinarea detecțiilor din ferestre")
     ap.add_argument("--device", default=None)
     ap.add_argument("--slice", type=int, default=0, help="mărimea ferestrei pentru inferență pe bucăți (0 = dezactivat)")
+    ap.add_argument("--windows", choices=MODES[1:], default="grila", help="cum sunt alese ferestrele, când --slice e activ")
     ap.add_argument("--overlap", type=float, default=0.2)
+    ap.add_argument("--clahe", action="store_true", help="aplică CLAHE pe imagine înainte de detecție")
     ap.add_argument("--out", type=Path, default=Path("runs/predict"))
     args = ap.parse_args()
     model = YOLO(args.weights)
-    if not args.slice:
-        for r in model.predict(args.source, conf=args.conf, device=args.device, save=True, stream=True, project=args.out.parent, name=args.out.name):
+
+    # Fără ferestre lăsăm Ultralytics să facă tot: știe și video, și URL-uri.
+    if not args.slice and not args.clahe:
+        for r in model.predict(args.source, conf=args.conf, device=args.device, save=True, stream=True,
+                               project=args.out.parent, name=args.out.name):
             report(r)
         return
+
     args.out.mkdir(parents=True, exist_ok=True)
-    for p in image_paths(Path(args.source)):
-        img = cv2.imread(str(p))
+    mode = args.windows if args.slice else "intreg"
+    size = args.slice or 640
+    for path in image_paths(Path(args.source)):
+        img = cv2.imread(str(path))
         if img is None:
-            print(f"{p}: imagine ilizibilă, sărită")
+            print(f"{path}: imagine ilizibilă, sărită")
             continue
-        r = Results(img, path=str(p), names=model.names, boxes=sliced_predict(model, img, args.slice, args.overlap, args.conf, args.iou, args.device))
-        cv2.imwrite(str(args.out / p.name), r.plot(line_width=1, labels=False))
+        if args.clahe:
+            img = apply_clahe(img)
+        boxes = detect(model, img, mode, size, args.overlap, args.conf, args.iou, args.device)
+        r = Results(img, path=str(path), names=model.names, boxes=boxes)
+        cv2.imwrite(str(args.out / path.name), r.plot(line_width=1, labels=False))
         report(r)
 
 

@@ -24,7 +24,7 @@ def test_crop_boxes_visibility_and_shift():
 def test_merge_drops_fragments_inside_larger_box():
     import torch
 
-    from pi_p.predict import merge
+    from pi_p.fusion import merge
 
     det = torch.tensor([
         [0, 0, 100, 50, 0.9, 5],
@@ -38,7 +38,7 @@ def test_merge_drops_fragments_inside_larger_box():
 def test_drop_cut_keeps_boxes_on_image_border_only():
     import torch
 
-    from pi_p.predict import drop_cut
+    from pi_p.fusion import drop_cut
 
     det = torch.tensor([
         [0, 10, 20, 30, 0.9, 0],
