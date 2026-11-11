@@ -9,3 +9,4 @@ infrastructure/frontend/node_modules/
 infrastructure/frontend/dist/
 .env
 videos/
+logs/
