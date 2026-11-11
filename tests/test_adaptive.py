@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from pi_p.adaptive import MASK_ON, boxes_to_mask, dilate_mask
+from pi_p.adaptive import MASK_ON, boxes_to_mask, dilate_mask, mask_to_rects
 
 W, H = 20, 10
 
@@ -102,3 +102,43 @@ def test_dilate_mask_does_not_modify_input_and_keeps_type():
 def test_dilate_mask_rejects_even_or_non_positive_kernel(kernel_size):
     with pytest.raises(ValueError):
         dilate_mask(blank_mask(), kernel_size)
+
+
+def test_mask_to_rects_empty_mask_gives_no_rects():
+    assert mask_to_rects(blank_mask()).shape == (0, 4)
+
+
+def test_mask_to_rects_single_blob_is_its_bounding_box():
+    mask = blank_mask()
+    mask[3:6, 4:9] = MASK_ON
+    assert mask_to_rects(mask).tolist() == [[4, 3, 9, 6]]
+
+
+def test_mask_to_rects_separate_blobs_give_one_rect_each():
+    mask = blank_mask()
+    mask[1:3, 1:4] = MASK_ON
+    mask[6:9, 12:18] = MASK_ON
+    assert sorted(mask_to_rects(mask).tolist()) == [[1, 1, 4, 3], [12, 6, 18, 9]]
+
+
+def test_mask_to_rects_blobs_touching_at_corner_are_one():
+    mask = blank_mask()
+    mask[2:4, 2:4] = MASK_ON
+    mask[4:6, 4:6] = MASK_ON
+    assert mask_to_rects(mask).tolist() == [[2, 2, 6, 6]]
+
+
+def test_mask_to_rects_l_shape_box_includes_the_gap():
+    mask = blank_mask()
+    mask[2:8, 3:5] = MASK_ON
+    mask[6:8, 3:10] = MASK_ON
+    assert mask_to_rects(mask).tolist() == [[3, 2, 10, 8]]
+
+
+@pytest.mark.parametrize("boxes, expected", [
+    ([[2, 4, 6, 6], [10, 4, 14, 6]], [[0, 2, 16, 8]]),
+    ([[2, 4, 6, 6], [11, 4, 15, 6]], [[0, 2, 8, 8], [9, 2, 17, 8]]),
+])
+def test_boxes_dilate_rects_pipeline_merges_or_separates_by_gap(boxes, expected):
+    mask = dilate_mask(boxes_to_mask(np.array(boxes, dtype=np.float32), W, H), 5)
+    assert sorted(mask_to_rects(mask).tolist()) == expected
