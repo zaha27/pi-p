@@ -30,9 +30,9 @@ o linie pentru fiecare variantă testată, comparată cu baseline-ul`"]
     F --> E
     E --> G --> H --> I --> J
     B --> I
-    C -.-> K -.-> L -.-> E
+    C --> K --> L --> E
 
-    LEG["⬜ intrare &nbsp; 🟦 prelucrarea imaginii &nbsp; 🟩 antrenare și detecție &nbsp; 🟨 evaluare &nbsp; 🟪 planificat"]
+    LEG["⬜ intrare &nbsp; 🟦 prelucrarea imaginii &nbsp; 🟩 antrenare și detecție &nbsp; 🟨 evaluare"]
     J ~~~ LEG
 
     classDef inp fill:#F3F4F6,stroke:#374151,stroke-width:2px,color:#111827
@@ -46,6 +46,10 @@ o linie pentru fiecare variantă testată, comparată cu baseline-ul`"]
     class B,C,D prep
     class E,F,G det
     class H,I,J eva
-    class K,L plan
+    class K,L det
     class LEG leg
 ```
+
+Drumul de sus (feliere pe grilă) și cel de jos (detecție preliminară și ferestre adaptive) sunt două feluri de a alege ferestrele; se folosesc separat sau împreună (`--mode grila`, `adaptiv`, `adaptiv+grila`).
+
+Fiecare casetă din schemă este explicată pas cu pas în [pipeline/README.md](pipeline/README.md).

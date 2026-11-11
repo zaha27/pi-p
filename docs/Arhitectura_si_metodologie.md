@@ -40,9 +40,9 @@ Felierea împarte imaginea în ferestre pătrate de aceeași dimensiune cu intra
 
 Ca alternativă la această implementare este evaluată biblioteca SAHI (Slicing Aided Hyper Inference; Akyon et al., 2022), care realizează aceeași idee de feliere la inferență. Cele două variante nu se folosesc împreună în aceeași rulare: sunt două realizări ale aceluiași pas, comparate între ele.
 
-### 3.4 Detecția preliminară și ferestrele adaptive (planificat)
+### 3.4 Detecția preliminară și ferestrele adaptive
 
-Grila fixă analizează fiecare zonă a imaginii, inclusiv zonele fără obiecte (câmpuri, acoperișuri, cer), ceea ce costă timp. Componenta planificată înlocuiește grila cu ferestre plasate doar acolo unde există obiecte, în doi pași.
+Grila fixă analizează fiecare zonă a imaginii, inclusiv zonele fără obiecte (câmpuri, acoperișuri, cer), ceea ce costă timp. Această componentă înlocuiește grila cu ferestre plasate doar acolo unde există obiecte, în doi pași.
 
 Primul pas, detecția preliminară, rulează detectorul pe imaginea micșorată și obține o estimare aproximativă a pozițiilor obiectelor. Ideea de a căuta întâi grosier și de a analiza detaliat doar zonele promițătoare este preluată din QueryDet (Yang et al., 2022). Acolo, căutarea grosieră se face însă în interiorul rețelei neuronale, pe hărțile de caracteristici de rezoluție mică, și este antrenată împreună cu detectorul.
 
@@ -112,7 +112,9 @@ Metodologia are o limită asumată. Selecția pe etape nu verifică toate combin
 
 ## 6. Starea implementării
 
-Sunt implementate pregătirea datelor, configurațiile de antrenare pe imagini întregi și pe ferestre, tăierea ferestrelor pentru antrenare și inferența pe ferestre cu fuziunea detecțiilor (eliminarea detecțiilor tăiate și suprimarea dublurilor prin IOS). Urmează analiza statistică a imaginilor, îmbunătățirea contrastului în cele două variante, integrarea bibliotecii SAHI și evaluarea prin mAP a variantelor cu feliere, în aceleași condiții ca baseline-ul. Detecția preliminară și ferestrele adaptive sunt planificate pentru etapa de după prototip.
+Toate componentele din arhitectură au cod și teste: pregătirea datelor, analiza statistică a imaginilor (`pi-stats`), îmbunătățirea contrastului în cele două variante (`pi-clahe`), tăierea ferestrelor pentru antrenare, antrenarea, inferența pe grilă și pe ferestre adaptive, fuziunea detecțiilor și evaluarea prin mAP pe imagini întregi, pe tot setul și pe grupe (`pi-eval`). Fiecare este explicată pas cu pas în [pipeline/README.md](pipeline/README.md).
+
+Dintre experimente, etapa 1 este rulată, iar ferestrele adaptive au o primă măsurătoare; valorile sunt în [rezultate.md](rezultate.md). Rămân de rulat cele două reantrenări cu CLAHE din etapa 2, integrarea bibliotecii SAHI (în locul ei a fost măsurată varianta „baseline + grilă”, care face același lucru cu codul propriu) și testul final pe test-dev.
 
 ## Bibliografie
 
