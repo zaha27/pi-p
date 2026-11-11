@@ -1,3 +1,15 @@
+"""Evaluarea unui model preantrenat pe COCO, fără fine-tuning pe VisDrone.
+
+Modelul `yolo26n.pt` cunoaște cele 80 de clase COCO, nu cele 10 VisDrone.
+Ca să îl putem evalua, construim o copie a setului de date în care:
+
+  - clasele VisDrone care au corespondent în COCO sunt renumerotate (TO_COCO);
+  - obiectele fără corespondent (van, tricycle, awning-tricycle) sunt
+    acoperite cu gri, ca modelul să nu fie penalizat pentru ele.
+
+Folosit de `pi-eval --coco`, ca punct de referință „înainte de antrenare”.
+"""
+
 import shutil
 from pathlib import Path
 
