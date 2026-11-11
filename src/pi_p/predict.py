@@ -16,6 +16,7 @@ desenat. Detalii în docs/pipeline/06-detectia-pe-ferestre.md.
 
 import argparse
 from collections import Counter
+from functools import cache
 from pathlib import Path
 
 import cv2
@@ -24,7 +25,7 @@ import torch
 from ultralytics import YOLO
 from ultralytics.engine.results import Results
 
-from pi_p.adaptive import adaptive_windows
+from pi_p import adaptive
 from pi_p.clahe import apply_clahe
 from pi_p.data import IMG_EXT
 from pi_p.fusion import drop_cut, merge
@@ -36,9 +37,8 @@ MODES = ["intreg", "grila", "adaptiv", "adaptiv+grila"]
 # ~900 de obiecte, iar limita implicită din Ultralytics (300) ar pierde din ele.
 MAX_DET = 1000
 
-# Parametrii ferestrelor adaptive.
-QUERY_CONF = 0.1  # scorul minim al unei detecții preliminare ca să primească fereastră
-DILATE = 32  # raza dilatării măștii, în pixeli
+# Parametrii ferestrelor adaptive (pragul preliminar, dilatarea, marginea etc.).
+ADAPTIVE_CONFIG = Path(__file__).resolve().parents[2] / "configs" / "adaptive.yaml"
 
 
 def detect_whole(model: YOLO, img: np.ndarray, size: int, conf: float, device) -> torch.Tensor:
@@ -79,20 +79,25 @@ def adaptive_predict(model: YOLO, img: np.ndarray, size: int, overlap: float, co
                      with_grid: bool = False) -> torch.Tensor:
     """Modurile `adaptiv` și `adaptiv+grila`.
 
-    Detecția pe imaginea întreagă are două roluri: găsește obiectele mari și
-    servește ca detecție preliminară, din care alegem ferestrele.
+    Ferestrele adaptive vin din `pi_p.adaptive`: detecție preliminară pe imaginea
+    întreagă, mască, dilatare, câte o fereastră pe fiecare grup de obiecte.
+    Parametrii lor sunt în configs/adaptive.yaml; `conf` și `iou` vin de aici,
+    ca toate modurile să fie comparate cu același prag.
     """
+    found, _ = adaptive.adaptive_predict(model, img, adaptive_params(conf, iou), device)
+    if not with_grid:
+        return found
+
+    # Grila rămâne ca plasă de siguranță pentru obiectele ratate de detecția preliminară.
     h, w = img.shape[:2]
-    whole = detect_whole(model, img, size, conf, device)
+    in_grid = detect_in_windows(model, img, windows(w, h, size, overlap), size, conf, device)
+    return merge(torch.cat([found, in_grid]), iou)
 
-    confident = whole[whole[:, 4] >= QUERY_CONF]
-    wins = adaptive_windows(confident[:, :4].numpy(), w, h, size, overlap, DILATE)
-    if with_grid:
-        # Grila rămâne ca plasă de siguranță pentru obiectele ratate de detecția preliminară.
-        wins = sorted(set(wins) | set(windows(w, h, size, overlap)))
 
-    in_windows = detect_in_windows(model, img, wins, size, conf, device)
-    return merge(torch.cat([whole, in_windows]), iou)
+@cache
+def adaptive_params(conf: float, iou: float) -> adaptive.AdaptiveParams:
+    """Parametrii din configs/adaptive.yaml, cu pragurile modului curent."""
+    return adaptive.load_params(str(ADAPTIVE_CONFIG), (f"conf={conf}", f"iou={iou}"))
 
 
 def detect(model: YOLO, img: np.ndarray, mode: str, size: int, overlap: float, conf: float, iou: float, device) -> torch.Tensor:
