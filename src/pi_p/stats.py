@@ -77,8 +77,8 @@ def main():
         with ThreadPoolExecutor(args.workers) as pool:
             values = list(TQDM(pool.map(measure, imgs), total=len(imgs), desc=split))
         for p, (b, c) in zip(imgs, values):
-            rows.append({"split": split, "image": p.name, "brightness": round(b, 2), "contrast": round(c, 2),
-                         "group": group(b, c, args.dark, args.low_contrast)})
+            g = group(b, c, args.dark, args.low_contrast)
+            rows.append({"split": split, "image": p.name, "brightness": round(b, 2), "contrast": round(c, 2), "group": g})
         print(split, dict(Counter(r["group"] for r in rows if r["split"] == split)))
     with open(args.root / "stats.csv", "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))

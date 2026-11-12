@@ -22,7 +22,10 @@ def collect(imgs: list[Path]) -> tuple[np.ndarray, np.ndarray]:
         w, h = image_size(img)
         lbl = read_labels(label_path(img))
         per_img.append(len(lbl))
-        objs.append(np.column_stack([lbl[:, :3], lbl[:, 3] * w, lbl[:, 4] * h, np.full(len(lbl), max(w, h))]))
+        # pe fiecare obiect: clasa, centrul (0..1), latimea si inaltimea in pixeli, latura mare a imaginii
+        width_px, height_px = lbl[:, 3] * w, lbl[:, 4] * h
+        longest = np.full(len(lbl), max(w, h))
+        objs.append(np.column_stack([lbl[:, :3], width_px, height_px, longest]))
     return np.concatenate(objs), np.array(per_img)
 
 
@@ -31,7 +34,9 @@ def draw(img_path: Path) -> np.ndarray:
     h, w = im.shape[:2]
     for c, x, y, bw, bh in read_labels(label_path(img_path)):
         color = tuple(int(v) for v in COLORS[int(c)][::-1])
-        cv2.rectangle(im, (int((x - bw / 2) * w), int((y - bh / 2) * h)), (int((x + bw / 2) * w), int((y + bh / 2) * h)), color, 2)
+        top_left = (int((x - bw / 2) * w), int((y - bh / 2) * h))
+        bottom_right = (int((x + bw / 2) * w), int((y + bh / 2) * h))
+        cv2.rectangle(im, top_left, bottom_right, color, 2)
     return cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
 
 

@@ -42,9 +42,11 @@ def sahi_detect(sahi_model, img: np.ndarray, args) -> np.ndarray:
 
 def detect(model, img: np.ndarray, args) -> tuple[np.ndarray, np.ndarray]:
     if args.mode == "full":
-        return model.predict(img, imgsz=args.imgsz, conf=args.conf, device=args.device, verbose=False)[0].boxes.data.cpu().numpy(), NO_WINDOWS
+        pred = model.predict(img, imgsz=args.imgsz, conf=args.conf, device=args.device, verbose=False)[0]
+        return pred.boxes.data.cpu().numpy(), NO_WINDOWS
     if args.mode == "slice":
-        return sliced_predict(model, img, args.slice, args.overlap, args.conf, args.iou, args.device).numpy(), NO_WINDOWS
+        det = sliced_predict(model, img, args.slice, args.overlap, args.conf, args.iou, args.device)
+        return det.numpy(), NO_WINDOWS
     if args.mode == "adaptive":
         det, windows = adaptive_predict(model, img, args.params, args.device)
         return det.numpy(), windows
@@ -63,6 +65,7 @@ def load_model(args):
 
 
 def sync() -> None:
+    # placa video lucreaza asincron; fara asteptare, cronometrul s-ar opri inainte de final
     if torch.cuda.is_available():
         torch.cuda.synchronize()
 
@@ -72,58 +75,78 @@ def window_area(windows: np.ndarray, w: int, h: int) -> float:
     return float(((win[:, 2] - win[:, 0]) * (win[:, 3] - win[:, 1])).sum()) / (w * h)
 
 
+def run_detection(model, paths: list[Path], args, max_det: int) -> dict:
+    run = {"results": [], "names": [], "seconds": 0.0, "windows": [], "areas": []}
+    for i, path in enumerate(paths, 1):
+        img = cv2.imread(str(path))
+        if img is None:
+            print(f"{path}: imagine ilizibila, sarita")
+            continue
+        h, w = img.shape[:2]
+
+        sync()
+        start = time.perf_counter()
+        det, windows = detect(model, img, args)
+        sync()
+        run["seconds"] += time.perf_counter() - start
+
+        best = det[det[:, 4].argsort()[::-1][:max_det]]
+        run["results"].append((best, ground_truth(path, w, h)))
+        run["names"].append(path.name)
+        run["windows"].append(len(windows))
+        run["areas"].append(window_area(windows, w, h))
+        if i % 50 == 0:
+            print(f"{i}/{len(paths)}")
+    return run
+
+
+def group_scores(run: dict, groups_csv: Path) -> dict:
+    groups = read_groups(groups_csv)
+    scores = {}
+    for g in sorted(set(groups.values())):
+        subset = [r for r, name in zip(run["results"], run["names"]) if groups.get(name) == g]
+        if subset:
+            g50, g50_95, _ = mean_ap(subset)
+            scores[g] = {"images": len(subset), "map50_95": g50_95, "map50": g50}
+            print(f"grupa {g} ({len(subset)} imagini): mAP50-95: {g50_95:.3f}  mAP50: {g50:.3f}")
+    return scores
+
+
 def evaluate(args) -> None:
     model = load_model(args)
     paths = images(Path(args.data).parent, args.split)[: args.limit or None]
     if not paths:
         raise SystemExit("Nicio imagine de evaluat")
+
     # aceeasi limita pentru toate modurile, dar niciodata sub numarul de obiecte dintr-o imagine
     max_det = max(MAX_DET, *(len(read_labels(label_path(p))) for p in paths))
     for p in paths[:WARMUP]:
         detect(model, cv2.imread(str(p)), args)
-    results, done, seconds, n_windows, areas = [], [], 0.0, [], []
-    for i, p in enumerate(paths, 1):
-        img = cv2.imread(str(p))
-        if img is None:
-            print(f"{p}: imagine ilizibila, sarita")
-            continue
-        sync()
-        start = time.perf_counter()
-        det, windows = detect(model, img, args)
-        sync()
-        seconds += time.perf_counter() - start
-        h, w = img.shape[:2]
-        results.append((det[det[:, 4].argsort()[::-1][:max_det]], ground_truth(p, w, h)))
-        done.append(p.name)
-        n_windows.append(len(windows))
-        areas.append(window_area(windows, w, h))
-        if i % 50 == 0:
-            print(f"{i}/{len(paths)}")
-    map50, map50_95, per_class = mean_ap(results)
+
+    run = run_detection(model, paths, args, max_det)
+    n = len(run["results"])
+    map50, map50_95, per_class = mean_ap(run["results"])
     names = YOLO(args.weights).names if args.mode == "sahi" else model.names
     report = {
-        "mode": args.mode, "images": len(results), "conf": args.conf, "max_det": max_det,
+        "mode": args.mode, "images": n, "conf": args.conf, "max_det": max_det,
         "map50_95": map50_95, "map50": map50,
         "ap_per_class": {names[c]: ap for c, ap in per_class.items()},
-        "ms_per_image": 1000 * seconds / max(len(results), 1),
-        "windows_per_image": float(np.mean(n_windows)), "window_area": float(np.mean(areas)),
+        "ms_per_image": 1000 * run["seconds"] / max(n, 1),
+        "windows_per_image": float(np.mean(run["windows"])),
+        "window_area": float(np.mean(run["areas"])),
     }
-    print(f"mod {args.mode}, {len(results)} imagini, {report['ms_per_image']:.0f} ms/imagine ({WARMUP} de incalzire)")
+
+    print(f"mod {args.mode}, {n} imagini, {report['ms_per_image']:.0f} ms/imagine ({WARMUP} de incalzire)")
     print(f"mAP50-95: {map50_95:.3f}  mAP50: {map50:.3f}")
     for name, ap in report["ap_per_class"].items():
         print(f"  {name:>16}: {ap:.3f}")
     if args.mode == "adaptive":
-        print(f"ferestre: {report['windows_per_image']:.2f} pe imagine, pixeli procesati: {1 + report['window_area']:.2f}x imaginea")
+        pixels = 1 + report["window_area"]
+        print(f"ferestre: {report['windows_per_image']:.2f} pe imagine, pixeli procesati: {pixels:.2f}x imaginea")
         report["params"] = vars(args.params)
     if args.groups:
-        groups = read_groups(args.groups)
-        report["groups"] = {}
-        for g in sorted(set(groups.values())):
-            subset = [r for r, name in zip(results, done) if groups.get(name) == g]
-            if subset:
-                g50, g50_95, _ = mean_ap(subset)
-                report["groups"][g] = {"images": len(subset), "map50_95": g50_95, "map50": g50}
-                print(f"grupa {g} ({len(subset)} imagini): mAP50-95: {g50_95:.3f}  mAP50: {g50:.3f}")
+        report["groups"] = group_scores(run, args.groups)
+
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(report, indent=2, ensure_ascii=False))
@@ -146,7 +169,8 @@ def validate(args) -> None:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("weights", help="ex. yolo26n.pt (baseline COCO, cu --coco) sau best.pt")
-    ap.add_argument("overrides", nargs="*", help="key=value pentru configs/adaptive.yaml (doar adaptive); se scriu imediat dupa weights")
+    ap.add_argument("overrides", nargs="*",
+                    help="key=value pentru configs/adaptive.yaml (doar adaptive); se scriu imediat dupa weights")
     ap.add_argument("--data", default="datasets/VisDrone/data.yaml")
     ap.add_argument("--imgsz", type=int, default=640)
     ap.add_argument("--device", default=None)
@@ -163,6 +187,7 @@ def main():
     ap.add_argument("--limit", type=int, default=0, help="doar primele N imagini (0 = toate)")
     ap.add_argument("--out", type=Path, default=None, help="fisier JSON cu rezultatele")
     args = ap.parse_args()
+
     if args.mode == "val":
         if args.limit or args.out or args.groups or args.overrides:
             raise SystemExit("--limit, --out, --groups si overrides nu se folosesc cu --mode val")

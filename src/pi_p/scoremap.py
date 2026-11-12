@@ -26,9 +26,16 @@ class ScoreMap:
     def heatmap(self, h: int, w: int) -> np.ndarray:
         branch = "one2one_cv3" if any(b == "one2one_cv3" for b, _ in self.logits) else "cv3"
         ih, iw = self.input_hw
-        scales = [v.float().sigmoid().amax(0, keepdim=True)[None] for (b, _), v in sorted(self.logits.items()) if b == branch]
-        prob = torch.stack([torch.nn.functional.interpolate(s, (ih, iw), mode="bilinear") for s in scales]).amax(0)[0, 0]
-        prob = prob.cpu().numpy()
+
+        # fiecare scara a retelei: probabilitatea celei mai probabile clase, adusa la marimea intrarii
+        maps = []
+        for (b, _), logits in sorted(self.logits.items()):
+            if b == branch:
+                best_class = logits.float().sigmoid().amax(0, keepdim=True)[None]
+                maps.append(torch.nn.functional.interpolate(best_class, (ih, iw), mode="bilinear"))
+        prob = torch.stack(maps).amax(0)[0, 0].cpu().numpy()
+
+        # intrarea are benzi gri adaugate de YOLO ca sa fie patrata; le taiem inainte de redimensionare
         r = min(ih / h, iw / w)
         nh, nw = round(h * r), round(w * r)
         top, left = (ih - nh) // 2, (iw - nw) // 2

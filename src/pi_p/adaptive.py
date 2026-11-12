@@ -103,7 +103,7 @@ class AdaptiveTrace(NamedTuple):
 
 
 def window_stages(boxes_xyxy: np.ndarray, width: int, height: int, params: AdaptiveParams) -> WindowStages:
-    # max(..., 1.0): masca nu e niciodata mai mare decat imaginea
+    # masca e o copie micsorata a imaginii (latura mare = mask_size), dar niciodata marita
     scale = max(max(width, height) / params.mask_size, 1.0)
     mask = boxes_to_mask(boxes_xyxy / scale, math.ceil(width / scale), math.ceil(height / scale))
     dilated = dilate_mask(mask, params.dilate_kernel)
@@ -124,8 +124,9 @@ def detect(model: YOLO, imgs: list[np.ndarray], imgsz: int, conf: float, device)
 def window_detections(model: YOLO, img: np.ndarray, windows: np.ndarray, params: AdaptiveParams, device) -> list[torch.Tensor]:
     h, w = img.shape[:2]
     wins = windows.tolist()
-    dets = detect(model, [np.ascontiguousarray(img[y1:y2, x1:x2]) for x1, y1, x2, y2 in wins], params.window_imgsz, params.conf, device)
-    return [to_image(d, tuple(win), w, h) for d, win in zip(dets, wins)]
+    crops = [np.ascontiguousarray(img[y1:y2, x1:x2]) for x1, y1, x2, y2 in wins]
+    dets = detect(model, crops, params.window_imgsz, params.conf, device)
+    return [to_image(det, tuple(win), w, h) for det, win in zip(dets, wins)]
 
 
 def keep_confident(det: torch.Tensor, conf: float) -> torch.Tensor:
@@ -134,13 +135,19 @@ def keep_confident(det: torch.Tensor, conf: float) -> torch.Tensor:
 
 def adaptive_trace(model: YOLO, img: np.ndarray, params: AdaptiveParams, device) -> AdaptiveTrace:
     h, w = img.shape[:2]
-    # prima trecere la pragul mai mic, ca sa nu taie casetele dintre conf si prelim_conf
+
+    # 1. o trecere pe toata imaginea, la pragul mai mic dintre cele doua, ca sa le serveasca pe amandoua
     prelim = detect(model, [img], params.prelim_imgsz, min(params.prelim_conf, params.conf), device)[0]
+
+    # 2. din detectiile sigure se construiesc ferestrele
     seeds = keep_confident(prelim, params.prelim_conf)
     stages = window_stages(seeds[:, :4].numpy(), w, h, params)
-    dets = window_detections(model, img, stages.windows, params, device) if len(stages.windows) else []
-    kept = keep_confident(prelim, params.conf)
-    return AdaptiveTrace(prelim, seeds, stages, merge(torch.cat([kept, *dets]), params.iou))
+
+    # 3. detectie in ferestre, apoi unirea cu detectiile de pe imaginea intreaga
+    in_windows = window_detections(model, img, stages.windows, params, device) if len(stages.windows) else []
+    whole = keep_confident(prelim, params.conf)
+    detections = merge(torch.cat([whole, *in_windows]), params.iou)
+    return AdaptiveTrace(prelim, seeds, stages, detections)
 
 
 def adaptive_predict(model: YOLO, img: np.ndarray, params: AdaptiveParams, device) -> tuple[torch.Tensor, np.ndarray]:

@@ -20,6 +20,7 @@ def match(det: np.ndarray, gt: np.ndarray) -> np.ndarray:
         return correct
     iou = box_iou(det[:, :4], gt[:, 1:])
     iou[det[:, 5][:, None] != gt[:, 0][None, :]] = 0
+    # pe rand, de la detectia cea mai sigura: ia obiectul liber cu IoU-ul cel mai mare peste prag
     for t, thr in enumerate(THRESHOLDS):
         used = np.zeros(len(gt), dtype=bool)
         for i in range(len(det)):

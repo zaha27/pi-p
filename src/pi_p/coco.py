@@ -9,6 +9,7 @@ from ultralytics.utils.ops import xywhn2xyxy
 from pi_p.data import images, label_path, read_labels, write_labels
 from pi_p.prepare import mask_ignored
 
+# clasa VisDrone -> clasa COCO: pedestrian, people -> person; bicycle; car; truck; bus; motor -> motorcycle
 TO_COCO = {0: 0, 1: 0, 2: 1, 3: 2, 5: 7, 8: 5, 9: 3}
 ROOT = Path("datasets/VisDrone-coco")
 
@@ -38,6 +39,7 @@ def build(src: Path, split: str, names: dict[int, str], dst: Path = ROOT) -> Pat
         return out
     (dst / "images" / split).mkdir(parents=True)
     masked = sum(remap(p, dst) for p in images(src, split))
-    out.write_text(yaml.safe_dump({"path": str(dst.resolve()), "train": f"images/{split}", "val": f"images/{split}", "names": names}, sort_keys=False))
+    cfg = {"path": str(dst.resolve()), "train": f"images/{split}", "val": f"images/{split}", "names": names}
+    out.write_text(yaml.safe_dump(cfg, sort_keys=False))
     print(f"{dst}: etichete mapate pe clasele COCO, {masked} imagini cu obiecte fara corespondent mascate")
     return out
