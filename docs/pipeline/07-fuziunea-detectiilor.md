@@ -1,6 +1,6 @@
 # 7. Fuziunea detecțiilor
 
-**Cod:** `src/pi_p/fusion.py` · folosită de `predict.py`
+**Cod:** `drop_cut`, `to_image` și `merge` din `src/pi_p/predict.py` · folosite de grilă și de ferestrele adaptive
 
 ## Problema
 

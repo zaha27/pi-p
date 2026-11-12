@@ -14,6 +14,7 @@ dependencies = [
     "python-multipart>=0.0.32",
     "pyotp>=2.10.0",
     "qrcode>=8.2",
+    "sahi>=0.14.0",
 ]
 
 [project.scripts]
@@ -21,11 +22,10 @@ pi-prepare = "pi_p.prepare:main"
 pi-check = "pi_p.check:main"
 pi-eda = "pi_p.eda:main"
 pi-stats = "pi_p.stats:main"
-pi-clahe = "pi_p.clahe:main"
+pi-clahe = "pi_p.enhance:main"
 pi-tile = "pi_p.tile:main"
 pi-train = "pi_p.train:main"
 pi-eval = "pi_p.evaluate:main"
-pi-adaptive-eval = "pi_p.adaptive_eval:main"
 pi-predict = "pi_p.predict:main"
 pi-app = "pi_p_server.server:main"
 pi-totp = "pi_p_server.auth:main"

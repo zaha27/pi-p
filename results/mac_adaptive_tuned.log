@@ -1,0 +1,26 @@
+50/548
+100/548
+150/548
+200/548
+250/548
+300/548
+350/548
+400/548
+450/548
+500/548
+mod adaptive, 548 imagini, 74 ms/imagine (3 de încălzire)
+mAP50-95: 0.168  mAP50: 0.301
+        pedestrian: 0.192
+            people: 0.077
+           bicycle: 0.010
+               car: 0.502
+               van: 0.218
+             truck: 0.156
+          tricycle: 0.096
+   awning-tricycle: 0.047
+               bus: 0.237
+             motor: 0.140
+ferestre: 5.45 pe imagine, pixeli procesați: 2.56x imaginea
+grupa dark (13 imagini): mAP50-95: 0.221  mAP50: 0.379
+grupa low_contrast (104 imagini): mAP50-95: 0.174  mAP50: 0.305
+grupa normal (431 imagini): mAP50-95: 0.165  mAP50: 0.300

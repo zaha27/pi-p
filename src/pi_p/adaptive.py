@@ -8,7 +8,7 @@ import torch
 from ultralytics import YOLO
 
 from pi_p.config import load
-from pi_p.fusion import drop_cut, merge
+from pi_p.predict import merge, to_image
 
 MASK_ON = 255
 CONNECTIVITY = 8
@@ -124,8 +124,8 @@ def detect(model: YOLO, imgs: list[np.ndarray], imgsz: int, conf: float, device)
 def window_detections(model: YOLO, img: np.ndarray, windows: np.ndarray, params: AdaptiveParams, device) -> list[torch.Tensor]:
     h, w = img.shape[:2]
     wins = windows.tolist()
-    dets = detect(model, [img[y1:y2, x1:x2] for x1, y1, x2, y2 in wins], params.window_imgsz, params.conf, device)
-    return [drop_cut(d, tuple(win), w, h) + torch.tensor([win[0], win[1], win[0], win[1], 0, 0]) for d, win in zip(dets, wins)]
+    dets = detect(model, [np.ascontiguousarray(img[y1:y2, x1:x2]) for x1, y1, x2, y2 in wins], params.window_imgsz, params.conf, device)
+    return [to_image(d, tuple(win), w, h) for d, win in zip(dets, wins)]
 
 
 def keep_confident(det: torch.Tensor, conf: float) -> torch.Tensor:

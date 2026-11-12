@@ -1,6 +1,6 @@
 # 3. Îmbunătățirea contrastului (CLAHE)
 
-**Cod:** `src/pi_p/clahe.py` · **Comandă:** `pi-clahe`
+**Cod:** `src/pi_p/enhance.py` · **Comandă:** `pi-clahe`
 
 ## De ce e nevoie de etapa asta
 
@@ -41,8 +41,9 @@ Parametrii sunt cei uzuali: limită 2.0 și grilă 8 × 8. Nu îi optimizăm, pe
 flowchart TB
     A["Imagine"] --> M{"mod"}
     M -- "uniform" --> C["CLAHE"]
-    M -- "adaptiv" --> S["stats.measure + classify"]
-    S -- "intuneric sau contrast_slab" --> C
+    M -- "adaptive" --> S["needs_clahe
+grupa din stats.csv"]
+    S -- "dark sau low_contrast" --> C
     S -- "normal" --> K["copiată neatinsă"]
     C --> O[("set de date nou")]
     K --> O
@@ -50,8 +51,8 @@ flowchart TB
 
 | Variantă | Ce imagini primesc CLAHE | Comandă |
 |---|---|---|
-| uniformă | toate | `pi-clahe uniform` |
-| adaptivă | doar grupele `intuneric` și `contrast_slab` | `pi-clahe adaptiv` (cere `pi-stats` înainte) |
+| uniformă | toate | `pi-clahe --mode uniform` |
+| adaptivă | doar grupele `dark` și `low_contrast` | `pi-clahe --mode adaptive` (cere `pi-stats` înainte) |
 
 Varianta adaptivă există pentru că CLAHE pe o imagine deja bună nu aduce nimic și poate amplifica zgomotul.
 
@@ -61,12 +62,14 @@ Varianta adaptivă există pentru că CLAHE pe o imagine deja bună nu aduce nim
 2. **La fel la antrenare și la testare.** Un model antrenat pe imagini normale și testat pe imagini cu CLAHE primește un tip de imagine pe care nu l-a văzut. De aceea etapa 2 din plan cere reantrenare.
 3. **Etichetele nu se schimbă.** CLAHE nu mută niciun pixel, deci chenarele rămân valabile și sunt copiate ca atare.
 
+Imaginile modificate sunt salvate ca JPEG de calitate 95, iar cele care nu primesc CLAHE sunt copiate neatinse.
+
 ## Rezultatul
 
 Un set de date nou, cu aceeași structură și aceleași etichete:
 
 ```
-datasets/VisDrone-clahe-uniform/    sau    datasets/VisDrone-clahe-adaptiv/
+datasets/VisDrone-clahe/    sau    datasets/VisDrone-clahe-adaptive/
     images/train, val, test
     labels/train, val, test
     data.yaml
@@ -75,11 +78,9 @@ datasets/VisDrone-clahe-uniform/    sau    datasets/VisDrone-clahe-adaptiv/
 ## Comenzi
 
 ```bash
-uv run pi-clahe uniform
-uv run pi-clahe adaptiv
-
-# pentru o singură imagine, fără să scrii un set de date:
-uv run pi-predict best.pt imagine.jpg --clahe
+uv run pi-clahe --mode uniform
+uv run pi-clahe --mode adaptive
+uv run pi-clahe --mode uniform --clip 3.0 --dst datasets/VisDrone-clahe3   # alți parametri
 ```
 
 Lanțul complet pentru etapa 2 din plan (CLAHE → felii → antrenare → evaluare) este în [README.md](README.md#toate-comenzile-în-ordine).

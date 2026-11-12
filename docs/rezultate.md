@@ -1,121 +1,152 @@
 # Rezultate
 
-Toate valorile de mai jos sunt măsurate cu `pi-eval` pe cele 548 de imagini întregi din **val**, cu prag de încredere 0,01, pe un RTX 4070 SUPER. Cum se calculează fiecare coloană este explicat în [pipeline/08-evaluarea.md](pipeline/08-evaluarea.md). Subsetul test-dev nu a fost rulat încă: el se rulează o singură dată, după ce toate deciziile sunt luate.
-
-Rezultatele brute sunt în `logs/eval/*.json` (folder neinclus în Git).
+Toate valorile sunt măsurate cu `pi-eval` pe cele 548 de imagini întregi din **val**, cu prag de încredere 0,001 și grupele din `datasets/VisDrone/stats.csv`. Cum se calculează fiecare coloană este explicat în [pipeline/08-evaluarea.md](pipeline/08-evaluarea.md). Subsetul test-dev nu a fost rulat încă: el se rulează o singură dată, după ce toate deciziile sunt luate.
 
 ## Starea experimentelor
 
 | Etapa din [plan](benchmarkuri.md) | Stare |
 |---|---|
-| 1. Împărțirea imaginii | **făcută**; SAHI ca bibliotecă nu a fost rulat, „baseline + grilă” ține locul lui |
-| 2. CLAHE | cod gata (`pi-stats`, `pi-clahe`); **reantrenările nu au fost rulate** |
-| 3. Ferestre adaptive | cod gata; măsurat pe modelul din etapa 1, nu pe configurația din etapa 2 |
+| 1. Împărțirea imaginii | **făcută** cu antrenări complete (RTX); SAHI măsurat doar pe modelul de pe Mac |
+| 2. CLAHE | reantrenarea cu CLAHE uniform e gata, dar neevaluată; cea cu CLAHE adaptiv e în curs |
+| 3. Ferestre adaptive | măsurate pe ambele modele; reglarea parametrilor e începută (pe Mac) |
 | Test final pe test-dev | nefăcut |
 
-## Antrenările
+## Antrenările complete (RTX 4070 SUPER)
 
-| Model | Configurare | Date de antrenare | Epoci | Durată | Cea mai bună epocă |
+| Model | Configurare | Date de antrenare | Epoci | Durată | Ponderi |
 |---|---|---|---|---|---|
-| baseline | `configs/train.yaml` | 6471 imagini întregi | 97 (oprit de `patience`) | 1,2 ore | 77 |
-| pe felii | `configs/train_tiled.yaml` | 46 483 felii și imagini întregi | 100 | 7,7 ore | 82 |
+| baseline | `configs/train.yaml` | 6471 imagini întregi | 97 (oprit de `patience`), cea mai bună: 77 | 1,2 ore | `weights/yolo26n_baseline_640.pt` |
+| pe felii | `configs/train_tiled.yaml` | 46 483 felii și imagini întregi | 100, cea mai bună: 82 | 7,7 ore | `weights/yolo26n_tiled.pt` |
+| pe felii + CLAHE uniform | `configs/train_tiled.yaml` pe date cu CLAHE | idem, după CLAHE pe toate imaginile | 100 | ~7,7 ore | `weights/yolo26n_tiled_clahe_uniform.pt` |
 
-## Etapa 1: cum împărțim imaginea
+Seturile CLAHE ale acestor antrenări au fost făcute cu o versiune anterioară a `pi-clahe`, cu pragurile de grupă calculate ca percentila 15 pe train (luminozitate 61,6, contrast 36,0), nu cu pragurile fixe 70 și 35 din codul actual. Pentru CLAHE uniform nu contează, pentru că acolo toate imaginile primesc CLAHE.
 
-| Variantă | Antrenare | Testare (`--mode`) | mAP50 | mAP50-95 | Precizie | Recall | ms/imagine |
-|---|---|---|---|---|---|---|---|
-| Baseline | imagini întregi | `intreg` | 0,307 | 0,173 | 0,481 | 0,336 | 10,5 |
-| Baseline + grilă | imagini întregi | `grila` | 0,395 | 0,224 | 0,489 | 0,451 | 44,3 |
-| Model pe felii, imagine întreagă | felii | `intreg` | 0,326 | 0,189 | 0,540 | 0,346 | 7,7 |
-| **Model pe felii + grilă** | felii | `grila` | **0,483** | **0,292** | 0,610 | 0,506 | 35,1 |
+### Etapa 1: cum împărțim imaginea
+
+| Variantă | Antrenare | `--mode` | mAP50 | mAP50-95 | ms/imagine* |
+|---|---|---|---|---|---|
+| Baseline | imagini întregi | `full` | 0,307 | 0,173 | 16 |
+| Baseline + grilă | imagini întregi | `slice` | 0,392 | 0,223 | 69 |
+| Model pe felii, imagine întreagă | felii | `full` | 0,327 | 0,189 | 17 |
+| **Model pe felii + grilă** | felii | `slice` | **0,483** | **0,292** | 60 |
+| Model pe felii + ferestre adaptive | felii | `adaptive` | 0,502 | 0,304 | 170 |
+
+\* Măsurat în timp ce placa video rula o altă antrenare, deci timpii absoluți sunt umflați; contează doar comparația dintre rânduri. Cu placa liberă, `full` dădea ~8–10 ms, iar `slice` ~35–45 ms.
 
 Ce arată tabelul:
 
-- **Felierea la testare ajută și fără reantrenare:** +0,088 mAP50 (rândul 2 față de rândul 1).
-- **Antrenarea pe felii adaugă încă +0,088** peste asta (rândul 4 față de rândul 2).
-- **Antrenarea pe felii, singură, ajută puțin:** +0,019 (rândul 3 față de rândul 1). Câștigul vine din combinația „antrenat pe felii, testat pe felii”.
-- **Costul este timpul:** de aproximativ 4 ori mai mult pe imagine. Imaginile din val au în medie 5,2 ferestre de grilă.
+- **Felierea la testare ajută și fără reantrenare:** +0,085 mAP50 (rândul 2 față de rândul 1).
+- **Antrenarea pe felii adaugă încă +0,091** peste asta (rândul 4 față de rândul 2).
+- **Antrenarea pe felii, singură, ajută puțin:** +0,020 (rândul 3 față de rândul 1). Câștigul vine din combinația „antrenat pe felii, testat pe felii”.
+- **Costul este timpul:** grila e de aproximativ 4 ori mai lentă decât imaginea întreagă.
 
 Configurația selectată pentru etapele următoare: **model pe felii + grilă**.
 
-Timpii sunt orientativi: două rulări ale aceleiași rețele pe imaginea întreagă au dat 10,5 și 7,7 ms, deci diferențele sub ~30% nu înseamnă nimic.
+### Pe clase (mAP50-95)
 
-### Pe clase (mAP50)
-
-| Clasă | Baseline | Model pe felii + grilă | Diferență |
+| Clasă | Baseline (`full`) | Model pe felii + grilă | Diferență |
 |---|---|---|---|
-| pedestrian | 0,370 | 0,606 | +0,236 |
-| people | 0,260 | 0,449 | +0,189 |
-| bicycle | 0,084 | 0,285 | +0,201 |
-| car | 0,752 | 0,839 | +0,087 |
-| van | 0,281 | 0,437 | +0,156 |
-| truck | 0,264 | 0,434 | +0,170 |
-| tricycle | 0,203 | 0,369 | +0,166 |
-| awning-tricycle | 0,072 | 0,163 | +0,091 |
-| bus | 0,393 | 0,632 | +0,239 |
-| motor | 0,395 | 0,618 | +0,223 |
+| pedestrian | 0,154 | 0,289 | +0,135 |
+| people | 0,092 | 0,182 | +0,090 |
+| bicycle | 0,031 | 0,138 | +0,107 |
+| car | 0,495 | 0,602 | +0,107 |
+| van | 0,202 | 0,329 | +0,127 |
+| truck | 0,175 | 0,298 | +0,123 |
+| tricycle | 0,110 | 0,211 | +0,101 |
+| awning-tricycle | 0,044 | 0,103 | +0,059 |
+| bus | 0,274 | 0,477 | +0,203 |
+| motor | 0,159 | 0,293 | +0,134 |
 
-Toate clasele cresc. Mașinile, deja bine detectate, câștigă cel mai puțin. Cel mai mult câștigă pedestrian, bus, motor și bicycle (care se triplează). Creșterea la clasele cu obiecte mici este în acord cu ipoteza de la care a pornit felierea; nu am măsurat însă separat pe mărimi de obiecte, deci nu putem spune cât din câștig vine de la ele.
+Toate clasele cresc. Bicycle aproape se înmulțește cu 4.5, iar pedestrian se dublează. Creșterea la clasele cu obiecte mici este în acord cu ipoteza de la care a pornit felierea; nu am măsurat însă separat pe mărimi de obiecte, deci nu putem spune cât din câștig vine de la ele.
 
-## Grupele de iluminare
+### Pe grupe de iluminare (mAP50)
 
-Praguri calculate de `pi-stats` pe train (percentila 15): luminozitate < 61,6 înseamnă „întuneric”, contrast < 36,0 înseamnă „contrast slab”.
+Grupele sunt calculate de `pi-stats` cu pragurile 70 și 35:
 
-| Subset | întuneric | contrast slab | normal |
+| Subset | dark | low_contrast | normal |
 |---|---|---|---|
-| train | 971 | 556 | 4944 |
-| val | 9 | 89 | 450 |
-| test | 444 | 67 | 1099 |
+| val | 13 | 104 | 431 |
+| test | 501 | 77 | 1032 |
 
-**Val are doar 9 imagini întunecate.** Un mAP calculat pe 9 imagini se schimbă mult de la o imagine la alta, deci coloana „întuneric” de mai jos nu poate susține nicio concluzie. Pentru etapa 2 (CLAHE), asta e o problemă reală: efectul pe imaginile de noapte se va vedea bine abia pe test, care are 444.
-
-mAP50 pe grupe, pe val:
-
-| Variantă | întuneric (9) | contrast slab (89) | normal (450) |
+| Variantă | dark (13) | low_contrast (104) | normal (431) |
 |---|---|---|---|
-| Baseline | 0,377 | 0,327 | 0,302 |
-| Model pe felii + grilă | 0,574 | 0,519 | 0,480 |
+| Baseline (`full`) | 0,401 | 0,307 | 0,303 |
+| Baseline + grilă | 0,448 | 0,370 | 0,391 |
+| Model pe felii + grilă | 0,573 | 0,503 | 0,479 |
+| Model pe felii + adaptive | 0,565 | 0,524 | 0,498 |
 
-Imaginile cu contrast slab nu ies mai prost decât cele normale, ba chiar puțin mai bine. Asta nu înseamnă că iluminarea slabă ajută: grupele diferă și prin scenă și prin numărul de obiecte.
+**Val are doar 13 imagini întunecate.** Un mAP calculat pe 13 imagini se schimbă mult de la o imagine la alta, deci coloana `dark` nu poate susține nicio concluzie. Pentru etapa 2 (CLAHE), asta e o problemă reală: efectul pe imaginile de noapte se va vedea bine abia pe test, care are 501.
 
-## Etapa 3 (preliminar): ferestre adaptive
+Imaginile cu contrast slab nu ies mai prost decât cele normale. Asta nu înseamnă că iluminarea slabă ajută: grupele diferă și prin scenă și prin numărul de obiecte.
 
-Măsurat pe modelul pe felii, fără CLAHE și fără reantrenare.
+### Ferestre adaptive pe modelul pe felii
 
-Au fost scrise două variante de ferestre adaptive, independent. Ambele au fost măsurate cu `pi-eval`, în aceleași condiții:
+Cu parametrii impliciți din `configs/adaptive.yaml`: mAP50 0,502, față de 0,483 la grilă (+0,019), dar cu 10,2 ferestre pe imagine, care acoperă împreună de 4,5 ori suprafața imaginii, deci aproape de 3 ori mai lent. Aceeași concluzie ca pe modelul de pe Mac de mai jos: metoda adaptivă detectează puțin mai bine, dar nu economisește timp fără reglarea parametrilor.
 
-- **A**, ferestre fixe de 640 px puse ca o mică grilă peste fiecare grup, la rezoluția reală;
-- **B**, câte o fereastră pe grup, de mărime variabilă (cel puțin 640 px), redimensionată la 640. Este varianta păstrată în cod (`src/pi_p/adaptive.py`, explicată în [etapa 9](pipeline/09-ferestre-adaptive.md)).
+O variantă anterioară a ferestrelor adaptive, cu ferestre fixe de 640 px puse peste fiecare grup, a dat pe același model mAP50 0,490 cu 5,5 ferestre pe imagine, iar varianta „adaptive + grilă” 0,507. Ambele au fost scoase din cod la unirea cu `main`; valorile sunt păstrate aici pentru comparație.
 
-| Testare | mAP50 | mAP50-95 | Recall | Ferestre pe imagine | Suprafața ferestrelor | ms/imagine* |
-|---|---|---|---|---|---|---|
-| `grila` | 0,483 | 0,292 | 0,506 | 5,2 | – | 35,1 |
-| adaptiv A (scos din cod) | 0,490 | 0,296 | 0,515 | 5,5 | 2,3 × imaginea | 102 |
-| **`adaptiv` (B)** | **0,502** | **0,304** | 0,521 | 10,2 | 4,5 × imaginea | 212 |
-| `adaptiv+grila` (B + grilă) | 0,507 | 0,307 | 0,526 | – | – | 172 |
-
-\* Coloanele A și B au fost măsurate în timp ce placa video rula o antrenare, deci timpii absoluți sunt mult umflați. Comparabil este doar raportul dintre A și B, măsurate unul după altul: B e de aproximativ 2 ori mai lentă. `grila` a fost măsurată cu placa liberă.
-
-Ce arată tabelul:
-
-- **Varianta B detectează cel mai bine:** +0,019 mAP50 față de grilă și +0,012 față de A. Diferențele sunt pe o singură rulare; nu am verificat dacă sunt peste zgomotul măsurătorii.
-- **Câștigul vine din mai multă muncă, nu din ferestre mai bine alese.** B rulează modelul pe aproape de 2 ori mai multe ferestre decât grila, care se suprapun mult (4,5 × suprafața imaginii). Fiecare grup mic primește o fereastră întreagă de 640 × 640.
-- **Niciuna dintre variante nu economisește timp pe val**, iar acesta era scopul ferestrelor adaptive. Scenele din VisDrone sunt aglomerate, iar obiectele sunt răspândite în tot cadrul.
-- **Parametrii nu au fost reglați.** Valorile din `configs/adaptive.yaml` sunt cele de pornire. Un nucleu de dilatare mai mare ar uni grupurile mici și ar da mai puține ferestre.
-
-Concluzia de moment: ferestrele adaptive îmbunătățesc puțin detecția, dar nu își ating scopul (viteza). Următorul pas este reglarea parametrilor cu `pi-adaptive-eval`, de exemplu `dilate_kernel` și `prelim_conf`, urmărind numărul de ferestre.
-
-## Cum reproduci tabelele
+### Cum reproduci tabelele
 
 ```bash
-B=runs/detect/runs/yolo26n_640/weights/best.pt
-T=runs/detect/runs/yolo26n_tiled/weights/best.pt
-
+G="--groups datasets/VisDrone/stats.csv"
 uv run pi-stats
-uv run pi-eval $B --mode intreg        --out logs/eval/baseline_intreg.json
-uv run pi-eval $B --mode grila         --out logs/eval/baseline_grila.json
-uv run pi-eval $T --mode intreg        --out logs/eval/tiled_intreg.json
-uv run pi-eval $T --mode grila         --out logs/eval/tiled_grila.json
-uv run pi-eval $T --mode adaptiv       --out logs/eval/tiled_adaptiv.json
-uv run pi-eval $T --mode adaptiv+grila --out logs/eval/tiled_adaptiv_grila.json
+uv run pi-eval weights/yolo26n_baseline_640.pt --mode full     $G --out logs/eval/baseline_full.json
+uv run pi-eval weights/yolo26n_baseline_640.pt --mode slice    $G --out logs/eval/baseline_slice.json
+uv run pi-eval weights/yolo26n_tiled.pt        --mode full     $G --out logs/eval/tiled_full.json
+uv run pi-eval weights/yolo26n_tiled.pt        --mode slice    $G --out logs/eval/tiled_slice.json
+uv run pi-eval weights/yolo26n_tiled.pt        --mode adaptive $G --out logs/eval/tiled_adaptive.json
 ```
+
+## Preliminar: modelul antrenat pe Mac (10 epoci)
+
+Model: YOLO26n, 10 epoci pe `train`, imagini întregi de 640 px (`runs/yolo26n_mac`). Evaluare pe `val` (548 de imagini), pe imaginea întreagă, cu `pi-eval`, prag `conf 0.001`. Rezultatele complete sunt în `results/mac_*.json`.
+
+Sunt rezultate preliminare: modelul e antrenat de 10 ori mai puțin decât cel din metodologie, iar varianta „grilă fixă” folosește tot modelul pe imagini întregi, nu cel antrenat pe felii.
+
+| Variantă | `--mode` | mAP50-95 | mAP50 | ms / imagine (Mac, MPS) | Pixeli procesați |
+|---|---|---|---|---|---|
+| Baseline | `full` | 0.113 | 0.202 | 10 | 1.00x |
+| Grilă fixă | `slice` | 0.174 | 0.305 | 60 | ≈3.4x |
+| SAHI | `sahi` | 0.166 | 0.298 | 103 | ≈3.4x |
+| Ferestre adaptive | `adaptive` | **0.185** | **0.327** | 154 | 5.66x |
+
+mAP50 pe grupe:
+
+| Variantă | dark (13) | low_contrast (104) | normal (431) |
+|---|---|---|---|
+| `full` | 0.300 | 0.217 | 0.196 |
+| `slice` | 0.398 | 0.299 | 0.304 |
+| `sahi` | 0.380 | 0.295 | 0.296 |
+| `adaptive` | 0.408 | 0.316 | 0.326 |
+
+### Ce arată
+
+- Felierea crește mAP50 cu aproximativ 50% față de baseline (0.202 → 0.305), confirmând că obiectele mici sunt problema principală.
+- Fuziunea proprie (`slice`) iese puțin peste SAHI, cu aceleași ferestre, și e mai rapidă.
+- Ferestrele adaptive au cel mai bun mAP, dar cu parametrii din `configs/adaptive.yaml` procesează **mai mulți** pixeli decât grila (în medie 10.5 ferestre de cel puțin 640 px, care se suprapun), deci nu economisesc timp. Câștigul de precizie vine probabil din ferestrele centrate pe grupurile de obiecte. Pentru economie de timp trebuie reglate `dilate_kernel` și `min_size`, ca ferestrele să fie mai puține.
+- Grupa `dark` are doar 13 imagini pe val, deci valorile ei nu sunt concludente.
+
+### Reglarea ferestrelor adaptive
+
+Ferestrele adaptive pot fi reglate spre precizie sau spre cost. Toate rândurile sunt pe tot `val`, cu același model:
+
+| Setare | mAP50 | mAP50-95 | ms / imagine | Ferestre / imagine | Pixeli procesați |
+|---|---|---|---|---|---|
+| grilă fixă (`slice`), referință | 0.305 | 0.174 | 60 | 6 (la 1360×765) | ≈3.4x |
+| implicit (`dilate_kernel=15`, `min_size=640`) | **0.327** | **0.185** | 154 | 10.5 | 5.66x |
+| `dilate_kernel=31` | 0.305 | 0.171 | 84 | 5.5 | 3.45x |
+| `dilate_kernel=31 min_size=480` | 0.301 | 0.168 | 74 | 5.5 | **2.56x** |
+
+- Cu setările implicite, metoda adaptivă bate grila cu 0.02 mAP50, dar procesează mai mulți pixeli.
+- Cu ferestre mai puține și mai mici, ajunge la aceeași precizie ca grila cu cu 25% mai puțini pixeli. Timpul rămâne totuși mai mare, pentru că se adaugă detecția preliminară, iar ferestrele de mărimi diferite se procesează mai puțin eficient decât cele egale ale grilei.
+- Pe primele 100 de imagini din `val`, `min_size=480` părea să dea mAP50 0.350. Pe tot setul a scăzut la 0.301. Primele 100 de imagini vin din câteva secvențe video, deci nu sunt reprezentative, iar reglajele trebuie verificate pe tot `val`.
+
+### Figuri
+
+Pașii metodei adaptive pe o imagine de noapte din `val` (`0000117_02708_d_0000090.jpg`), cu setările implicite: 62 de casete preliminare, 15 ferestre, 150 de detecții finale.
+
+![Pașii ferestrelor adaptive](../results/figuri/ferestre_adaptive_pasi.png)
+
+![Fără ferestre comparat cu ferestrele adaptive](../results/figuri/ferestre_adaptive_comparatie.png)
+
+Pixelii procesați pentru `slice` și `sahi` sunt calculați pentru imaginile de 1360×765 (6 ferestre de 640 px plus imaginea întreagă); evaluatorul îi măsoară direct doar la `adaptive`.
