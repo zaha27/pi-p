@@ -30,22 +30,20 @@ o linie pentru fiecare variantă testată, comparată cu baseline-ul`"]
     F --> E
     E --> G --> H --> I --> J
     B --> I
-    C -.-> K -.-> L -.-> E
+    C --> K --> L --> E
 
-    LEG["⬜ intrare &nbsp; 🟦 prelucrarea imaginii &nbsp; 🟩 antrenare și detecție &nbsp; 🟨 evaluare &nbsp; 🟪 planificat"]
+    LEG["⬜ intrare &nbsp; 🟦 prelucrarea imaginii &nbsp; 🟩 antrenare și detecție &nbsp; 🟨 evaluare"]
     J ~~~ LEG
 
     classDef inp fill:#F3F4F6,stroke:#374151,stroke-width:2px,color:#111827
     classDef prep fill:#DBEAFE,stroke:#1D4ED8,stroke-width:2px,color:#111827
     classDef det fill:#DCFCE7,stroke:#15803D,stroke-width:2px,color:#111827
     classDef eva fill:#FEF3C7,stroke:#B45309,stroke-width:2px,color:#111827
-    classDef plan fill:#F3E8FF,stroke:#7E22CE,stroke-width:2px,stroke-dasharray:6 4,color:#111827
     classDef leg fill:#FFFFFF,stroke:#D1D5DB,stroke-width:1px,color:#374151,font-size:12px
 
     class A inp
-    class B,C,D prep
+    class B,C,D,K,L prep
     class E,F,G det
     class H,I,J eva
-    class K,L plan
     class LEG leg
 ```

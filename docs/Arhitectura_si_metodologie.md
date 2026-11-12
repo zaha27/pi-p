@@ -16,7 +16,7 @@ Cele trei subseturi au roluri distincte în acest proiect. Subsetul train este f
 
 ## 3. Arhitectura sistemului
 
-Arhitectura este prezentată în figura de mai jos. Ea descrie drumul unei singure imagini prin sistem, de la intrare până la detecțiile finale și la evaluarea lor. Componentele cu contur continuu fac parte din prototip; cele cu contur punctat sunt planificate pentru etapele următoare. Fiecare componentă poate fi oprită sau înlocuită din fișierul de configurare, iar combinațiile alese formează experimentele descrise în secțiunea 5.
+Arhitectura este prezentată în figura de mai jos. Ea descrie drumul unei singure imagini prin sistem, de la intrare până la detecțiile finale și la evaluarea lor. Fiecare componentă poate fi oprită sau înlocuită din fișierul de configurare, iar combinațiile alese formează experimentele descrise în secțiunea 5.
 
 
 
@@ -40,9 +40,9 @@ Felierea împarte imaginea în ferestre pătrate de aceeași dimensiune cu intra
 
 Ca alternativă la această implementare este evaluată biblioteca SAHI (Slicing Aided Hyper Inference; Akyon et al., 2022), care realizează aceeași idee de feliere la inferență. Cele două variante nu se folosesc împreună în aceeași rulare: sunt două realizări ale aceluiași pas, comparate între ele.
 
-### 3.4 Detecția preliminară și ferestrele adaptive (planificat)
+### 3.4 Detecția preliminară și ferestrele adaptive
 
-Grila fixă analizează fiecare zonă a imaginii, inclusiv zonele fără obiecte (câmpuri, acoperișuri, cer), ceea ce costă timp. Componenta planificată înlocuiește grila cu ferestre plasate doar acolo unde există obiecte, în doi pași.
+Grila fixă analizează fiecare zonă a imaginii, inclusiv zonele fără obiecte (câmpuri, acoperișuri, cer), ceea ce costă timp. Această componentă înlocuiește grila cu ferestre plasate doar acolo unde există obiecte, în doi pași.
 
 Primul pas, detecția preliminară, rulează detectorul pe imaginea micșorată și obține o estimare aproximativă a pozițiilor obiectelor. Ideea de a căuta întâi grosier și de a analiza detaliat doar zonele promițătoare este preluată din QueryDet (Yang et al., 2022). Acolo, căutarea grosieră se face însă în interiorul rețelei neuronale, pe hărțile de caracteristici de rezoluție mică, și este antrenată împreună cu detectorul.
 
@@ -94,7 +94,7 @@ Experimentele urmează schema din figura de mai jos. Ele sunt organizate în eta
 
 În etapa 2 se evaluează îmbunătățirea contrastului, pe configurația selectată în etapa 1. Pentru fiecare dintre cele două variante, uniformă și adaptivă, CLAHE este aplicat imaginilor de antrenare înainte de tăiere, modelul este reantrenat, iar testarea pe setul de validare se face în același mod ca în configurația selectată. CLAHE este păstrat doar dacă îmbunătățește rezultatul. Un rezultat negativ, care ar arăta că îmbunătățirea contrastului nu ajută pe acest set de date, este și el o concluzie valabilă și este raportat ca atare.
 
-Etapa 3 este planificată și evaluează ferestrele adaptive pe configurația selectată în etapa 2, în două variante: în locul grilei fixe și împreună cu ea.
+Etapa 3 evaluează ferestrele adaptive pe configurația selectată în etapa 2, în două variante: în locul grilei fixe și împreună cu ea (a doua variantă este planificată).
 
 După ce toate deciziile au fost luate pe setul de validare, toate variantele sunt rulate o singură dată pe test-dev. Pentru că această rulare nu cere reantrenare, costul ei este doar timpul de inferență. Tabelul final conține, pentru fiecare variantă, valorile pe setul de validare, care justifică alegerile, și valorile pe test-dev, care sunt rezultatele raportate.
 
@@ -105,14 +105,14 @@ După ce toate deciziile au fost luate pe setul de validare, toate variantele su
 | 1 | Feliere pe grilă fixă | ferestre | ferestre și imaginea întreagă micșorată |
 | 2 | CLAHE uniform | ca în configurația selectată, cu CLAHE pe toate imaginile | la fel |
 | 2 | CLAHE adaptiv | ca în configurația selectată, cu CLAHE pe grupele care îl cer | la fel |
-| 3 (planificat) | Ferestre adaptive | ca în configurația selectată | ferestre adaptive |
+| 3 | Ferestre adaptive | ca în configurația selectată | ferestre adaptive |
 | 3 (planificat) | Ferestre adaptive și grilă | ca în configurația selectată | ferestre adaptive și grilă |
 
 Metodologia are o limită asumată. Selecția pe etape nu verifică toate combinațiile posibile. De exemplu, nu arată dacă CLAHE ar fi avut un efect mai mare pe o variantă de împărțire care nu a fost selectată în etapa 1. Testarea tuturor combinațiilor ar multiplica numărul de antrenări și rămâne o direcție pentru continuarea proiectului.
 
 ## 6. Starea implementării
 
-Sunt implementate pregătirea datelor, configurațiile de antrenare pe imagini întregi și pe ferestre, tăierea ferestrelor pentru antrenare și inferența pe ferestre cu fuziunea detecțiilor (eliminarea detecțiilor tăiate și suprimarea dublurilor prin IOS). Urmează analiza statistică a imaginilor, îmbunătățirea contrastului în cele două variante, integrarea bibliotecii SAHI și evaluarea prin mAP a variantelor cu feliere, în aceleași condiții ca baseline-ul. Detecția preliminară și ferestrele adaptive sunt planificate pentru etapa de după prototip.
+Sunt implementate pregătirea datelor, analiza statistică a imaginilor, îmbunătățirea contrastului în cele două variante, configurațiile de antrenare pe imagini întregi și pe ferestre, tăierea ferestrelor pentru antrenare, inferența pe ferestre cu fuziunea detecțiilor (eliminarea detecțiilor tăiate și suprimarea dublurilor prin IOS), integrarea bibliotecii SAHI, detecția preliminară cu ferestrele adaptive și un evaluator comun, care calculează mAP-ul pe imaginea întreagă în aceleași condiții pentru toate variantele. Urmează rularea experimentelor din secțiunea 5 și varianta în care ferestrele adaptive se adaugă grilei. Legătura dintre comenzi și module este descrisă în [pipeline.md](pipeline.md).
 
 ## Bibliografie
 
