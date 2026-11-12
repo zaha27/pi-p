@@ -7,7 +7,7 @@ Toate valorile sunt măsurate cu `pi-eval` pe cele 548 de imagini întregi din *
 | Etapa din [plan](benchmarkuri.md) | Stare |
 |---|---|
 | 1. Împărțirea imaginii | **făcută** cu antrenări complete (RTX); SAHI măsurat doar pe modelul de pe Mac |
-| 2. CLAHE | reantrenarea cu CLAHE uniform e gata, dar neevaluată; cea cu CLAHE adaptiv e în curs |
+| 2. CLAHE | **făcută** pe val (ambele variante reantrenate și evaluate); rămâne de verificat pe test |
 | 3. Ferestre adaptive | măsurate pe ambele modele; reglarea parametrilor e începută (pe Mac) |
 | Test final pe test-dev | nefăcut |
 
@@ -18,8 +18,9 @@ Toate valorile sunt măsurate cu `pi-eval` pe cele 548 de imagini întregi din *
 | baseline | `configs/train.yaml` | 6471 imagini întregi | 97 (oprit de `patience`), cea mai bună: 77 | 1,2 ore | `weights/yolo26n_baseline_640.pt` |
 | pe felii | `configs/train_tiled.yaml` | 46 483 felii și imagini întregi | 100, cea mai bună: 82 | 7,7 ore | `weights/yolo26n_tiled.pt` |
 | pe felii + CLAHE uniform | `configs/train_tiled.yaml` pe date cu CLAHE | idem, după CLAHE pe toate imaginile | 100 | ~7,7 ore | `weights/yolo26n_tiled_clahe_uniform.pt` |
+| pe felii + CLAHE adaptiv | `configs/train_tiled.yaml` pe date cu CLAHE | idem, după CLAHE doar pe imaginile `dark` și `low_contrast` | 100, cea mai bună: 79 | ~8 ore (oprită o dată și reluată) | `weights/yolo26n_tiled_clahe_adaptiv.pt` |
 
-Seturile CLAHE ale acestor antrenări au fost făcute cu o versiune anterioară a `pi-clahe`, cu pragurile de grupă calculate ca percentila 15 pe train (luminozitate 61,6, contrast 36,0), nu cu pragurile fixe 70 și 35 din codul actual. Pentru CLAHE uniform nu contează, pentru că acolo toate imaginile primesc CLAHE.
+Seturile CLAHE ale acestor antrenări au fost făcute cu o versiune anterioară a `pi-clahe`, cu pragurile de grupă calculate ca percentila 15 pe train (luminozitate 61,6, contrast 36,0), nu cu pragurile fixe 70 și 35 din codul actual. Pentru CLAHE uniform nu contează, pentru că acolo toate imaginile primesc CLAHE. Pentru CLAHE adaptiv contează: setul de imagini îmbunătățite diferă puțin de cel pe care l-ar alege codul actual.
 
 ### Etapa 1: cum împărțim imaginea
 
@@ -79,6 +80,26 @@ Grupele sunt calculate de `pi-stats` cu pragurile 70 și 35:
 
 Imaginile cu contrast slab nu ies mai prost decât cele normale. Asta nu înseamnă că iluminarea slabă ajută: grupele diferă și prin scenă și prin numărul de obiecte.
 
+### Etapa 2: CLAHE
+
+Fiecare model CLAHE este evaluat pe val cu același CLAHE aplicat (`VisDrone-clahe-uniform`, respectiv `VisDrone-clahe-adaptiv`), iar grupele sunt cele din `datasets/VisDrone/stats.csv`, calculate pe imaginile originale.
+
+| Model (`slice`) | mAP50 | mAP50-95 | dark (13) | low_contrast (104) | normal (431) |
+|---|---|---|---|---|---|
+| pe felii, fără CLAHE | 0,483 | 0,292 | 0,573 | 0,503 | 0,479 |
+| pe felii + CLAHE uniform | 0,482 | 0,289 | 0,571 | 0,494 | 0,480 |
+| pe felii + CLAHE adaptiv | 0,484 | 0,292 | 0,562 | 0,468 | 0,483 |
+
+Cu imaginea întreagă (`full`), cele trei modele dau mAP50 0,327, 0,325 și 0,326.
+
+Ce arată tabelul:
+
+- **Pe val, CLAHE nu schimbă rezultatul.** Diferențele pe tot setul sunt de cel mult 0,002, adică în zgomotul dintre două antrenări.
+- **Pe imaginile slab contrastate, CLAHE adaptiv iese chiar mai prost** (0,468 față de 0,503), deși acolo ar fi trebuit să ajute. Pe 104 imagini, diferența poate fi și întâmplătoare.
+- **Grupa `dark` are doar 13 imagini**, deci nu spune nimic. Efectul pe imaginile de noapte se poate măsura doar pe test, care are 501.
+
+Configurația selectată rămâne **model pe felii + grilă, fără CLAHE**; CLAHE adaptiv va fi verificat o dată pe test, la final, pentru grupa `dark`.
+
 ### Ferestre adaptive pe modelul pe felii
 
 Cu parametrii impliciți din `configs/adaptive.yaml`: mAP50 0,502, față de 0,483 la grilă (+0,019), dar cu 10,2 ferestre pe imagine, care acoperă împreună de 4,5 ori suprafața imaginii, deci aproape de 3 ori mai lent. Aceeași concluzie ca pe modelul de pe Mac de mai jos: metoda adaptivă detectează puțin mai bine, dar nu economisește timp fără reglarea parametrilor.
@@ -95,6 +116,8 @@ uv run pi-eval weights/yolo26n_baseline_640.pt --mode slice    $G --out logs/eva
 uv run pi-eval weights/yolo26n_tiled.pt        --mode full     $G --out logs/eval/tiled_full.json
 uv run pi-eval weights/yolo26n_tiled.pt        --mode slice    $G --out logs/eval/tiled_slice.json
 uv run pi-eval weights/yolo26n_tiled.pt        --mode adaptive $G --out logs/eval/tiled_adaptive.json
+uv run pi-eval weights/yolo26n_tiled_clahe_uniform.pt --mode slice --data datasets/VisDrone-clahe-uniform/data.yaml $G
+uv run pi-eval weights/yolo26n_tiled_clahe_adaptiv.pt --mode slice --data datasets/VisDrone-clahe-adaptiv/data.yaml $G
 ```
 
 ## Preliminar: modelul antrenat pe Mac (10 epoci)
