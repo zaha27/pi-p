@@ -1,0 +1,12 @@
+# Unirea ferestrelor e pornită; de încercat: merge_overlap 0.3, 0.5, 0.7 și max_window 960, 1280 (override în linia de comandă, key=value)
+mask_size: 640
+dilate_kernel: 15
+margin: 32
+min_size: 640
+prelim_imgsz: 640
+prelim_conf: 0.25
+window_imgsz: 640
+conf: 0.25
+iou: 0.5
+merge_overlap: 0.5
+max_window: 960
