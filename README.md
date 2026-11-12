@@ -1,6 +1,6 @@
 # pi-personal-project
 
-Documentație: [pipeline](docs/pipeline.md) · [arhitectură și metodologie](docs/Arhitectura_si_metodologie.md) · [benchmarkuri](docs/benchmarkuri.md)
+Documentație: [pipeline](docs/pipeline.md) · [codul, explicat](docs/cod.md) · [arhitectură și metodologie](docs/Arhitectura_si_metodologie.md) · [benchmarkuri](docs/benchmarkuri.md)
 
 ## Analiza literaturii de specialitate (state-of-the-art)
 
