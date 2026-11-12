@@ -1,10 +1,4 @@
-"""Potrivirea detecțiilor cu etichetele și calculul mAP.
-
-O detecție e corectă dacă are aceeași clasă cu un obiect adnotat și IoU-ul lor
-trece pragul; fiecare obiect poate fi folosit o singură dată. AP-ul pe clasă
-este calculat de Ultralytics (`ap_per_class`), iar mAP este media pe clase.
-Detalii în docs/pipeline/08-evaluarea.md.
-"""
+"""Potrivirea detecțiilor cu etichetele și calculul mAP."""
 
 import numpy as np
 from ultralytics.utils.metrics import ap_per_class

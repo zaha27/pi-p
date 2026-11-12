@@ -1,19 +1,4 @@
-"""Funcții comune pentru lucrul cu setul de date în format YOLO.
-
-Toate celelalte module citesc și scriu datele prin funcțiile de aici, ca
-formatul să fie definit într-un singur loc.
-
-Structura unui set de date pe disc:
-
-    datasets/VisDrone/
-        images/train/0001.jpg      imaginea
-        labels/train/0001.txt      etichetele ei, câte un obiect pe linie
-        data.yaml                  fișierul pe care îl citește Ultralytics
-
-O linie din fișierul de etichete are forma `clasă x y w h`, unde (x, y) este
-centrul chenarului, iar (w, h) lățimea și înălțimea lui. Toate cele patru
-valori sunt împărțite la dimensiunea imaginii, deci sunt între 0 și 1.
-"""
+"""Citirea și scrierea setului de date în format YOLO (`clasă x y w h`, normalizat 0..1)."""
 
 from pathlib import Path
 
@@ -28,7 +13,6 @@ NAMES = ["pedestrian", "people", "bicycle", "car", "van", "truck", "tricycle", "
 COLORS = [(142, 85, 114), (212, 119, 138), (122, 139, 58), (42, 157, 143), (233, 162, 59),
           (200, 85, 61), (176, 141, 87), (92, 107, 115), (61, 90, 152), (74, 165, 192)]
 
-# Folderul implicit al setului de date pregătit.
 ROOT = Path("datasets/VisDrone")
 
 IMG_EXT = {".jpg", ".jpeg", ".png"}
@@ -43,20 +27,14 @@ def images(root: Path, split: str) -> list[Path]:
 
 
 def label_path(img: Path) -> Path:
-    """Calea fișierului de etichete al unei imagini.
-
-    Exemplu: .../images/train/0001.jpg -> .../labels/train/0001.txt
-    """
+    """Calea etichetelor unei imagini: images/<split>/x.jpg -> labels/<split>/x.txt."""
     dataset_root = img.parents[2]
     split = img.parent.name
     return dataset_root / "labels" / split / f"{img.stem}.txt"
 
 
 def read_labels(path: Path) -> np.ndarray:
-    """Citește etichetele ca tabel cu 5 coloane: clasă, x, y, w, h.
-
-    O imagine fără obiecte are fișierul gol sau lipsă; atunci tabelul are 0 linii.
-    """
+    """Etichetele ca tabel clasă, x, y, w, h (0 linii dacă imaginea nu are obiecte)."""
     if not path.is_file() or path.stat().st_size == 0:
         return np.zeros((0, 5), dtype=np.float32)
     return np.loadtxt(path, ndmin=2, dtype=np.float32)

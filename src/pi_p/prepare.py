@@ -1,20 +1,4 @@
-"""Etapa 1 din pipeline: descarcă VisDrone și îl aduce în format YOLO.
-
-Ce face `pi-prepare`, pentru fiecare subset (train, val, test):
-
-1. descarcă arhiva oficială, dacă nu e deja pe disc;
-2. citește adnotările VisDrone și păstrează doar obiectele din cele 10 clase;
-3. acoperă cu gri regiunile ignorate, ca modelul să nu fie penalizat acolo;
-4. scrie etichetele în format YOLO și fișierul data.yaml.
-
-Formatul unei adnotări VisDrone (o linie = un obiect):
-
-    x, y, lățime, înălțime, scor, categorie, trunchiere, ocluzie
-
-unde (x, y) este colțul stânga-sus al chenarului, în pixeli. Scorul 0 înseamnă
-„obiect ignorat”, iar categoriile 0 și 11 sunt „regiune ignorată” și „altele”.
-Detalii în docs/pipeline/01-pregatirea-datelor.md.
-"""
+"""Descarcă VisDrone și îl convertește în format YOLO (`pi-prepare`)."""
 
 import argparse
 import shutil
@@ -28,7 +12,6 @@ from ultralytics.utils.ops import xyxy2xywhn
 
 from pi_p.data import ROOT, image_size, write_data_yaml, write_labels
 
-# Numele folderelor din arhivele oficiale, pentru fiecare subset.
 RAW = {"train": "VisDrone2019-DET-train", "val": "VisDrone2019-DET-val", "test": "VisDrone2019-DET-test-dev"}
 
 # Griul cu care acoperim regiunile ignorate. E aceeași valoare cu care YOLO
@@ -46,13 +29,7 @@ def parse(text: str) -> np.ndarray:
 
 
 def convert(ann: np.ndarray, w: int, h: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Împarte adnotările în obiecte păstrate și regiuni ignorate.
-
-    Întoarce trei tabele:
-      - clasele obiectelor păstrate (0..9);
-      - chenarele lor, ca (x1, y1, x2, y2) în pixeli;
-      - chenarele regiunilor ignorate, în același format.
-    """
+    """Separă obiectele păstrate (clase, chenare x1 y1 x2 y2) de regiunile ignorate."""
     x, y, bw, bh = ann[:, 0], ann[:, 1], ann[:, 2], ann[:, 3]
     score, category = ann[:, 4], ann[:, 5]
 
@@ -71,10 +48,7 @@ def convert(ann: np.ndarray, w: int, h: int) -> tuple[np.ndarray, np.ndarray, np
 
 
 def mask_ignored(img: np.ndarray, keep: np.ndarray, ignore: np.ndarray) -> bool:
-    """Acoperă cu gri regiunile ignorate, dar lasă vizibile obiectele păstrate.
-
-    Modifică imaginea pe loc și întoarce True dacă a acoperit cel puțin un pixel.
-    """
+    """Acoperă cu gri regiunile ignorate, fără obiectele păstrate. Întoarce True dacă a acoperit ceva."""
     mask = np.zeros(img.shape[:2], dtype=bool)
     for x1, y1, x2, y2 in ignore:
         mask[y1:y2, x1:x2] = True
@@ -86,10 +60,7 @@ def mask_ignored(img: np.ndarray, keep: np.ndarray, ignore: np.ndarray) -> bool:
 
 
 def process(raw: Path, root: Path, split: str) -> dict:
-    """Convertește un subset descărcat (`raw`) în format YOLO, în `root`.
-
-    Întoarce câteva numere despre ce a găsit, afișate la final.
-    """
+    """Convertește un subset descărcat în format YOLO și întoarce câteva statistici."""
     img_dir = root / "images" / split
     img_dir.mkdir(parents=True, exist_ok=True)
     stats = {"images": 0, "objects": 0, "ignored_regions": 0, "masked_images": 0}

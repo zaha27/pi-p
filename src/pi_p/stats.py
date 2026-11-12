@@ -1,12 +1,4 @@
-"""Analiza statistică a imaginilor: luminozitate, contrast și grupa de iluminare.
-
-Fiecare imagine primește una dintre grupele `dark`, `low_contrast` sau `normal`.
-Grupele sunt folosite de CLAHE-ul adaptiv (doar imaginile slabe sunt îmbunătățite)
-și de evaluare (mAP separat pe fiecare grupă).
-
-`pi-stats` scrie datasets/VisDrone/stats.csv și stats.png. Detalii în
-docs/pipeline/02-analiza-statistica.md.
-"""
+"""Luminozitatea, contrastul și grupa de iluminare a fiecărei imagini (`pi-stats`)."""
 
 import argparse
 import csv
