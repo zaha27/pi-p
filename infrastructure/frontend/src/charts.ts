@@ -1,9 +1,18 @@
 import type { FlowVector } from "./types";
 
-const MUTED = "#a1a1aa";
-const GRID = "#f0f0f2";
-const FIELD = "#fafafa";
-const MONO = '11px "Inter Variable", system-ui, sans-serif';
+const LABEL = '11px ui-monospace, "SF Mono", "IBM Plex Mono", monospace';
+
+let cached: { muted: string; grid: string; field: string; ink: string } | null = null;
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => (cached = null));
+
+function theme() {
+  if (!cached) {
+    const css = getComputedStyle(document.documentElement);
+    const read = (name: string) => css.getPropertyValue(name).trim();
+    cached = { muted: read("--faint"), grid: read("--border-soft"), field: read("--subtle"), ink: read("--ink") };
+  }
+  return cached;
+}
 
 export function fit(canvas: HTMLCanvasElement): [CanvasRenderingContext2D, number, number] {
   const dpr = window.devicePixelRatio || 1;
@@ -62,9 +71,9 @@ export function stackedArea(canvas: HTMLCanvasElement, series: number[][], color
   const x = (i: number) => left + (n > 1 ? (i / (n - 1)) * pw : pw);
   const y = (v: number) => top + ph - (v / max) * ph;
 
-  ctx.font = MONO;
-  ctx.fillStyle = MUTED;
-  ctx.strokeStyle = GRID;
+  ctx.font = LABEL;
+  ctx.fillStyle = theme().muted;
+  ctx.strokeStyle = theme().grid;
   ctx.lineWidth = 1;
   for (let k = 0; k <= 4; k++) {
     const v = (max / 4) * k;
@@ -100,7 +109,7 @@ export function stackedArea(canvas: HTMLCanvasElement, series: number[][], color
   });
   ctx.beginPath();
   ctx.arc(x(n - 1), y(totals[n - 1]), 3, 0, Math.PI * 2);
-  ctx.fillStyle = "#18181b";
+  ctx.fillStyle = theme().ink;
   ctx.fill();
 }
 
@@ -110,9 +119,9 @@ export function flowField(canvas: HTMLCanvasElement, flow: FlowVector[], aspect:
   const rh = rw / aspect;
   const rx = (w - rw) / 2;
   const ry = (h - rh) / 2;
-  ctx.fillStyle = FIELD;
+  ctx.fillStyle = theme().field;
   ctx.fillRect(rx, ry, rw, rh);
-  ctx.strokeStyle = GRID;
+  ctx.strokeStyle = theme().grid;
   ctx.lineWidth = 1;
   for (let k = 1; k < 8; k++) {
     ctx.beginPath();
