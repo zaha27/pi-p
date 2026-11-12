@@ -35,7 +35,9 @@ def device() -> str:
 
 
 def model_choices() -> list[str]:
-    return [str(p) for p in sorted(Path("runs").glob("*/weights/best.pt"))] + ["yolo26n.pt"]
+    runs = sorted(Path("runs").glob("*/weights/best.pt"))
+    shipped = sorted(Path("weights").glob("*.pt"))
+    return [p.as_posix() for p in shipped + runs] + ["yolo26n.pt"]
 
 
 def encode(img: np.ndarray) -> bytes:
