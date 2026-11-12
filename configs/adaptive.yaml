@@ -7,3 +7,5 @@ prelim_conf: 0.25
 window_imgsz: 640
 conf: 0.25
 iou: 0.5
+merge_overlap: 0
+max_window: 1280

@@ -9,6 +9,7 @@ from ultralytics import YOLO
 
 from pi_p.config import load
 from pi_p.predict import merge, to_image
+from pi_p.window_merge import merge_windows
 
 MASK_ON = 255
 CONNECTIVITY = 8
@@ -25,6 +26,8 @@ class AdaptiveParams:
     window_imgsz: int
     conf: float
     iou: float
+    merge_overlap: float = 0.0
+    max_window: int = 1280
 
 
 def load_params(path: str, overrides: tuple[str, ...] = ()) -> AdaptiveParams:
@@ -109,6 +112,7 @@ def window_stages(boxes_xyxy: np.ndarray, width: int, height: int, params: Adapt
     dilated = dilate_mask(mask, params.dilate_kernel)
     rects = mask_to_rects(dilated)
     windows = rects_to_windows(rects, scale, params.margin, params.min_size, width, height)
+    windows = merge_windows(windows, params.merge_overlap, params.max_window)
     return WindowStages(scale, mask, dilated, rects, windows)
 
 
