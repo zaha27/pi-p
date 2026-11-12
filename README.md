@@ -1,6 +1,43 @@
 # pi-personal-project
 
-Documentație: [pipeline](docs/pipeline.md) · [codul, explicat](docs/cod.md) · [arhitectură și metodologie](docs/Arhitectura_si_metodologie.md) · [benchmarkuri](docs/benchmarkuri.md)
+Detecția pietonilor și a vehiculelor în imagini filmate din dronă (VisDrone), cu YOLO26n. Proiectul studiază două prelucrări de imagine puse în jurul detectorului: tăierea imaginii în ferestre analizate la rezoluție completă și îmbunătățirea contrastului cu CLAHE.
+
+## Unde găsești ce
+
+| Vrei să... | Citește |
+|---|---|
+| înțelegi fiecare etapă, cu scheme și exemple | [docs/pipeline/README.md](docs/pipeline/README.md) |
+| vezi pe o pagină cum se leagă comenzile | [docs/pipeline.md](docs/pipeline.md) |
+| citești codul explicat funcție cu funcție | [docs/cod.md](docs/cod.md) |
+| vezi ce rezultate au ieșit | [docs/rezultate.md](docs/rezultate.md) |
+| folosești modelele antrenate | [weights/README.md](weights/README.md) |
+| vezi arhitectura într-o singură schemă | [docs/arhitectura.md](docs/arhitectura.md) |
+| citești descrierea completă și metodologia | [docs/Arhitectura_si_metodologie.md](docs/Arhitectura_si_metodologie.md) |
+| vezi planul experimentelor | [docs/benchmarkuri.md](docs/benchmarkuri.md) |
+| vezi diagramele UML, inclusiv aplicația web | [docs/uml.md](docs/uml.md) |
+
+## Pornire rapidă
+
+```bash
+uv sync                                  # instalează dependențele
+uv run pytest                            # rulează testele
+uv run pi-prepare                        # descarcă și pregătește VisDrone
+uv run pi-train configs/smoke.yaml       # antrenare de probă, ~1 minut
+```
+
+Toate comenzile, în ordinea pipeline-ului, sunt în [docs/pipeline/README.md](docs/pipeline/README.md#toate-comenzile-în-ordine).
+
+## Structura
+
+```
+src/pi_p/           pipeline-ul: date, CLAHE, feliere, antrenare, detecție, evaluare
+configs/            parametrii antrenărilor și ai ferestrelor adaptive
+weights/           modelele antrenate (.pt)
+results/           rezultate și figuri salvate
+tests/              teste pentru fiecare etapă
+docs/               documentația
+infrastructure/     aplicația web: server FastAPI, dashboard, Docker
+```
 
 ## Analiza literaturii de specialitate (state-of-the-art)
 

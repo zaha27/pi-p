@@ -112,7 +112,9 @@ Metodologia are o limită asumată. Selecția pe etape nu verifică toate combin
 
 ## 6. Starea implementării
 
-Sunt implementate pregătirea datelor, analiza statistică a imaginilor, îmbunătățirea contrastului în cele două variante, configurațiile de antrenare pe imagini întregi și pe ferestre, tăierea ferestrelor pentru antrenare, inferența pe ferestre cu fuziunea detecțiilor (eliminarea detecțiilor tăiate și suprimarea dublurilor prin IOS), integrarea bibliotecii SAHI, detecția preliminară cu ferestrele adaptive și un evaluator comun, care calculează mAP-ul pe imaginea întreagă în aceleași condiții pentru toate variantele. Urmează rularea experimentelor din secțiunea 5 și varianta în care ferestrele adaptive se adaugă grilei. Legătura dintre comenzi și module este descrisă în [pipeline.md](pipeline.md).
+Sunt implementate pregătirea datelor, analiza statistică a imaginilor, îmbunătățirea contrastului în cele două variante, configurațiile de antrenare pe imagini întregi și pe ferestre, tăierea ferestrelor pentru antrenare, inferența pe ferestre cu fuziunea detecțiilor (eliminarea detecțiilor tăiate și suprimarea dublurilor prin IOS), integrarea bibliotecii SAHI, detecția preliminară cu ferestrele adaptive și un evaluator comun, care calculează mAP-ul pe imaginea întreagă în aceleași condiții pentru toate variantele. Urmează rularea experimentelor din secțiunea 5 și varianta în care ferestrele adaptive se adaugă grilei. Legătura dintre comenzi și module este descrisă în [pipeline.md](pipeline.md), iar fiecare etapă este explicată pas cu pas în [pipeline/README.md](pipeline/README.md).
+
+Din experimente sunt rulate până acum: etapa 1 (imagini întregi față de felii) cu antrenări complete de 100 de epoci, o primă reglare a ferestrelor adaptive și reantrenările cu CLAHE uniform și adaptiv, evaluate pe val; testul final pe test-dev nu este încă rulat. Valorile sunt în [rezultate.md](rezultate.md).
 
 ## Bibliografie
 

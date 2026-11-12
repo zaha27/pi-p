@@ -1,3 +1,5 @@
+"""Luminozitatea, contrastul și grupa de iluminare a fiecărei imagini (`pi-stats`)."""
+
 import argparse
 import csv
 from collections import Counter
@@ -19,11 +21,13 @@ LOW_CONTRAST = 35
 
 
 def brightness_contrast(img: np.ndarray) -> tuple[float, float]:
+    """Media și abaterea standard a canalului L (luminanța) din spațiul Lab."""
     l = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)[:, :, 0]
     return float(l.mean()), float(l.std())
 
 
 def group(brightness: float, contrast: float, dark: float = DARK, low_contrast: float = LOW_CONTRAST) -> str:
+    """Regula de încadrare: întâi luminozitatea, apoi contrastul."""
     if brightness < dark:
         return "dark"
     if contrast < low_contrast:
@@ -32,11 +36,13 @@ def group(brightness: float, contrast: float, dark: float = DARK, low_contrast: 
 
 
 def measure(path: Path) -> tuple[float, float]:
+    """Luminozitatea și contrastul unei imagini de pe disc."""
     # imaginea micșorată de 4 ori ajunge pentru medie și abatere și se citește mult mai repede
     return brightness_contrast(cv2.imread(str(path), cv2.IMREAD_REDUCED_COLOR_4))
 
 
 def read_groups(path: Path) -> dict[str, str]:
+    """Citește stats.csv: numele imaginii -> grupa ei."""
     if not path.is_file():
         raise SystemExit(f"Lipsește {path}, rulează întâi pi-stats")
     with open(path, newline="") as f:
@@ -44,6 +50,7 @@ def read_groups(path: Path) -> dict[str, str]:
 
 
 def plot(rows: list[dict], dark: float, low_contrast: float, out: Path) -> None:
+    """Histogramele luminozității și contrastului, cu pragurile desenate."""
     fig, ax = plt.subplots(1, 3, figsize=(18, 4.5))
     b = np.array([r["brightness"] for r in rows])
     c = np.array([r["contrast"] for r in rows])

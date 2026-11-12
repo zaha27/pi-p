@@ -1,3 +1,5 @@
+"""Harta scorurilor brute de clasă din ultimul strat YOLO, pentru dashboard."""
+
 import cv2
 import numpy as np
 import torch

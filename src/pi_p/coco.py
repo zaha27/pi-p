@@ -1,3 +1,5 @@
+"""Copie a setului de date cu clasele renumerotate în COCO, pentru evaluarea modelului neantrenat."""
+
 import shutil
 from pathlib import Path
 

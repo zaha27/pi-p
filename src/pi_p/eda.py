@@ -1,3 +1,5 @@
+"""Analiza exploratorie a setului de date: clase, mărimi și densitatea obiectelor (`pi-eda`)."""
+
 import argparse
 import json
 import random

@@ -47,3 +47,7 @@ o linie pentru fiecare variantă testată, comparată cu baseline-ul`"]
     class H,I,J eva
     class LEG leg
 ```
+
+Drumul de sus (feliere pe grilă) și cel de jos (detecție preliminară și ferestre adaptive) sunt două feluri de a alege ferestrele; se folosesc separat sau împreună (`pi-eval --mode slice`, `sahi` sau `adaptive`).
+
+Fiecare casetă din schemă este explicată pas cu pas în [pipeline/README.md](pipeline/README.md).

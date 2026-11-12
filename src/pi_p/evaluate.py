@@ -1,3 +1,5 @@
+"""Evaluarea pe imaginile întregi, în modurile val, full, slice, sahi și adaptive (`pi-eval`)."""
+
 import argparse
 import json
 import time
@@ -22,11 +24,13 @@ NO_WINDOWS = np.zeros((0, 4), np.int32)
 
 
 def ground_truth(img_path: Path, w: int, h: int) -> np.ndarray:
+    """Etichetele unei imagini, în pixeli: clasă, x1, y1, x2, y2."""
     lab = read_labels(label_path(img_path))
     return np.column_stack([lab[:, 0], xywhn2xyxy(lab[:, 1:], w=w, h=h)])
 
 
 def sahi_detect(sahi_model, img: np.ndarray, args) -> np.ndarray:
+    """Detecție pe ferestre cu biblioteca SAHI, cu aceleași ferestre și același prag ca `slice`."""
     from sahi.predict import get_sliced_prediction
 
     res = get_sliced_prediction(
@@ -41,7 +45,7 @@ def sahi_detect(sahi_model, img: np.ndarray, args) -> np.ndarray:
 
 
 def detect(model, img: np.ndarray, args) -> tuple[np.ndarray, np.ndarray]:
-    # întoarce detecțiile și ferestrele procesate în plus față de imaginea întreagă (doar la adaptive)
+    """Detecțiile în modul cerut și ferestrele procesate în plus (doar la adaptive)."""
     if args.mode == "full":
         return model.predict(img, imgsz=args.imgsz, conf=args.conf, device=args.device, verbose=False)[0].boxes.data.cpu().numpy(), NO_WINDOWS
     if args.mode == "slice":
@@ -53,6 +57,7 @@ def detect(model, img: np.ndarray, args) -> tuple[np.ndarray, np.ndarray]:
 
 
 def load_model(args):
+    """Modelul YOLO, sau învelit pentru SAHI."""
     if args.mode != "sahi":
         return YOLO(args.weights)
     from sahi import AutoDetectionModel
@@ -64,16 +69,19 @@ def load_model(args):
 
 
 def sync() -> None:
+    """Așteaptă placa video, ca timpul măsurat să fie cel real."""
     if torch.cuda.is_available():
         torch.cuda.synchronize()
 
 
 def window_area(windows: np.ndarray, w: int, h: int) -> float:
+    """Suprafața totală a ferestrelor, ca multiplu al suprafeței imaginii."""
     win = windows.astype(np.int64)
     return float(((win[:, 2] - win[:, 0]) * (win[:, 3] - win[:, 1])).sum()) / (w * h)
 
 
 def evaluate(args) -> None:
+    """Rulează detecția pe toate imaginile, apoi calculează mAP pe tot setul și pe grupe."""
     model = load_model(args)
     paths = images(Path(args.data).parent, args.split)[: args.limit or None]
     if not paths:
@@ -131,6 +139,7 @@ def evaluate(args) -> None:
 
 
 def validate(args) -> None:
+    """Validarea Ultralytics; cu --coco, pentru un model cu clasele COCO."""
     model = YOLO(args.weights)
     data, classes = args.data, None
     if args.coco:

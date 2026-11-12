@@ -74,7 +74,8 @@ flowchart TB
     subgraph CORE["src/pi_p (logica de bază)"]
         analytics["analytics.py<br/>flux, congestie, statistici"]
         scoremap["scoremap.py<br/>harta de scoruri a detectorului"]
-        predict["predict.py<br/>inferență pe bucăți"]
+        predict["predict.py<br/>grilă: drop_cut, to_image, merge"]
+        adaptive["adaptive.py<br/>ferestre adaptive"]
         slicing["slicing.py<br/>ferestre suprapuse"]
         data["data.py<br/>citire/scriere etichete"]
     end
@@ -83,9 +84,12 @@ flowchart TB
         prepare["prepare.py"]
         check["check.py"]
         eda["eda.py"]
+        stats["stats.py<br/>grupe de iluminare"]
+        enhance["enhance.py<br/>CLAHE"]
         tile["tile.py"]
         train["train.py"]
         evaluate["evaluate.py"]
+        metrics["metrics.py<br/>potrivire, mAP"]
         config["config.py"]
     end
 
@@ -105,11 +109,14 @@ flowchart TB
     session --> analytics & scoremap & predict & render & slicing & YOLO
     render --> analytics & data
     predict --> slicing & YOLO
+    adaptive --> predict & config
+    adaptive_figure["adaptive_figure.py<br/>figuri"] --> adaptive
 
-    prepare & check & eda & tile --> data
+    prepare & check & eda & tile & stats & enhance --> data
+    enhance --> stats
     tile --> slicing
     train --> config & YOLO
-    evaluate --> YOLO
+    evaluate --> predict & adaptive & metrics & stats & YOLO
 ```
 
 ## 3. Diagrama de clase
@@ -216,7 +223,15 @@ classDiagram
         <<module>>
         +sliced_predict(model, img, size, overlap, conf, iou, device)
         +drop_cut(det, win, w, h)
+        +to_image(det, win, w, h)
         +merge(det, thr)
+    }
+
+    class adaptive {
+        <<module>>
+        +load_params(path, overrides) AdaptiveParams
+        +adaptive_trace(model, img, params, device) AdaptiveTrace
+        +adaptive_predict(model, img, params, device) (det, windows)
     }
 
     class slicing {
@@ -244,6 +259,7 @@ classDiagram
     Session ..> render
     Session ..> predict
     predict ..> slicing
+    adaptive ..> predict
     render ..> Analytics : JAM_LEVEL
 ```
 
@@ -369,11 +385,13 @@ flowchart TD
     check --> ok{"erori?"}
     ok -- da --> fix["corectează datele"] --> check
     ok -- nu --> eda["pi-eda<br/>clase, mărimi, densitate, heatmap"]
-    eda --> choice{"strategie"}
+    eda --> stats["pi-stats<br/>luminozitate, contrast, grupe"]
+    stats --> choice{"strategie"}
     choice -- "640 px" --> t640["pi-train configs/train.yaml"]
     choice -- "1024 px" --> t1024["pi-train imgsz=1024"]
     choice -- "tile-uri" --> tile["pi-tile<br/>ferestre 640 px, suprapunere 20%"] --> ttile["pi-train configs/train_tiled.yaml"]
-    t640 & t1024 & ttile --> eval["pi-eval<br/>mAP pe clase"]
+    choice -- "CLAHE" --> clahe["pi-clahe --mode uniform / adaptive"] --> tile
+    t640 & t1024 & ttile --> eval["pi-eval<br/>mAP pe imagini întregi, pe clase și pe grupe"]
     eval --> best["alege cel mai bun model<br/>runs/*/weights/best.pt"]
     best --> app["dashboard: modelul apare automat în listă"]
     app --> stop((sfârșit))

@@ -1,3 +1,5 @@
+"""Statistici de trafic din detecții, cadru cu cadru, pentru dashboard."""
+
 from collections import Counter, deque
 
 import cv2

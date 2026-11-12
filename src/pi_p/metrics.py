@@ -1,3 +1,5 @@
+"""Potrivirea detecțiilor cu etichetele și calculul mAP."""
+
 import numpy as np
 from ultralytics.utils.metrics import ap_per_class
 
@@ -5,6 +7,7 @@ THRESHOLDS = np.linspace(0.5, 0.95, 10)
 
 
 def box_iou(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """IoU între fiecare chenar din `a` și fiecare chenar din `b` (matrice len(a) x len(b))."""
     lt = np.maximum(a[:, None, :2], b[None, :, :2])
     rb = np.minimum(a[:, None, 2:], b[None, :, 2:])
     inter = (rb - lt).clip(min=0).prod(2)
@@ -14,6 +17,7 @@ def box_iou(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 
 def match(det: np.ndarray, gt: np.ndarray) -> np.ndarray:
+    """Pentru fiecare detecție și fiecare prag IoU (0,50 ... 0,95): este corectă?"""
     # det: x1 y1 x2 y2 conf cls, sortat descrescător după conf; gt: cls x1 y1 x2 y2
     correct = np.zeros((len(det), len(THRESHOLDS)), dtype=bool)
     if len(det) == 0 or len(gt) == 0:
@@ -32,6 +36,7 @@ def match(det: np.ndarray, gt: np.ndarray) -> np.ndarray:
 
 
 def mean_ap(images: list[tuple[np.ndarray, np.ndarray]]) -> tuple[float, float, dict[int, float]]:
+    """mAP50, mAP50-95 și AP pe fiecare clasă, din perechile (detecții, etichete) ale tuturor imaginilor."""
     corrects, confs, pred_cls, target_cls = [], [], [], []
     for det, gt in images:
         det = det[det[:, 4].argsort()[::-1]]
