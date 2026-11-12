@@ -10,6 +10,7 @@ from pi_p import coco
 from pi_p.data import images, label_path, read_labels
 from pi_p.metrics import mean_ap
 from pi_p.predict import sliced_predict
+from pi_p.stats import read_groups
 
 
 def ground_truth(img_path: Path, w: int, h: int) -> np.ndarray:
@@ -54,7 +55,7 @@ def load_model(args):
 def evaluate(args) -> None:
     model = load_model(args)
     paths = images(Path(args.data).parent, args.split)[: args.limit or None]
-    results, seconds = [], 0.0
+    results, done, seconds = [], [], 0.0
     for i, p in enumerate(paths, 1):
         img = cv2.imread(str(p))
         if img is None:
@@ -64,6 +65,7 @@ def evaluate(args) -> None:
         det = detect(model, img, args)
         seconds += time.perf_counter() - start
         results.append((det, ground_truth(p, img.shape[1], img.shape[0])))
+        done.append(p.name)
         if i % 50 == 0:
             print(f"{i}/{len(paths)}")
     map50, map50_95, per_class = mean_ap(results)
@@ -72,6 +74,13 @@ def evaluate(args) -> None:
     names = YOLO(args.weights).names if args.mode == "sahi" else model.names
     for c, ap in per_class.items():
         print(f"  {names[c]:>16}: {ap:.3f}")
+    if args.groups:
+        groups = read_groups(args.groups)
+        for g in sorted(set(groups.values())):
+            subset = [r for r, name in zip(results, done) if groups.get(name) == g]
+            if subset:
+                g50, g50_95, _ = mean_ap(subset)
+                print(f"grupa {g} ({len(subset)} imagini): mAP50-95: {g50_95:.3f}  mAP50: {g50:.3f}")
 
 
 def validate(args) -> None:
@@ -102,6 +111,7 @@ def main():
     ap.add_argument("--iou", type=float, default=0.5, help="prag IOS la combinarea detecțiilor din ferestre")
     ap.add_argument("--slice", type=int, default=640, help="mărimea ferestrei pentru slice și sahi")
     ap.add_argument("--overlap", type=float, default=0.2)
+    ap.add_argument("--groups", type=Path, default=None, help="stats.csv de la pi-stats: mAP și pe fiecare grupă")
     ap.add_argument("--limit", type=int, default=0, help="doar primele N imagini (0 = toate)")
     args = ap.parse_args()
     if args.mode == "val":
