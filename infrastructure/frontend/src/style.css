@@ -97,25 +97,11 @@ code {
 }
 
 h1 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
   margin: 0;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.015em;
   white-space: nowrap;
-}
-
-h1::before {
-  content: "";
-  width: 22px;
-  height: 22px;
-  background:
-    radial-gradient(circle at 50% 50%, #fff 0 2.5px, transparent 3px),
-    radial-gradient(circle at 50% 50%, transparent 0 5.5px, rgb(255 255 255 / 85%) 6px 7px, transparent 7.5px),
-    linear-gradient(145deg, #5ac8fa, #0071e3 55%, #5e5ce6);
-  border-radius: 6px;
 }
 
 .tabs,
