@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import torch
 from ultralytics import YOLO
+from ultralytics.utils.ops import xywhn2xyxy
 
 from pi_p import coco
 from pi_p.adaptive import adaptive_predict, load_params
@@ -22,8 +23,7 @@ NO_WINDOWS = np.zeros((0, 4), np.int32)
 
 def ground_truth(img_path: Path, w: int, h: int) -> np.ndarray:
     lab = read_labels(label_path(img_path))
-    cls, cx, cy, bw, bh = lab.T
-    return np.stack([cls, (cx - bw / 2) * w, (cy - bh / 2) * h, (cx + bw / 2) * w, (cy + bh / 2) * h], axis=1)
+    return np.column_stack([lab[:, 0], xywhn2xyxy(lab[:, 1:], w=w, h=h)])
 
 
 def sahi_detect(sahi_model, img: np.ndarray, args) -> np.ndarray:

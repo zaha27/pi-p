@@ -41,13 +41,18 @@ def drop_cut(det: torch.Tensor, win: tuple[int, int, int, int], w: int, h: int, 
     return det[~cut]
 
 
+def to_image(det: torch.Tensor, win: tuple[int, int, int, int], w: int, h: int) -> torch.Tensor:
+    # din coordonatele ferestrei în cele ale imaginii, fără casetele tăiate de marginea ferestrei
+    return drop_cut(det, win, w, h) + torch.tensor([win[0], win[1], win[0], win[1], 0, 0])
+
+
 def sliced_predict(model: YOLO, img: np.ndarray, size: int, overlap: float, conf: float, iou: float, device) -> torch.Tensor:
     h, w = img.shape[:2]
     wins = windows(w, h, size, overlap)
     preds = model.predict([img, *(img[y1:y2, x1:x2] for x1, y1, x2, y2 in wins)], imgsz=size, conf=conf, device=device, verbose=False)
     dets = [preds[0].boxes.data.cpu()]
     for p, win in zip(preds[1:], wins):
-        dets.append(drop_cut(p.boxes.data.cpu(), win, w, h) + torch.tensor([win[0], win[1], win[0], win[1], 0, 0]))
+        dets.append(to_image(p.boxes.data.cpu(), win, w, h))
     return merge(torch.cat(dets), iou)
 
 
