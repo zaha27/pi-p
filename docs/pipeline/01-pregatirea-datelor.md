@@ -1,10 +1,10 @@
-# 1. Pregătirea datelor
+# 1. Pregatirea datelor
 
 **Cod:** `src/pi_p/prepare.py`, `check.py`, `eda.py`, `data.py` · **Comenzi:** `pi-prepare`, `pi-check`, `pi-eda`
 
 ## De ce e nevoie de etapa asta
 
-VisDrone vine în formatul lui propriu, iar Ultralytics YOLO citește alt format. În plus, VisDrone are regiuni marcate ca „ignorate”: zone cu obiecte prea mici sau prea dese, pe care adnotatorii nu le-au etichetat unul câte unul. Dacă le lăsăm în imagine, modelul vede acolo mașini fără etichetă și învață că „nu sunt obiecte”, iar la evaluare e penalizat dacă le detectează.
+VisDrone vine in formatul lui propriu, iar Ultralytics YOLO citeste alt format. In plus, VisDrone are regiuni marcate ca „ignorate”: zone cu obiecte prea mici sau prea dese, pe care adnotatorii nu le-au etichetat unul cate unul. Daca le lasam in imagine, modelul vede acolo masini fara eticheta si invata ca „nu sunt obiecte”, iar la evaluare e penalizat daca le detecteaza.
 
 ## Schema
 
@@ -14,62 +14,62 @@ flowchart LR
 train, val, test-dev"] --> B["parse
 text → tabel cu 8 coloane"]
     B --> C["convert
-separă obiectele de regiunile ignorate"]
+separa obiectele de regiunile ignorate"]
     C --> D["mask_ignored
-acoperă cu gri regiunile ignorate"]
+acopera cu gri regiunile ignorate"]
     C --> E["write_labels
-etichete în format YOLO"]
+etichete in format YOLO"]
     D --> F[("datasets/VisDrone
 images/, labels/, data.yaml")]
     E --> F
     F --> G["pi-check
-caută greșeli"]
+cauta greseli"]
     F --> H["pi-eda
 grafice despre obiecte"]
 ```
 
-## Cele două formate
+## Cele doua formate
 
-O linie dintr-un fișier de adnotări VisDrone descrie un obiect:
+O linie dintr-un fisier de adnotari VisDrone descrie un obiect:
 
 ```
-x, y, lățime, înălțime, scor, categorie, trunchiere, ocluzie
+x, y, latime, inaltime, scor, categorie, trunchiere, ocluzie
 684, 8, 273, 116, 0, 0, 0, 0
 406, 119, 265, 70, 1, 4, 0, 0
 ```
 
-- `(x, y)` este colțul stânga-sus al chenarului, în pixeli;
-- `scor` 0 înseamnă „ignoră acest chenar”;
-- `categorie` 1–10 sunt clasele reale; 0 este „regiune ignorată”, 11 este „altele”.
+- `(x, y)` este coltul stanga-sus al chenarului, in pixeli;
+- `scor` 0 inseamna „ignora acest chenar”;
+- `categorie` 1–10 sunt clasele reale; 0 este „regiune ignorata”, 11 este „altele”.
 
-Aceeași mașină (a doua linie), în format YOLO, într-o imagine de 1360 × 765:
+Aceeasi masina (a doua linie), in format YOLO, intr-o imagine de 1360 × 765:
 
 ```
 3 0.395956 0.201307 0.194853 0.091503
 ```
 
-- prima valoare este clasa, numărată de la 0 (4 − 1 = 3, adică `car`);
-- urmează centrul chenarului și dimensiunile lui, împărțite la lățimea și înălțimea imaginii.
+- prima valoare este clasa, numarata de la 0 (4 − 1 = 3, adica `car`);
+- urmeaza centrul chenarului si dimensiunile lui, impartite la latimea si inaltimea imaginii.
 
-Calculul pentru centrul pe orizontală: (406 + 265 / 2) / 1360 = 0.3960.
+Calculul pentru centrul pe orizontala: (406 + 265 / 2) / 1360 = 0.3960.
 
-## Ce se întâmplă cu fiecare adnotare
+## Ce se intampla cu fiecare adnotare
 
-Funcția `convert` împarte liniile în trei categorii:
+Functia `convert` imparte liniile in trei categorii:
 
-| Condiție | Ce devine |
+| Conditie | Ce devine |
 |---|---|
-| scor ≠ 0 și categorie între 1 și 10 | obiect păstrat, scris în etichete |
-| scor = 0, categorie 0 sau categorie 11 | regiune ignorată, acoperită cu gri |
-| chenar cu arie zero după tăierea la marginile imaginii | aruncat |
+| scor ≠ 0 si categorie intre 1 si 10 | obiect pastrat, scris in etichete |
+| scor = 0, categorie 0 sau categorie 11 | regiune ignorata, acoperita cu gri |
+| chenar cu arie zero dupa taierea la marginile imaginii | aruncat |
 
-Funcția `mask_ignored` vopsește regiunile ignorate cu gri (valoarea 114, aceeași cu care YOLO completează marginile imaginii). Dacă un obiect păstrat se află într-o regiune ignorată, pixelii lui rămân vizibili.
+Functia `mask_ignored` vopseste regiunile ignorate cu gri (valoarea 114, aceeasi cu care YOLO completeaza marginile imaginii). Daca un obiect pastrat se afla intr-o regiune ignorata, pixelii lui raman vizibili.
 
-## Verificarea și analiza
+## Verificarea si analiza
 
-`pi-check` trece prin tot setul și raportează imagini corupte, imagini fără etichetă, clase inexistente, chenare cu arie zero sau în afara imaginii și linii duplicate. Se rulează și după feliere, pentru că acolo se scriu etichete noi.
+`pi-check` trece prin tot setul si raporteaza imagini corupte, imagini fara eticheta, clase inexistente, chenare cu arie zero sau in afara imaginii si linii duplicate. Se ruleaza si dupa feliere, pentru ca acolo se scriu etichete noi.
 
-`pi-eda` face grafice despre date: câte obiecte are fiecare clasă, câte obiecte sunt pe imagine și, cel mai important, cât de mari sunt obiectele așa cum le vede modelul. O imagine de 1920 px micșorată la 640 px își micșorează și obiectele de 3 ori, iar multe ajung sub 16 px. Acesta e motivul pentru felierea din etapa 4.
+`pi-eda` face grafice despre date: cate obiecte are fiecare clasa, cate obiecte sunt pe imagine si, cel mai important, cat de mari sunt obiectele asa cum le vede modelul. O imagine de 1920 px micsorata la 640 px isi micsoreaza si obiectele de 3 ori, iar multe ajung sub 16 px. Acesta e motivul pentru felierea din etapa 4.
 
 ## Rezultatul
 
@@ -78,15 +78,15 @@ datasets/VisDrone/
     images/train/   6471 imagini
     images/val/      548 imagini
     images/test/    1610 imagini
-    labels/...      câte un .txt pentru fiecare imagine
-    annotations/... adnotările originale, păstrate
-    data.yaml       ce citește Ultralytics
+    labels/...      cate un .txt pentru fiecare imagine
+    annotations/... adnotarile originale, pastrate
+    data.yaml       ce citeste Ultralytics
 ```
 
 ## Comenzi
 
 ```bash
-uv run pi-prepare          # descarcă (~2 GB) și convertește
-uv run pi-check            # trebuie să afișeze OK pentru train și val
-uv run pi-eda              # scrie graficele în eda_out/
+uv run pi-prepare          # descarca (~2 GB) si converteste
+uv run pi-check            # trebuie sa afiseze OK pentru train si val
+uv run pi-eda              # scrie graficele in eda_out/
 ```

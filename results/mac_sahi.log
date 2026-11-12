@@ -598,7 +598,7 @@
 400/548
 450/548
 500/548
-mod sahi, 548 imagini, 103 ms/imagine (3 de încălzire)
+mod sahi, 548 imagini, 103 ms/imagine (3 de incalzire)
 mAP50-95: 0.166  mAP50: 0.298
         pedestrian: 0.188
             people: 0.077

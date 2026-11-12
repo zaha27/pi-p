@@ -1,5 +1,3 @@
-"""CLAHE pe canalul L, pe toate imaginile sau doar pe cele slabe (`pi-clahe`)."""
-
 import argparse
 import shutil
 from concurrent.futures import ThreadPoolExecutor
@@ -17,19 +15,16 @@ WEAK = {"dark", "low_contrast"}
 
 
 def clahe(img: np.ndarray, clip: float = 2.0, grid: int = 8) -> np.ndarray:
-    """CLAHE pe canalul L al unei imagini BGR."""
     lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
     lab[:, :, 0] = cv2.createCLAHE(clipLimit=clip, tileGridSize=(grid, grid)).apply(lab[:, :, 0])
     return cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
 
 
 def needs_clahe(name: str, mode: str, groups: dict[str, str]) -> bool:
-    """În modul uniform, orice imagine; în cel adaptiv, doar cele întunecate sau slab contrastate."""
     return mode == "uniform" or groups.get(name) in WEAK
 
 
 def enhance_image(src: Path, dst: Path, mode: str, groups: dict[str, str], clip: float, grid: int) -> bool:
-    """Scrie imaginea în setul nou, cu CLAHE sau copiată neatinsă. Întoarce True dacă a aplicat CLAHE."""
     if not needs_clahe(src.name, mode, groups):
         shutil.copy2(src, dst / src.name)
         return False
@@ -49,7 +44,7 @@ def main():
     args = ap.parse_args()
     dst = args.dst or args.src.parent / ("VisDrone-clahe" if args.mode == "uniform" else "VisDrone-clahe-adaptive")
     if dst.exists():
-        raise SystemExit(f"{dst} există deja; șterge-l sau alege alt --dst")
+        raise SystemExit(f"{dst} exista deja; sterge-l sau alege alt --dst")
     groups = read_groups(args.src / "stats.csv") if args.mode == "adaptive" else {}
     for split in args.splits:
         imgs = images(args.src, split)

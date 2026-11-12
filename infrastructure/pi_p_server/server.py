@@ -44,7 +44,7 @@ def client_ip(request: Request) -> str:
 async def require_login(request: Request, call_next):
     path = request.url.path
     if path.startswith("/api/") and path not in PUBLIC and not auth.valid(request.cookies.get(COOKIE)):
-        return JSONResponse({"detail": "Autentificare necesară"}, status_code=401)
+        return JSONResponse({"detail": "Autentificare necesara"}, status_code=401)
     return await call_next(request)
 
 
@@ -58,7 +58,7 @@ async def login(request: Request, response: Response) -> dict:
     if not auth.enabled:
         return {"ok": True}
     if not auth.allow_attempt(client_ip(request)):
-        raise HTTPException(429, "Prea multe încercări, așteaptă un minut")
+        raise HTTPException(429, "Prea multe incercari, asteapta un minut")
     try:
         code = str((await request.json()).get("code", "")).strip()
     except ValueError:
@@ -102,7 +102,7 @@ async def upload(file: UploadFile) -> dict:
             if size > MAX_UPLOAD:
                 f.close()
                 shutil.rmtree(d)
-                raise HTTPException(413, "Fișier prea mare (max 2 GB)")
+                raise HTTPException(413, "Fisier prea mare (max 2 GB)")
             f.write(chunk)
     return {"id": vid}
 
@@ -131,7 +131,7 @@ def result(vid: str, name: str) -> FileResponse:
 
 def parse_start(msg: dict) -> tuple[Path, Path, str, bool, int, float, bool]:
     if msg.get("action") != "start":
-        raise ValueError("Primul mesaj trebuie să fie start")
+        raise ValueError("Primul mesaj trebuie sa fie start")
     if msg.get("library"):
         video = resolve(LIBRARY, str(msg["library"]))
         out = WORK / uuid.uuid4().hex
@@ -144,7 +144,7 @@ def parse_start(msg: dict) -> tuple[Path, Path, str, bool, int, float, bool]:
         raise ValueError("Model necunoscut")
     slice_size = int(msg.get("slice", 0))
     if slice_size and not 160 <= slice_size <= 2048:
-        raise ValueError("Fereastra trebuie între 160 și 2048 px")
+        raise ValueError("Fereastra trebuie intre 160 si 2048 px")
     conf = min(max(float(msg.get("conf", 0.25)), 0.05), 0.95)
     return video, out, weights, bool(msg.get("track", True)), slice_size, conf, bool(msg.get("realtime", True))
 
@@ -162,7 +162,7 @@ async def stream(ws: WebSocket) -> None:
         await ws.close()
         return
     if slots.locked():
-        await ws.send_json({"type": "error", "message": "Serverul procesează deja numărul maxim de video-uri"})
+        await ws.send_json({"type": "error", "message": "Serverul proceseaza deja numarul maxim de video-uri"})
         await ws.close()
         return
     async with slots:
@@ -263,7 +263,7 @@ def main():
     secret = os.environ.get("PI_P_TOTP_SECRET") or load_env().get("PI_P_TOTP_SECRET")
     auth = Auth(secret)
     if not auth.enabled:
-        print("Atenție: PI_P_TOTP_SECRET nu e setat, aplicația rulează fără autentificare")
+        print("Atentie: PI_P_TOTP_SECRET nu e setat, aplicatia ruleaza fara autentificare")
     cleanup()
     uvicorn.run(app, host=args.host, port=args.port)
 

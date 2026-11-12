@@ -1,5 +1,3 @@
-"""Evaluarea pe imaginile întregi, în modurile val, full, slice, sahi și adaptive (`pi-eval`)."""
-
 import argparse
 import json
 import time
@@ -24,13 +22,11 @@ NO_WINDOWS = np.zeros((0, 4), np.int32)
 
 
 def ground_truth(img_path: Path, w: int, h: int) -> np.ndarray:
-    """Etichetele unei imagini, în pixeli: clasă, x1, y1, x2, y2."""
     lab = read_labels(label_path(img_path))
     return np.column_stack([lab[:, 0], xywhn2xyxy(lab[:, 1:], w=w, h=h)])
 
 
 def sahi_detect(sahi_model, img: np.ndarray, args) -> np.ndarray:
-    """Detecție pe ferestre cu biblioteca SAHI, cu aceleași ferestre și același prag ca `slice`."""
     from sahi.predict import get_sliced_prediction
 
     res = get_sliced_prediction(
@@ -45,7 +41,6 @@ def sahi_detect(sahi_model, img: np.ndarray, args) -> np.ndarray:
 
 
 def detect(model, img: np.ndarray, args) -> tuple[np.ndarray, np.ndarray]:
-    """Detecțiile în modul cerut și ferestrele procesate în plus (doar la adaptive)."""
     if args.mode == "full":
         return model.predict(img, imgsz=args.imgsz, conf=args.conf, device=args.device, verbose=False)[0].boxes.data.cpu().numpy(), NO_WINDOWS
     if args.mode == "slice":
@@ -57,7 +52,6 @@ def detect(model, img: np.ndarray, args) -> tuple[np.ndarray, np.ndarray]:
 
 
 def load_model(args):
-    """Modelul YOLO, sau învelit pentru SAHI."""
     if args.mode != "sahi":
         return YOLO(args.weights)
     from sahi import AutoDetectionModel
@@ -69,24 +63,21 @@ def load_model(args):
 
 
 def sync() -> None:
-    """Așteaptă placa video, ca timpul măsurat să fie cel real."""
     if torch.cuda.is_available():
         torch.cuda.synchronize()
 
 
 def window_area(windows: np.ndarray, w: int, h: int) -> float:
-    """Suprafața totală a ferestrelor, ca multiplu al suprafeței imaginii."""
     win = windows.astype(np.int64)
     return float(((win[:, 2] - win[:, 0]) * (win[:, 3] - win[:, 1])).sum()) / (w * h)
 
 
 def evaluate(args) -> None:
-    """Rulează detecția pe toate imaginile, apoi calculează mAP pe tot setul și pe grupe."""
     model = load_model(args)
     paths = images(Path(args.data).parent, args.split)[: args.limit or None]
     if not paths:
         raise SystemExit("Nicio imagine de evaluat")
-    # aceeași limită pentru toate modurile, dar niciodată sub numărul de obiecte dintr-o imagine
+    # aceeasi limita pentru toate modurile, dar niciodata sub numarul de obiecte dintr-o imagine
     max_det = max(MAX_DET, *(len(read_labels(label_path(p))) for p in paths))
     for p in paths[:WARMUP]:
         detect(model, cv2.imread(str(p)), args)
@@ -94,7 +85,7 @@ def evaluate(args) -> None:
     for i, p in enumerate(paths, 1):
         img = cv2.imread(str(p))
         if img is None:
-            print(f"{p}: imagine ilizibilă, sărită")
+            print(f"{p}: imagine ilizibila, sarita")
             continue
         sync()
         start = time.perf_counter()
@@ -117,12 +108,12 @@ def evaluate(args) -> None:
         "ms_per_image": 1000 * seconds / max(len(results), 1),
         "windows_per_image": float(np.mean(n_windows)), "window_area": float(np.mean(areas)),
     }
-    print(f"mod {args.mode}, {len(results)} imagini, {report['ms_per_image']:.0f} ms/imagine ({WARMUP} de încălzire)")
+    print(f"mod {args.mode}, {len(results)} imagini, {report['ms_per_image']:.0f} ms/imagine ({WARMUP} de incalzire)")
     print(f"mAP50-95: {map50_95:.3f}  mAP50: {map50:.3f}")
     for name, ap in report["ap_per_class"].items():
         print(f"  {name:>16}: {ap:.3f}")
     if args.mode == "adaptive":
-        print(f"ferestre: {report['windows_per_image']:.2f} pe imagine, pixeli procesați: {1 + report['window_area']:.2f}x imaginea")
+        print(f"ferestre: {report['windows_per_image']:.2f} pe imagine, pixeli procesati: {1 + report['window_area']:.2f}x imaginea")
         report["params"] = vars(args.params)
     if args.groups:
         groups = read_groups(args.groups)
@@ -139,7 +130,6 @@ def evaluate(args) -> None:
 
 
 def validate(args) -> None:
-    """Validarea Ultralytics; cu --coco, pentru un model cu clasele COCO."""
     model = YOLO(args.weights)
     data, classes = args.data, None
     if args.coco:
@@ -156,26 +146,26 @@ def validate(args) -> None:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("weights", help="ex. yolo26n.pt (baseline COCO, cu --coco) sau best.pt")
-    ap.add_argument("overrides", nargs="*", help="key=value pentru configs/adaptive.yaml (doar adaptive); se scriu imediat după weights")
+    ap.add_argument("overrides", nargs="*", help="key=value pentru configs/adaptive.yaml (doar adaptive); se scriu imediat dupa weights")
     ap.add_argument("--data", default="datasets/VisDrone/data.yaml")
     ap.add_argument("--imgsz", type=int, default=640)
     ap.add_argument("--device", default=None)
-    ap.add_argument("--coco", action="store_true", help="model cu clase COCO: mapează etichetele VisDrone pe COCO")
+    ap.add_argument("--coco", action="store_true", help="model cu clase COCO: mapeaza etichetele VisDrone pe COCO")
     ap.add_argument("--mode", choices=["val", "full", "slice", "sahi", "adaptive"], default="val",
-                    help="val = model.val() Ultralytics; full/slice/sahi/adaptive = mAP calculat de noi pe imaginea întreagă")
+                    help="val = model.val() Ultralytics; full/slice/sahi/adaptive = mAP calculat de noi pe imaginea intreaga")
     ap.add_argument("--split", default="val")
-    ap.add_argument("--conf", type=float, default=0.001, help="același prag mic pentru toate variantele")
-    ap.add_argument("--iou", type=float, default=0.5, help="prag IOS la combinarea detecțiilor din ferestre")
-    ap.add_argument("--slice", type=int, default=640, help="mărimea ferestrei pentru slice și sahi")
+    ap.add_argument("--conf", type=float, default=0.001, help="acelasi prag mic pentru toate variantele")
+    ap.add_argument("--iou", type=float, default=0.5, help="prag IOS la combinarea detectiilor din ferestre")
+    ap.add_argument("--slice", type=int, default=640, help="marimea ferestrei pentru slice si sahi")
     ap.add_argument("--overlap", type=float, default=0.2)
     ap.add_argument("--adaptive-config", default="configs/adaptive.yaml")
-    ap.add_argument("--groups", type=Path, default=None, help="stats.csv de la pi-stats: mAP și pe fiecare grupă")
+    ap.add_argument("--groups", type=Path, default=None, help="stats.csv de la pi-stats: mAP si pe fiecare grupa")
     ap.add_argument("--limit", type=int, default=0, help="doar primele N imagini (0 = toate)")
-    ap.add_argument("--out", type=Path, default=None, help="fișier JSON cu rezultatele")
+    ap.add_argument("--out", type=Path, default=None, help="fisier JSON cu rezultatele")
     args = ap.parse_args()
     if args.mode == "val":
         if args.limit or args.out or args.groups or args.overrides:
-            raise SystemExit("--limit, --out, --groups și overrides nu se folosesc cu --mode val")
+            raise SystemExit("--limit, --out, --groups si overrides nu se folosesc cu --mode val")
         validate(args)
         return
     if args.coco:
@@ -183,7 +173,7 @@ def main():
     if args.overrides and args.mode != "adaptive":
         raise SystemExit("overrides key=value se folosesc doar cu --mode adaptive")
     if args.mode == "adaptive":
-        # --conf are prioritate față de config, ca toate modurile să fie evaluate la același prag
+        # --conf are prioritate fata de config, ca toate modurile sa fie evaluate la acelasi prag
         args.params = load_params(args.adaptive_config, (f"conf={args.conf}", *args.overrides))
     evaluate(args)
 

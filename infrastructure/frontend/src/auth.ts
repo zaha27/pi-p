@@ -33,7 +33,7 @@ async function submit(): Promise<void> {
   });
   if (res.ok) return showApp();
   const body = (await res.json().catch(() => ({}))) as { detail?: string };
-  showLogin(body.detail ?? "Autentificare eșuată");
+  showLogin(body.detail ?? "Autentificare esuata");
 }
 
 export async function boot(ready: () => void, onLogout: () => void): Promise<void> {

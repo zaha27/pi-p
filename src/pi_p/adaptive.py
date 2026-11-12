@@ -34,7 +34,7 @@ def load_params(path: str, overrides: tuple[str, ...] = ()) -> AdaptiveParams:
 def boxes_to_mask(boxes_xyxy: np.ndarray, width: int, height: int) -> np.ndarray:
     mask = np.zeros((height, width), dtype=np.uint8)
     for x1, y1, x2, y2 in boxes_xyxy:
-        # floor/ceil acoperă tot obiectul; max/min taie caseta la marginile imaginii
+        # floor/ceil acopera tot obiectul; max/min taie caseta la marginile imaginii
         left, top = max(int(np.floor(x1)), 0), max(int(np.floor(y1)), 0)
         right, bottom = min(int(np.ceil(x2)), width), min(int(np.ceil(y2)), height)
         if right > left and bottom > top:
@@ -43,7 +43,7 @@ def boxes_to_mask(boxes_xyxy: np.ndarray, width: int, height: int) -> np.ndarray
 
 
 def dilate_mask(mask: np.ndarray, kernel_size: int) -> np.ndarray:
-    # kernel-ul par nu are pixel central, deci masca ar crește asimetric
+    # kernel-ul par nu are pixel central, deci masca ar creste asimetric
     if kernel_size < 1 or kernel_size % 2 == 0:
         raise ValueError(f"kernel_size must be a positive odd integer, got {kernel_size}")
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, kernel_size))
@@ -52,7 +52,7 @@ def dilate_mask(mask: np.ndarray, kernel_size: int) -> np.ndarray:
 
 def mask_to_rects(mask: np.ndarray) -> np.ndarray:
     _, _, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=CONNECTIVITY)
-    # eticheta 0 e fundalul, nu o pată
+    # eticheta 0 e fundalul, nu o pata
     rects = stats[1:, :4].copy()
     rects[:, 2:] += rects[:, :2]
     return rects
@@ -103,7 +103,7 @@ class AdaptiveTrace(NamedTuple):
 
 
 def window_stages(boxes_xyxy: np.ndarray, width: int, height: int, params: AdaptiveParams) -> WindowStages:
-    # max(..., 1.0): masca nu e niciodată mai mare decât imaginea
+    # max(..., 1.0): masca nu e niciodata mai mare decat imaginea
     scale = max(max(width, height) / params.mask_size, 1.0)
     mask = boxes_to_mask(boxes_xyxy / scale, math.ceil(width / scale), math.ceil(height / scale))
     dilated = dilate_mask(mask, params.dilate_kernel)
@@ -134,7 +134,7 @@ def keep_confident(det: torch.Tensor, conf: float) -> torch.Tensor:
 
 def adaptive_trace(model: YOLO, img: np.ndarray, params: AdaptiveParams, device) -> AdaptiveTrace:
     h, w = img.shape[:2]
-    # prima trecere la pragul mai mic, ca să nu taie casetele dintre conf și prelim_conf
+    # prima trecere la pragul mai mic, ca sa nu taie casetele dintre conf si prelim_conf
     prelim = detect(model, [img], params.prelim_imgsz, min(params.prelim_conf, params.conf), device)[0]
     seeds = keep_confident(prelim, params.prelim_conf)
     stages = window_stages(seeds[:, :4].numpy(), w, h, params)

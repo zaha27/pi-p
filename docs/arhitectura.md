@@ -2,29 +2,29 @@
 %%{init: {'theme':'base','themeVariables':{'fontSize':'16px','lineColor':'#4B5563'}}}%%
 flowchart LR
     A["`**Imagine de intrare**
-fotografie aeriană din VisDrone, cu multe obiecte mici și condiții variate de lumină`"]
-    B["`**Analiza statistică**
-măsoară luminozitatea, contrastul și zgomotul din histogramă; încadrează imaginea într-o grupă (întuneric, contrast slab, normal)`"]
-    C["`**Îmbunătățirea contrastului**
-CLAHE pe canalul de luminanță, ca să nu altereze culorile; uniform pe toate imaginile sau adaptiv, doar pe grupele care îl cer`"]
-    D["`**Feliere pe grilă fixă (sau SAHI)**
-ferestre suprapuse pe toată imaginea, ca fiecare obiect să apară întreg măcar într-una; plus imaginea întreagă, micșorată, pentru obiectele mari`"]
-    K["`**Detecție preliminară**
-YOLO pe imaginea micșorată arată rapid unde sunt obiecte; inspirat din QueryDet`"]
+fotografie aeriana din VisDrone, cu multe obiecte mici si conditii variate de lumina`"]
+    B["`**Analiza statistica**
+masoara luminozitatea, contrastul si zgomotul din histograma; incadreaza imaginea intr-o grupa (intuneric, contrast slab, normal)`"]
+    C["`**Imbunatatirea contrastului**
+CLAHE pe canalul de luminanta, ca sa nu altereze culorile; uniform pe toate imaginile sau adaptiv, doar pe grupele care il cer`"]
+    D["`**Feliere pe grila fixa (sau SAHI)**
+ferestre suprapuse pe toata imaginea, ca fiecare obiect sa apara intreg macar intr-una; plus imaginea intreaga, micsorata, pentru obiectele mari`"]
+    K["`**Detectie preliminara**
+YOLO pe imaginea micsorata arata rapid unde sunt obiecte; inspirat din QueryDet`"]
     L["`**Ferestre adaptive**
-detecțiile devin o mască, dilatată ca obiectele apropiate să se unească; fiecare componentă conexă devine o fereastră; inspirat din ClusDet`"]
-    E["`**Detecție pe ferestre**
-YOLO pe fiecare fereastră; chenarele găsite sunt mutate în coordonatele imaginii întregi`"]
+detectiile devin o masca, dilatata ca obiectele apropiate sa se uneasca; fiecare componenta conexa devine o fereastra; inspirat din ClusDet`"]
+    E["`**Detectie pe ferestre**
+YOLO pe fiecare fereastra; chenarele gasite sunt mutate in coordonatele imaginii intregi`"]
     F["`**Antrenarea modelului**
-fine-tuning YOLO26n pe train, pe imagini întregi sau pe felii, cu aceeași îmbunătățire a contrastului ca la test; parametri aleși pe val`"]
-    G["`**Fuziunea detecțiilor**
-elimină obiectele tăiate la marginea ferestrelor și păstrează un singur chenar acolo unde ferestrele suprapuse au găsit același obiect`"]
-    H["`**Detecții finale**
-chenar, clasă (pieton, mașină etc.) și scor de încredere pentru fiecare obiect`"]
+fine-tuning YOLO26n pe train, pe imagini intregi sau pe felii, cu aceeasi imbunatatire a contrastului ca la test; parametri alesi pe val`"]
+    G["`**Fuziunea detectiilor**
+elimina obiectele taiate la marginea ferestrelor si pastreaza un singur chenar acolo unde ferestrele suprapuse au gasit acelasi obiect`"]
+    H["`**Detectii finale**
+chenar, clasa (pieton, masina etc.) si scor de incredere pentru fiecare obiect`"]
     I["`**Evaluare**
-mAP față de etichetele făcute de oameni, pe tot setul și pe fiecare grupă; timp pe imagine`"]
+mAP fata de etichetele facute de oameni, pe tot setul si pe fiecare grupa; timp pe imagine`"]
     J["`**Tabel de rezultate**
-o linie pentru fiecare variantă testată, comparată cu baseline-ul`"]
+o linie pentru fiecare varianta testata, comparata cu baseline-ul`"]
 
     A --> B --> C --> D --> E
     F --> E
@@ -32,7 +32,7 @@ o linie pentru fiecare variantă testată, comparată cu baseline-ul`"]
     B --> I
     C --> K --> L --> E
 
-    LEG["⬜ intrare &nbsp; 🟦 prelucrarea imaginii &nbsp; 🟩 antrenare și detecție &nbsp; 🟨 evaluare"]
+    LEG["⬜ intrare &nbsp; 🟦 prelucrarea imaginii &nbsp; 🟩 antrenare si detectie &nbsp; 🟨 evaluare"]
     J ~~~ LEG
 
     classDef inp fill:#F3F4F6,stroke:#374151,stroke-width:2px,color:#111827
@@ -48,6 +48,6 @@ o linie pentru fiecare variantă testată, comparată cu baseline-ul`"]
     class LEG leg
 ```
 
-Drumul de sus (feliere pe grilă) și cel de jos (detecție preliminară și ferestre adaptive) sunt două feluri de a alege ferestrele; se folosesc separat sau împreună (`pi-eval --mode slice`, `sahi` sau `adaptive`).
+Drumul de sus (feliere pe grila) si cel de jos (detectie preliminara si ferestre adaptive) sunt doua feluri de a alege ferestrele; se folosesc separat sau impreuna (`pi-eval --mode slice`, `sahi` sau `adaptive`).
 
-Fiecare casetă din schemă este explicată pas cu pas în [pipeline/README.md](pipeline/README.md).
+Fiecare caseta din schema este explicata pas cu pas in [pipeline/README.md](pipeline/README.md).

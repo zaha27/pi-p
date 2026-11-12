@@ -1,6 +1,6 @@
 # Pipeline-ul proiectului
 
-Documentul arată cum se leagă comenzile `pi-*` între ele: ce primește fiecare, ce produce și ce variantă din experimente acoperă. Motivația metodelor e în [Arhitectura_si_metodologie.md](Arhitectura_si_metodologie.md), iar ordinea experimentelor în [benchmarkuri.md](benchmarkuri.md).
+Documentul arata cum se leaga comenzile `pi-*` intre ele: ce primeste fiecare, ce produce si ce varianta din experimente acopera. Motivatia metodelor e in [Arhitectura_si_metodologie.md](Arhitectura_si_metodologie.md), iar ordinea experimentelor in [benchmarkuri.md](benchmarkuri.md).
 
 ## 1. De la date la rezultate
 
@@ -8,15 +8,15 @@ Documentul arată cum se leagă comenzile `pi-*` între ele: ce primește fiecar
 %%{init: {'theme':'base','themeVariables':{'fontSize':'15px','lineColor':'#4B5563'}}}%%
 flowchart TB
     RAW["`**VisDrone2019-DET**
-adnotări în formatul original`"]
+adnotari in formatul original`"]
     PREP["`**pi-prepare**
 format YOLO, zonele ignorate acoperite cu gri`"]
     CHECK["`**pi-check**
 imagini corupte, etichete invalide`"]
     EDA["`**pi-eda**
-clase, mărimi, densitate`"]
+clase, marimi, densitate`"]
     STATS["`**pi-stats**
-luminozitate și contrast → stats.csv`"]
+luminozitate si contrast → stats.csv`"]
     CLAHE["`**pi-clahe**
 uniform sau adaptiv`"]
     TILE["`**pi-tile**
@@ -24,7 +24,7 @@ felii de 640 px, suprapunere 20%`"]
     TRAIN["`**pi-train**
 fine-tuning YOLO26n → best.pt`"]
     EVAL["`**pi-eval**
-mAP total, pe clase și pe grupe`"]
+mAP total, pe clase si pe grupe`"]
 
     RAW --> PREP --> CHECK
     CHECK --> EDA
@@ -47,23 +47,23 @@ mAP total, pe clase și pe grupe`"]
     class EVAL eva
 ```
 
-Fiecare pas scrie un set de date nou în `datasets/` și nu îl modifică pe cel de intrare, cu excepția lui `pi-prepare`, care convertește datele pe loc:
+Fiecare pas scrie un set de date nou in `datasets/` si nu il modifica pe cel de intrare, cu exceptia lui `pi-prepare`, care converteste datele pe loc:
 
 | Set de date | Produs de | Folosit pentru |
 |---|---|---|
-| `datasets/VisDrone` | `pi-prepare` | antrenarea pe imagini întregi și toate evaluările |
+| `datasets/VisDrone` | `pi-prepare` | antrenarea pe imagini intregi si toate evaluarile |
 | `datasets/VisDrone-tiled` | `pi-tile` | antrenarea pe felii |
 | `datasets/VisDrone-clahe` | `pi-clahe --mode uniform` | etapa 2, CLAHE pe toate imaginile |
-| `datasets/VisDrone-clahe-adaptive` | `pi-clahe --mode adaptive` | etapa 2, CLAHE doar pe grupele `dark` și `low_contrast` |
+| `datasets/VisDrone-clahe-adaptive` | `pi-clahe --mode adaptive` | etapa 2, CLAHE doar pe grupele `dark` si `low_contrast` |
 
 ## 2. Ce face `pi-eval` cu o imagine
 
-Toate modurile primesc aceeași imagine întreagă și aceleași etichete, deci diferă doar felul în care se obțin detecțiile. Calculul mAP-ului e comun ([metrics.py](../src/pi_p/metrics.py)).
+Toate modurile primesc aceeasi imagine intreaga si aceleasi etichete, deci difera doar felul in care se obtin detectiile. Calculul mAP-ului e comun ([metrics.py](../src/pi_p/metrics.py)).
 
 ```mermaid
 %%{init: {'theme':'base','themeVariables':{'fontSize':'15px','lineColor':'#4B5563'}}}%%
 flowchart LR
-    IMG["imaginea întreagă"]
+    IMG["imaginea intreaga"]
     FULL["`**full**
 o trecere a modelului`"]
     SLICE["`**slice**
@@ -71,13 +71,13 @@ imaginea + ferestrele grilei`"]
     SAHI["`**sahi**
 la fel, prin biblioteca SAHI`"]
     ADA["`**adaptive**
-detecție preliminară → ferestre doar unde sunt obiecte`"]
+detectie preliminara → ferestre doar unde sunt obiecte`"]
     SHIFT["`**to_image**
-casetele tăiate de marginea ferestrei se aruncă, restul se mută în coordonatele imaginii`"]
+casetele taiate de marginea ferestrei se arunca, restul se muta in coordonatele imaginii`"]
     MERGE["`**merge**
-dublurile de aceeași clasă se elimină după IOS`"]
+dublurile de aceeasi clasa se elimina dupa IOS`"]
     MAP["`**mean_ap**
-același plafon de detecții pentru toate modurile`"]
+acelasi plafon de detectii pentru toate modurile`"]
 
     IMG --> FULL --> MAP
     IMG --> SLICE --> SHIFT
@@ -95,58 +95,58 @@ același plafon de detecții pentru toate modurile`"]
     class MAP eva
 ```
 
-SAHI face aceiași pași în interiorul bibliotecii, cu propria fuziune (`GREEDYNMM` după IOS).
+SAHI face aceiasi pasi in interiorul bibliotecii, cu propria fuziune (`GREEDYNMM` dupa IOS).
 
-Ferestrele adaptive ([adaptive.py](../src/pi_p/adaptive.py)) se construiesc din detecțiile preliminare astfel:
+Ferestrele adaptive ([adaptive.py](../src/pi_p/adaptive.py)) se construiesc din detectiile preliminare astfel:
 
 ```mermaid
 %%{init: {'theme':'base','themeVariables':{'fontSize':'15px','lineColor':'#4B5563'}}}%%
 flowchart LR
-    P["`**detecție preliminară**
-imaginea micșorată, prag prelim_conf`"]
-    M["`**mască**
-casetele desenate pe o mască de mask_size`"]
+    P["`**detectie preliminara**
+imaginea micsorata, prag prelim_conf`"]
+    M["`**masca**
+casetele desenate pe o masca de mask_size`"]
     D["`**dilatare**
 obiectele apropiate se unesc`"]
     R["`**dreptunghiuri**
 componente conexe`"]
     W["`**ferestre**
-cu margine, minim min_size, în interiorul imaginii`"]
+cu margine, minim min_size, in interiorul imaginii`"]
     P --> M --> D --> R --> W
     classDef var fill:#DBEAFE,stroke:#1D4ED8,stroke-width:2px,color:#111827
     class P,M,D,R,W var
 ```
 
-Parametrii sunt în [configs/adaptive.yaml](../configs/adaptive.yaml) și se pot schimba din linia de comandă cu `key=value`.
+Parametrii sunt in [configs/adaptive.yaml](../configs/adaptive.yaml) si se pot schimba din linia de comanda cu `key=value`.
 
 ## 3. Comenzile
 
-| Comandă | Modul | Intrare | Ieșire | Opțiuni importante |
+| Comanda | Modul | Intrare | Iesire | Optiuni importante |
 |---|---|---|---|---|
-| `pi-prepare` | [prepare.py](../src/pi_p/prepare.py) | arhivele VisDrone (descărcate automat) | `datasets/VisDrone`, `data.yaml` | `--splits` |
-| `pi-check` | [check.py](../src/pi_p/check.py) | setul de date | raport în consolă, cod 1 la erori | `--splits` |
-| `pi-eda` | [eda.py](../src/pi_p/eda.py) | un split | `eda_out/summary.json` și grafice | `--imgsz 640 1024` |
+| `pi-prepare` | [prepare.py](../src/pi_p/prepare.py) | arhivele VisDrone (descarcate automat) | `datasets/VisDrone`, `data.yaml` | `--splits` |
+| `pi-check` | [check.py](../src/pi_p/check.py) | setul de date | raport in consola, cod 1 la erori | `--splits` |
+| `pi-eda` | [eda.py](../src/pi_p/eda.py) | un split | `eda_out/summary.json` si grafice | `--imgsz 640 1024` |
 | `pi-stats` | [stats.py](../src/pi_p/stats.py) | toate split-urile | `stats.csv`, `stats.png` | `--dark 70`, `--low-contrast 35` |
-| `pi-clahe` | [enhance.py](../src/pi_p/enhance.py) | setul de date și `stats.csv` | set nou, cu imagini îmbunătățite | `--mode uniform\|adaptive`, `--clip`, `--grid` |
+| `pi-clahe` | [enhance.py](../src/pi_p/enhance.py) | setul de date si `stats.csv` | set nou, cu imagini imbunatatite | `--mode uniform\|adaptive`, `--clip`, `--grid` |
 | `pi-tile` | [tile.py](../src/pi_p/tile.py) | setul de date | set nou, cu felii | `--size`, `--overlap`, `--min-visibility`, `--empty` |
-| `pi-train` | [train.py](../src/pi_p/train.py) | un fișier din `configs/` | `runs/<name>/weights/best.pt` | `key=value` peste config |
-| `pi-eval` | [evaluate.py](../src/pi_p/evaluate.py) | `best.pt` și setul de date | mAP în consolă, JSON cu `--out` | `--mode`, `--groups`, `--limit` |
-| `pi-predict` | [predict.py](../src/pi_p/predict.py) | imagine, folder sau video | imagini cu detecțiile desenate | `--slice` |
-| `python -m pi_p.adaptive_figure` | [adaptive_figure.py](../src/pi_p/adaptive_figure.py) | o imagine | figura cu pașii ferestrelor adaptive | `--comparison-out` |
+| `pi-train` | [train.py](../src/pi_p/train.py) | un fisier din `configs/` | `runs/<name>/weights/best.pt` | `key=value` peste config |
+| `pi-eval` | [evaluate.py](../src/pi_p/evaluate.py) | `best.pt` si setul de date | mAP in consola, JSON cu `--out` | `--mode`, `--groups`, `--limit` |
+| `pi-predict` | [predict.py](../src/pi_p/predict.py) | imagine, folder sau video | imagini cu detectiile desenate | `--slice` |
+| `python -m pi_p.adaptive_figure` | [adaptive_figure.py](../src/pi_p/adaptive_figure.py) | o imagine | figura cu pasii ferestrelor adaptive | `--comparison-out` |
 
 Modurile din `pi-eval`:
 
-| `--mode` | Ce rulează | Variantă din experimente |
+| `--mode` | Ce ruleaza | Varianta din experimente |
 |---|---|---|
-| `val` | `model.val()` din Ultralytics, cu `--coco` pentru modelul preantrenat | verificare rapidă |
-| `full` | o trecere pe imaginea întreagă | baseline |
-| `slice` | imaginea întreagă și grila de ferestre, fuziune proprie | feliere pe grilă fixă |
-| `sahi` | același lucru, prin biblioteca SAHI | SAHI |
-| `adaptive` | detecție preliminară și ferestre adaptive | ferestre adaptive |
+| `val` | `model.val()` din Ultralytics, cu `--coco` pentru modelul preantrenat | verificare rapida |
+| `full` | o trecere pe imaginea intreaga | baseline |
+| `slice` | imaginea intreaga si grila de ferestre, fuziune proprie | feliere pe grila fixa |
+| `sahi` | acelasi lucru, prin biblioteca SAHI | SAHI |
+| `adaptive` | detectie preliminara si ferestre adaptive | ferestre adaptive |
 
-## 4. Rețeta experimentelor
+## 4. Reteta experimentelor
 
-Toate rulările de comparație se fac pe `val`, cu pragul implicit `--conf 0.001`, și salvează rezultatul în JSON:
+Toate rularile de comparatie se fac pe `val`, cu pragul implicit `--conf 0.001`, si salveaza rezultatul in JSON:
 
 ```bash
 uv run pi-stats
@@ -161,6 +161,6 @@ uv run pi-eval runs/yolo26n_tiled/weights/best.pt --mode slice --groups $G --out
 uv run pi-eval runs/yolo26n_640/weights/best.pt   --mode adaptive --groups $G --out results/adaptive.json
 ```
 
-Pentru etapa 2 se rulează `pi-clahe --mode uniform` și `pi-clahe --mode adaptive`, apoi configurația câștigătoare din etapa 1 se reantrenează pe fiecare set nou (`pi-train <config> data=datasets/VisDrone-clahe/data.yaml name=...`) și se evaluează la fel, cu `--data` spre același set îmbunătățit, ca modelul să vadă la test aceleași imagini ca la antrenare.
+Pentru etapa 2 se ruleaza `pi-clahe --mode uniform` si `pi-clahe --mode adaptive`, apoi configuratia castigatoare din etapa 1 se reantreneaza pe fiecare set nou (`pi-train <config> data=datasets/VisDrone-clahe/data.yaml name=...`) si se evalueaza la fel, cu `--data` spre acelasi set imbunatatit, ca modelul sa vada la test aceleasi imagini ca la antrenare.
 
-`--limit 20` rulează doar primele 20 de imagini, util ca verificare înainte de rularea completă.
+`--limit 20` ruleaza doar primele 20 de imagini, util ca verificare inainte de rularea completa.

@@ -36,7 +36,7 @@ function row(v: LibraryVideo): HTMLTableRowElement {
   thumb.src = `/api/library/${encodeURIComponent(v.name)}/thumbnail`;
   const pick = document.createElement("button");
   pick.type = "button";
-  pick.textContent = "Analizează";
+  pick.textContent = "Analizeaza";
   pick.addEventListener("click", () => {
     onPick(v.name);
     showTab("analysis");

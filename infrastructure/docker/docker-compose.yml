@@ -5,7 +5,7 @@ services:
       dockerfile: infrastructure/docker/Dockerfile
     image: pi-p
     environment:
-      PI_P_TOTP_SECRET: ${PI_P_TOTP_SECRET:?rulează uv run pi-totp și pune PI_P_TOTP_SECRET în .env}
+      PI_P_TOTP_SECRET: ${PI_P_TOTP_SECRET:?ruleaza uv run pi-totp si pune PI_P_TOTP_SECRET in .env}
     ports:
       - "127.0.0.1:8000:8000"
     volumes:

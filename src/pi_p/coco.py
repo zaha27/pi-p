@@ -1,5 +1,3 @@
-"""Copie a setului de date cu clasele renumerotate în COCO, pentru evaluarea modelului neantrenat."""
-
 import shutil
 from pathlib import Path
 
@@ -41,5 +39,5 @@ def build(src: Path, split: str, names: dict[int, str], dst: Path = ROOT) -> Pat
     (dst / "images" / split).mkdir(parents=True)
     masked = sum(remap(p, dst) for p in images(src, split))
     out.write_text(yaml.safe_dump({"path": str(dst.resolve()), "train": f"images/{split}", "val": f"images/{split}", "names": names}, sort_keys=False))
-    print(f"{dst}: etichete mapate pe clasele COCO, {masked} imagini cu obiecte fără corespondent mascate")
+    print(f"{dst}: etichete mapate pe clasele COCO, {masked} imagini cu obiecte fara corespondent mascate")
     return out

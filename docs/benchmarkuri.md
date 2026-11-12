@@ -2,39 +2,39 @@
 %%{init: {'theme':'base','themeVariables':{'fontSize':'16px','lineColor':'#4B5563'}}}%%
 flowchart TB
     V["`**Date VisDrone**
-train: antrenare; val: comparații și decizii; test-dev: o singură rulare, la final`"]
-    TI["`**Antrenare pe imagini întregi**
+train: antrenare; val: comparatii si decizii; test-dev: o singura rulare, la final`"]
+    TI["`**Antrenare pe imagini intregi**
 fine-tuning YOLO26n pe train, pornind de la modelul preantrenat`"]
     TF["`**Antrenare pe felii**
-același fine-tuning, pe felii suprapuse tăiate din imaginile de train`"]
+acelasi fine-tuning, pe felii suprapuse taiate din imaginile de train`"]
 
     BL["`**Baseline**
-modelul pe imagini întregi, testat pe imaginea întreagă; referința tuturor comparațiilor`"]
+modelul pe imagini intregi, testat pe imaginea intreaga; referinta tuturor comparatiilor`"]
     SA["`**SAHI**
-același model, testat pe felii prin biblioteca SAHI, fără reantrenare`"]
-    GR["`**Feliere pe grilă fixă**
-modelul pe felii, testat pe felii; detecțiile unite prin fuziune`"]
+acelasi model, testat pe felii prin biblioteca SAHI, fara reantrenare`"]
+    GR["`**Feliere pe grila fixa**
+modelul pe felii, testat pe felii; detectiile unite prin fuziune`"]
     E1["`**Etapa 1 · evaluare pe setul de validare**
-același prag de încredere; mAP total și pe grupe, timp pe imagine; se alege configurația cu cel mai bun mAP`"]
+acelasi prag de incredere; mAP total si pe grupe, timp pe imagine; se alege configuratia cu cel mai bun mAP`"]
 
     CU["`**CLAHE uniform**
-CLAHE pe imaginea întreagă, înainte de tăiere, la toate imaginile; reantrenare și test ca în configurația selectată`"]
+CLAHE pe imaginea intreaga, inainte de taiere, la toate imaginile; reantrenare si test ca in configuratia selectata`"]
     CA["`**CLAHE adaptiv**
-analiza statistică decide: CLAHE doar pe grupele întuneric și contrast slab; reantrenare și test ca în configurația selectată`"]
+analiza statistica decide: CLAHE doar pe grupele intuneric si contrast slab; reantrenare si test ca in configuratia selectata`"]
     E2["`**Etapa 2 · evaluare pe setul de validare**
-comparație cu configurația selectată în etapa 1; CLAHE rămâne doar dacă îmbunătățește rezultatul`"]
+comparatie cu configuratia selectata in etapa 1; CLAHE ramane doar daca imbunatateste rezultatul`"]
 
     FA["`**Ferestre adaptive**
-detecție preliminară (inspirată din QueryDet) și grupare în ferestre (inspirată din ClusDet), în locul grilei`"]
-    FG["`**Ferestre adaptive + grilă**
-grila rămâne ca plasă de siguranță pentru obiectele ratate de detecția preliminară`"]
+detectie preliminara (inspirata din QueryDet) si grupare in ferestre (inspirata din ClusDet), in locul grilei`"]
+    FG["`**Ferestre adaptive + grila**
+grila ramane ca plasa de siguranta pentru obiectele ratate de detectia preliminara`"]
     E3["`**Etapa 3 · evaluare pe setul de validare**
-comparație cu configurația selectată în etapa 2`"]
+comparatie cu configuratia selectata in etapa 2`"]
 
     TD["`**Test final pe test-dev**
-după înghețarea deciziilor, toate variantele rulate o singură dată`"]
+dupa inghetarea deciziilor, toate variantele rulate o singura data`"]
     TR["`**Tabel de rezultate**
-o linie pentru fiecare variantă: valori pe val și pe test-dev`"]
+o linie pentru fiecare varianta: valori pe val si pe test-dev`"]
 
     V --> TI
     V --> TF

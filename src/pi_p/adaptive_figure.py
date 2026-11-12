@@ -28,10 +28,10 @@ COLOR_DETECTIONS = "#15803D"
 
 
 def read_image(path: Path) -> np.ndarray:
-    # BGR, ca în predict.py: modelul așteaptă BGR, RGB e doar pentru afișare
+    # BGR, ca in predict.py: modelul asteapta BGR, RGB e doar pentru afisare
     img = cv2.imread(str(path))
     if img is None:
-        raise SystemExit(f"Imagine ilizibilă: {path}")
+        raise SystemExit(f"Imagine ilizibila: {path}")
     return img
 
 
@@ -53,7 +53,7 @@ def box_panel(ax: Axes, img_rgb: np.ndarray, boxes_xyxy: np.ndarray, color: str,
 
 def mask_panel(ax: Axes, mask: np.ndarray, image_hw: tuple[int, int], title: str) -> None:
     h, w = image_hw
-    # extent în pixeli ai imaginii mari: masca mică se întinde peste aceleași coordonate
+    # extent in pixeli ai imaginii mari: masca mica se intinde peste aceleasi coordonate
     ax.imshow(mask, cmap=MASK_CMAP, vmin=0, vmax=MASK_ON, extent=(0, w, h, 0))
     ax.set_title(title)
     ax.axis("off")
@@ -64,25 +64,25 @@ def build_figure(img_bgr: np.ndarray, trace: AdaptiveTrace) -> Figure:
     s = trace.stages
     fig, axes = plt.subplots(2, 3, figsize=FIGSIZE)
     ax = axes.flat
-    box_panel(ax[0], img, trace.seeds[:, :4].numpy(), COLOR_PRELIM, f"Detecție preliminară: {len(trace.seeds)} casete")
-    mask_panel(ax[1], s.mask, img.shape[:2], f"Mască binară din {len(trace.seeds)} casete")
-    mask_panel(ax[2], s.dilated, img.shape[:2], f"Mască dilatată: {len(s.rects)} pete")
-    # rects sunt în pixeli ai măștii; scale îi duce în pixeli ai imaginii
+    box_panel(ax[0], img, trace.seeds[:, :4].numpy(), COLOR_PRELIM, f"Detectie preliminara: {len(trace.seeds)} casete")
+    mask_panel(ax[1], s.mask, img.shape[:2], f"Masca binara din {len(trace.seeds)} casete")
+    mask_panel(ax[2], s.dilated, img.shape[:2], f"Masca dilatata: {len(s.rects)} pete")
+    # rects sunt in pixeli ai mastii; scale ii duce in pixeli ai imaginii
     box_panel(ax[3], img, s.rects * s.scale, COLOR_RECTS, f"Dreptunghiuri: {len(s.rects)}")
     box_panel(ax[4], img, s.windows, COLOR_WINDOWS, f"Ferestre: {len(s.windows)}")
-    box_panel(ax[5], img, trace.detections[:, :4].numpy(), COLOR_DETECTIONS, f"Detecții finale: {len(trace.detections)}")
+    box_panel(ax[5], img, trace.detections[:, :4].numpy(), COLOR_DETECTIONS, f"Detectii finale: {len(trace.detections)}")
     fig.tight_layout()
     return fig
 
 
 def build_comparison_figure(img_bgr: np.ndarray, trace: AdaptiveTrace, params: AdaptiveParams) -> Figure:
     img = to_rgb(img_bgr)
-    # fără ferestre = detecția pe imaginea întreagă, deja în trace.prelim
+    # fara ferestre = detectia pe imaginea intreaga, deja in trace.prelim
     plain = keep_confident(trace.prelim, params.conf)[:, :4].numpy()
     final = trace.detections[:, :4].numpy()
     fig, (left, right) = plt.subplots(1, 2, figsize=COMPARISON_FIGSIZE)
-    box_panel(left, img, plain, COLOR_DETECTIONS, f"Fără ferestre (imgsz {params.prelim_imgsz}): {len(plain)} detecții")
-    box_panel(right, img, final, COLOR_DETECTIONS, f"Metoda adaptivă: {len(final)} detecții, {len(trace.stages.windows)} ferestre")
+    box_panel(left, img, plain, COLOR_DETECTIONS, f"Fara ferestre (imgsz {params.prelim_imgsz}): {len(plain)} detectii")
+    box_panel(right, img, final, COLOR_DETECTIONS, f"Metoda adaptiva: {len(final)} detectii, {len(trace.stages.windows)} ferestre")
     draw_boxes(right, trace.stages.windows, COLOR_WINDOWS, WINDOW_LINE_WIDTH, WINDOW_LINE_STYLE)
     fig.tight_layout()
     return fig
@@ -98,8 +98,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--weights", required=True)
     ap.add_argument("--image", type=Path, required=True)
-    ap.add_argument("--out", type=Path, required=True, help="fișier PNG")
-    ap.add_argument("--comparison-out", type=Path, default=None, help="fișier PNG")
+    ap.add_argument("--out", type=Path, required=True, help="fisier PNG")
+    ap.add_argument("--comparison-out", type=Path, default=None, help="fisier PNG")
     ap.add_argument("--config", default="configs/adaptive.yaml")
     ap.add_argument("--device", default=None)
     ap.add_argument("overrides", nargs="*", help="key=value")
@@ -108,10 +108,10 @@ def main():
     img = read_image(args.image)
     trace = adaptive_trace(YOLO(args.weights), img, params, args.device)
     save_figure(build_figure(img, trace), args.out)
-    print(f"Figură în {args.out}")
+    print(f"Figura in {args.out}")
     if args.comparison_out:
         save_figure(build_comparison_figure(img, trace, params), args.comparison_out)
-        print(f"Comparație în {args.comparison_out}")
+        print(f"Comparatie in {args.comparison_out}")
 
 
 if __name__ == "__main__":

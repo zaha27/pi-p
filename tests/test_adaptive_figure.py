@@ -51,8 +51,8 @@ def test_save_figure_writes_non_empty_png(tmp_path):
 def test_build_comparison_figure_has_two_axes_and_reports_counts(boxes, n_det, n_win):
     fig = build_comparison_figure(blank_image(), make_trace(boxes), PARAMS)
     left, right = fig.axes
-    assert f"{n_det} detecții" in left.get_title()
-    assert f"{n_det} detecții" in right.get_title()
+    assert f"{n_det} detectii" in left.get_title()
+    assert f"{n_det} detectii" in right.get_title()
     assert f"{n_win} ferestre" in right.get_title()
     plt.close(fig)
 

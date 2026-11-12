@@ -23,11 +23,11 @@ export function upload(file: File, onProgress: (percent: number) => void): Promi
         body = JSON.parse(xhr.responseText);
       } catch {}
       if (xhr.status === 401) showLogin("Sesiunea a expirat");
-      if (xhr.status === 413) return reject(new Error("Fișier prea mare pentru upload (max. 100 MB prin tunel). Pune-l în Bibliotecă."));
+      if (xhr.status === 413) return reject(new Error("Fisier prea mare pentru upload (max. 100 MB prin tunel). Pune-l in Biblioteca."));
       if (xhr.status === 200 && body.id) resolve(body.id);
-      else reject(new Error(body.detail ?? `Încărcarea a eșuat (${xhr.status})`));
+      else reject(new Error(body.detail ?? `Incarcarea a esuat (${xhr.status})`));
     };
-    xhr.onerror = () => reject(new Error("Încărcarea a eșuat"));
+    xhr.onerror = () => reject(new Error("Incarcarea a esuat"));
     xhr.open("POST", "/api/videos");
     xhr.send(form);
   });

@@ -71,7 +71,7 @@ export function initDashboard(): void {
 export function showMeta(m: Meta): void {
   meta = m;
   ui.statusModel.textContent = `${m.model} · ${m.device}`;
-  ui.liveNote.textContent = `sursă ${m.width}×${m.height} · ${Math.round(m.fps)} fps`;
+  ui.liveNote.textContent = `sursa ${m.width}×${m.height} · ${Math.round(m.fps)} fps`;
   ui.placeholder.hidden = true;
   ui.tracked.hidden = !m.track;
 }
@@ -152,7 +152,7 @@ function draw(): void {
   ui.kpiUnique.textContent = meta.track ? String(m.unique) : "—";
   ui.kpiFlow.textContent = meta.track ? m.mean_flow.toFixed(1) : "—";
   ui.kpiMs.textContent = m.inference_ms.toFixed(0);
-  ui.tracked.textContent = `${m.in_frame} urmărite`;
+  ui.tracked.textContent = `${m.in_frame} urmarite`;
   ui.saturation.textContent = pct(m.saturation);
   renderClasses(m);
   stackedArea(ui.timeline, m.timeline.series, m.classes.map((c) => color(c.id)), m.timeline.seconds);

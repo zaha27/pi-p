@@ -1,74 +1,74 @@
-# 6. Detecția pe ferestre
+# 6. Detectia pe ferestre
 
-**Cod:** `sliced_predict` din `src/pi_p/predict.py` · **Comandă:** `pi-predict`
+**Cod:** `sliced_predict` din `src/pi_p/predict.py` · **Comanda:** `pi-predict`
 
 ## Ideea
 
-La inferență facem același lucru ca la antrenarea pe felii: tăiem imaginea în ferestre și rulăm modelul pe fiecare, la rezoluția ei reală. Apoi adunăm toate detecțiile într-o singură listă, în coordonatele imaginii întregi.
+La inferenta facem acelasi lucru ca la antrenarea pe felii: taiem imaginea in ferestre si rulam modelul pe fiecare, la rezolutia ei reala. Apoi adunam toate detectiile intr-o singura lista, in coordonatele imaginii intregi.
 
-Pe lângă ferestre, modelul vede și **imaginea întreagă, micșorată**. Ea prinde obiectele mari, care nu încap într-o fereastră de 640 px.
+Pe langa ferestre, modelul vede si **imaginea intreaga, micsorata**. Ea prinde obiectele mari, care nu incap intr-o fereastra de 640 px.
 
 ## Schema
 
 ```mermaid
 flowchart TB
-    I["Imagine întreagă
-ex. 1920 × 1080"] --> W1["imaginea întreagă
-micșorată la 640"]
+    I["Imagine intreaga
+ex. 1920 × 1080"] --> W1["imaginea intreaga
+micsorata la 640"]
     I --> G["windows
 ferestrele grilei"]
-    G --> W2["modelul pe fiecare fereastră
-(toate într-un singur apel)"]
+    G --> W2["modelul pe fiecare fereastra
+(toate intr-un singur apel)"]
     W2 --> DC["to_image = drop_cut
-+ mutare în coordonatele imaginii"]
++ mutare in coordonatele imaginii"]
     W1 --> M["merge
-elimină dublurile"]
+elimina dublurile"]
     DC --> M
-    M --> O["Detecții finale
-x1, y1, x2, y2, scor, clasă"]
+    M --> O["Detectii finale
+x1, y1, x2, y2, scor, clasa"]
 ```
 
-## Unde e folosită
+## Unde e folosita
 
-Aceeași funcție, `sliced_predict`, e folosită de `pi-predict --slice`, de `pi-eval --mode slice` și de serverul web, deci ce evaluăm este exact ce rulează.
+Aceeasi functie, `sliced_predict`, e folosita de `pi-predict --slice`, de `pi-eval --mode slice` si de serverul web, deci ce evaluam este exact ce ruleaza.
 
 | `pi-eval --mode` | Ce vede modelul | Cod |
 |---|---|---|
-| `full` | doar imaginea micșorată | `model.predict` |
-| `slice` | imaginea micșorată + toate ferestrele grilei | `sliced_predict` |
-| `sahi` | aceleași ferestre, cu biblioteca SAHI | `sahi_detect` din `evaluate.py` |
-| `adaptive` | imaginea micșorată + ferestre doar unde sunt obiecte | `adaptive_predict` din `adaptive.py` |
+| `full` | doar imaginea micsorata | `model.predict` |
+| `slice` | imaginea micsorata + toate ferestrele grilei | `sliced_predict` |
+| `sahi` | aceleasi ferestre, cu biblioteca SAHI | `sahi_detect` din `evaluate.py` |
+| `adaptive` | imaginea micsorata + ferestre doar unde sunt obiecte | `adaptive_predict` din `adaptive.py` |
 
-Ferestrele adaptive sunt explicate în [etapa 9](09-ferestre-adaptive.md).
+Ferestrele adaptive sunt explicate in [etapa 9](09-ferestre-adaptive.md).
 
-## Mutarea chenarelor în imaginea întreagă
+## Mutarea chenarelor in imaginea intreaga
 
-Modelul întoarce chenarele în coordonatele ferestrei, cu originea în colțul ei stânga-sus. Ca să le aducem în imaginea întreagă, adunăm poziția ferestrei:
+Modelul intoarce chenarele in coordonatele ferestrei, cu originea in coltul ei stanga-sus. Ca sa le aducem in imaginea intreaga, adunam pozitia ferestrei:
 
 ```
-fereastra începe la (512, 0)
-chenar în fereastră:        (100, 50) – (140, 90)
-chenar în imaginea întreagă: (612, 50) – (652, 90)
+fereastra incepe la (512, 0)
+chenar in fereastra:        (100, 50) – (140, 90)
+chenar in imaginea intreaga: (612, 50) – (652, 90)
 ```
 
-În cod este o singură adunare, în `to_image`: `det + [x1, y1, x1, y1, 0, 0]`. Ultimele două zerouri lasă scorul și clasa neschimbate. Aceeași funcție e folosită și pentru ferestrele adaptive.
+In cod este o singura adunare, in `to_image`: `det + [x1, y1, x1, y1, 0, 0]`. Ultimele doua zerouri lasa scorul si clasa neschimbate. Aceeasi functie e folosita si pentru ferestrele adaptive.
 
-## Câte detecții păstrăm
+## Cate detectii pastram
 
-Ultralytics întoarce implicit cel mult 300 de detecții pentru fiecare imagine sau fereastră. La evaluare, `pi-eval` păstrează pe imagine cel mult 300 de detecții, dar niciodată mai puține decât numărul de obiecte adnotate din cea mai aglomerată imagine (până la ~900 în VisDrone). Altfel, limita ar tăia detecții corecte.
+Ultralytics intoarce implicit cel mult 300 de detectii pentru fiecare imagine sau fereastra. La evaluare, `pi-eval` pastreaza pe imagine cel mult 300 de detectii, dar niciodata mai putine decat numarul de obiecte adnotate din cea mai aglomerata imagine (pana la ~900 in VisDrone). Altfel, limita ar taia detectii corecte.
 
-## Cât costă
+## Cat costa
 
-O imagine de 1920 × 1080 are 8 ferestre de grilă (4 pe orizontală, 2 pe verticală), plus imaginea întreagă: 9 rulări ale modelului în loc de una. Imaginile din val sunt în medie mai mici și au 5,2 ferestre. Măsurat pe val, timpul pe imagine crește de la ~8–10 ms la ~35–45 ms, adică de aproximativ 4 ori. Valorile sunt în [../rezultate.md](../rezultate.md).
+O imagine de 1920 × 1080 are 8 ferestre de grila (4 pe orizontala, 2 pe verticala), plus imaginea intreaga: 9 rulari ale modelului in loc de una. Imaginile din val sunt in medie mai mici si au 5,2 ferestre. Masurat pe val, timpul pe imagine creste de la ~8–10 ms la ~35–45 ms, adica de aproximativ 4 ori. Valorile sunt in [../rezultate.md](../rezultate.md).
 
 ## Comenzi
 
 ```bash
-# imagine întreagă; merge și pe video sau URL
+# imagine intreaga; merge si pe video sau URL
 uv run pi-predict best.pt imagine.jpg
 
 # pe grila de ferestre de 640 px
 uv run pi-predict best.pt folder_cu_imagini/ --slice 640
 ```
 
-Imaginile cu detecțiile desenate ajung în `runs/predict/`.
+Imaginile cu detectiile desenate ajung in `runs/predict/`.

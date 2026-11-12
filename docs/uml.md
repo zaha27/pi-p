@@ -1,14 +1,14 @@
 # Arhitectura proiectului (UML)
 
-Diagramele sunt scrise în Mermaid și se afișează direct pe GitHub.
+Diagramele sunt scrise in Mermaid si se afiseaza direct pe GitHub.
 
-1. [Deployment](#1-diagrama-de-deployment): unde rulează fiecare parte
-2. [Componente](#2-diagrama-de-componente): modulele și dependențele dintre ele
-3. [Clase](#3-diagrama-de-clase): clasele și funcțiile principale
-4. [Secvență: sesiune de analiză](#4-diagrama-de-secvență-sesiune-de-analiză)
-5. [Secvență: procesarea unui cadru](#5-diagrama-de-secvență-procesarea-unui-cadru)
-6. [Activitate: pipeline-ul de date și antrenare](#6-diagrama-de-activitate-pipeline-ul-de-date-și-antrenare)
-7. [Stări: interfața](#7-diagrama-de-stări-interfața)
+1. [Deployment](#1-diagrama-de-deployment): unde ruleaza fiecare parte
+2. [Componente](#2-diagrama-de-componente): modulele si dependentele dintre ele
+3. [Clase](#3-diagrama-de-clase): clasele si functiile principale
+4. [Secventa: sesiune de analiza](#4-diagrama-de-secventa-sesiune-de-analiza)
+5. [Secventa: procesarea unui cadru](#5-diagrama-de-secventa-procesarea-unui-cadru)
+6. [Activitate: pipeline-ul de date si antrenare](#6-diagrama-de-activitate-pipeline-ul-de-date-si-antrenare)
+7. [Stari: interfata](#7-diagrama-de-stari-interfata)
 
 ## 1. Diagrama de deployment
 
@@ -16,12 +16,12 @@ Diagramele sunt scrise în Mermaid și se afișează direct pe GitHub.
 flowchart LR
     subgraph Client["Dispozitivul utilizatorului"]
         B["Browser<br/>dashboard Vite + TypeScript"]
-        GA["Google Authenticator<br/>generează coduri TOTP"]
+        GA["Google Authenticator<br/>genereaza coduri TOTP"]
     end
 
     subgraph CF["Cloudflare"]
         DNS["DNS<br/>pi.zaha.cc → tunel"]
-        EDGE["Edge<br/>HTTPS, limită 100 MB/cerere"]
+        EDGE["Edge<br/>HTTPS, limita 100 MB/cerere"]
     end
 
     subgraph Host["Server: PC cu RTX 4070 Super sau Mac"]
@@ -31,7 +31,7 @@ flowchart LR
         end
         V[("videos/<br/>biblioteca")]
         R[("runs/<br/>modele antrenate")]
-        W[("/tmp/pi-p<br/>upload-uri și rezultate")]
+        W[("/tmp/pi-p<br/>upload-uri si rezultate")]
         GPU["GPU<br/>CUDA / MPS / CPU"]
     end
 
@@ -46,17 +46,17 @@ flowchart LR
     GA -. "codul de 6 cifre, introdus manual" .-> B
 ```
 
-Containerul `app` nu e expus direct în rețea: portul 8000 e legat doar de `127.0.0.1`. Din internet se ajunge numai prin tunel, iar orice cerere `/api/*` cere autentificare.
+Containerul `app` nu e expus direct in retea: portul 8000 e legat doar de `127.0.0.1`. Din internet se ajunge numai prin tunel, iar orice cerere `/api/*` cere autentificare.
 
 ## 2. Diagrama de componente
 
 ```mermaid
 flowchart TB
     subgraph FE["infrastructure/frontend/src (browser)"]
-        main["main.ts<br/>controale, WebSocket, pauză"]
-        dashboard["dashboard.ts<br/>desenează panourile"]
-        charts["charts.ts<br/>sparkline, flux, câmp de mișcare"]
-        library_ts["library.ts<br/>tabul Bibliotecă"]
+        main["main.ts<br/>controale, WebSocket, pauza"]
+        dashboard["dashboard.ts<br/>deseneaza panourile"]
+        charts["charts.ts<br/>sparkline, flux, camp de miscare"]
+        library_ts["library.ts<br/>tabul Biblioteca"]
         auth_ts["auth.ts<br/>ecranul de login"]
         api_ts["api.ts<br/>upload, modele"]
         dom["dom.ts"]
@@ -66,21 +66,21 @@ flowchart TB
     subgraph APP["infrastructure/pi_p_server (server web)"]
         server["server.py<br/>rute HTTP, WebSocket, login"]
         session["session.py<br/>Session: un video procesat"]
-        render["render.py<br/>desen cutii, hărți"]
+        render["render.py<br/>desen cutii, harti"]
         library_py["library.py<br/>listare, thumbnail"]
         auth_py["auth.py<br/>TOTP, sesiuni semnate"]
     end
 
-    subgraph CORE["src/pi_p (logica de bază)"]
+    subgraph CORE["src/pi_p (logica de baza)"]
         analytics["analytics.py<br/>flux, congestie, statistici"]
         scoremap["scoremap.py<br/>harta de scoruri a detectorului"]
-        predict["predict.py<br/>grilă: drop_cut, to_image, merge"]
+        predict["predict.py<br/>grila: drop_cut, to_image, merge"]
         adaptive["adaptive.py<br/>ferestre adaptive"]
         slicing["slicing.py<br/>ferestre suprapuse"]
         data["data.py<br/>citire/scriere etichete"]
     end
 
-    subgraph ML["src/pi_p (pipeline ML, linie de comandă)"]
+    subgraph ML["src/pi_p (pipeline ML, linie de comanda)"]
         prepare["prepare.py"]
         check["check.py"]
         eda["eda.py"]
@@ -121,7 +121,7 @@ flowchart TB
 
 ## 3. Diagrama de clase
 
-Python nu obligă la clase, așa că modulele formate doar din funcții apar cu stereotipul `«module»`.
+Python nu obliga la clase, asa ca modulele formate doar din functii apar cu stereotipul `«module»`.
 
 ```mermaid
 classDiagram
@@ -252,9 +252,9 @@ classDiagram
     Session *-- Analytics
     Session *-- ScoreMap
     Session o-- YOLO
-    ScoreMap ..> YOLO : hook-uri pe capul de detecție
+    ScoreMap ..> YOLO : hook-uri pe capul de detectie
     server --> Auth
-    server ..> Session : creează câte una pe sesiune
+    server ..> Session : creeaza cate una pe sesiune
     server ..> library
     Session ..> render
     Session ..> predict
@@ -263,7 +263,7 @@ classDiagram
     render ..> Analytics : JAM_LEVEL
 ```
 
-## 4. Diagrama de secvență: sesiune de analiză
+## 4. Diagrama de secventa: sesiune de analiza
 
 ```mermaid
 sequenceDiagram
@@ -276,68 +276,68 @@ sequenceDiagram
 
     U->>B: introduce codul din Google Authenticator
     B->>S: POST /api/login {code}
-    S->>S: Auth.allow_attempt() și Auth.verify()
+    S->>S: Auth.allow_attempt() si Auth.verify()
     S-->>B: 200 + cookie pi_p_session (HttpOnly)
 
-    alt video din bibliotecă
-        U->>B: Bibliotecă → Analizează
+    alt video din biblioteca
+        U->>B: Biblioteca → Analizeaza
     else upload (sub 100 MB)
-        U->>B: alege fișier
+        U->>B: alege fisier
         B->>S: POST /api/videos
         S-->>B: {id}
     end
 
-    U->>B: Pornește
+    U->>B: Porneste
     B->>S: WebSocket /api/stream (cu cookie)
     S->>S: Auth.valid(cookie)
     B->>S: {"action":"start", sursa, model, prag, ...}
-    S->>S: parse_start() validează tot
+    S->>S: parse_start() valideaza tot
     S->>SE: Session(video, model, ...)
-    SE->>M: încarcă modelul și face încălzirea
+    SE->>M: incarca modelul si face incalzirea
     S-->>B: {"type":"meta", clase, culori, fps, ...}
 
     loop pentru fiecare cadru
         S->>SE: step()
         SE->>M: detect(frame)
-        M-->>SE: cutii, încredere, clase, ID-uri
-        SE-->>S: imagine JPEG, hartă congestie, statistici
+        M-->>SE: cutii, incredere, clase, ID-uri
+        SE-->>S: imagine JPEG, harta congestie, statistici
         S-->>B: binar 0x01 + cadrul adnotat
         S-->>B: binar 0x02 + harta de congestie (1/s)
         S-->>B: {"type":"metrics", ...}
-        B->>B: dashboard.ts desenează panourile
+        B->>B: dashboard.ts deseneaza panourile
     end
 
-    opt pauză
+    opt pauza
         U->>B: click pe video / Space
         B->>S: {"action":"pause"}
-        Note over S: bucla așteaptă, nu procesează nimic
-        U->>B: schimbă pragul sau vizualizarea
+        Note over S: bucla asteapta, nu proceseaza nimic
+        U->>B: schimba pragul sau vizualizarea
         B->>S: {"action":"params", conf, view}
         S->>SE: redraw()
         S-->>B: cadrul curent redesenat
         B->>S: {"action":"resume"}
     end
 
-    alt utilizatorul apasă Oprește
+    alt utilizatorul apasa Opreste
         B->>S: {"action":"stop"}
     else video terminat
-        SE-->>S: step() întoarce None
+        SE-->>S: step() intoarce None
     end
-    S->>SE: close() scrie detectii.mp4 și numaratoare.csv
+    S->>SE: close() scrie detectii.mp4 si numaratoare.csv
     S-->>B: {"type":"done", files}
-    U->>B: descarcă rezultatele
+    U->>B: descarca rezultatele
 ```
 
-## 5. Diagrama de secvență: procesarea unui cadru
+## 5. Diagrama de secventa: procesarea unui cadru
 
-Ce se întâmplă în `Session.step()` pentru un singur cadru.
+Ce se intampla in `Session.step()` pentru un singur cadru.
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant SE as Session.step()
     participant CV as OpenCV
-    participant L as Lacăt GPU
+    participant L as Lacat GPU
     participant M as YOLO
     participant SM as ScoreMap
     participant A as Analytics
@@ -347,82 +347,82 @@ sequenceDiagram
     CV-->>SE: cadru BGR (ex. 1920×1080)
     SE->>CV: resize_to(cadru, 1280)
     SE->>L: acquire (un singur fir pe GPU)
-    alt inferență pe bucăți
-        SE->>M: sliced_predict(): imaginea întreagă + ferestre suprapuse
-        Note over M: drop_cut() elimină obiectele tăiate de margini<br/>merge() combină duplicatele după IOS
-    else urmărire
+    alt inferenta pe bucati
+        SE->>M: sliced_predict(): imaginea intreaga + ferestre suprapuse
+        Note over M: drop_cut() elimina obiectele taiate de margini<br/>merge() combina duplicatele dupa IOS
+    else urmarire
         SE->>M: model.track(persist=True) cu ByteTrack
     end
     M-->>SE: xyxy, conf, cls, ids
-    opt vizualizare = hartă de scoruri
+    opt vizualizare = harta de scoruri
         SE->>SM: heatmap(h, w)
-        SM-->>SE: probabilitatea maximă pe clase, per pixel
+        SM-->>SE: probabilitatea maxima pe clase, per pixel
     end
     SE->>L: release
-    SE->>SE: păstrează detecțiile cu conf ≥ prag
+    SE->>SE: pastreaza detectiile cu conf ≥ prag
     SE->>A: update(cutii, clase, ID-uri, ms)
-    Note over A: istoric pe clase, traiectorii,<br/>hartă de staționare cu scădere exponențială
+    Note over A: istoric pe clase, traiectorii,<br/>harta de stationare cu scadere exponentiala
     SE->>R: draw_frame() cutii, etichete, traiectorii
-    SE->>CV: VideoWriter.write() în detectii.mp4
-    opt a trecut 1 s de la ultima hartă
-        SE->>A: occupancy() și peak()
+    SE->>CV: VideoWriter.write() in detectii.mp4
+    opt a trecut 1 s de la ultima harta
+        SE->>A: occupancy() si peak()
         SE->>R: congestion_overlay()
     end
     SE->>A: summary()
-    SE-->>SE: întoarce (JPEG, JPEG congestie sau None, statistici)
+    SE-->>SE: intoarce (JPEG, JPEG congestie sau None, statistici)
 ```
 
-## 6. Diagrama de activitate: pipeline-ul de date și antrenare
+## 6. Diagrama de activitate: pipeline-ul de date si antrenare
 
 ```mermaid
 flowchart TD
-    start((start)) --> prep["pi-prepare<br/>descarcă VisDrone, convertește în format YOLO"]
+    start((start)) --> prep["pi-prepare<br/>descarca VisDrone, converteste in format YOLO"]
     prep --> mask{"zone «ignored» sau clasa «others»?"}
-    mask -- da --> fill["le acoperă cu gri 114<br/>păstrând obiectele etichetate"]
+    mask -- da --> fill["le acopera cu gri 114<br/>pastrand obiectele etichetate"]
     mask -- nu --> labels
-    fill --> labels["scrie etichetele normalizate<br/>clasă, x, y, w, h"]
+    fill --> labels["scrie etichetele normalizate<br/>clasa, x, y, w, h"]
     labels --> check["pi-check<br/>imagini corupte, etichete invalide, duplicate"]
     check --> ok{"erori?"}
-    ok -- da --> fix["corectează datele"] --> check
-    ok -- nu --> eda["pi-eda<br/>clase, mărimi, densitate, heatmap"]
+    ok -- da --> fix["corecteaza datele"] --> check
+    ok -- nu --> eda["pi-eda<br/>clase, marimi, densitate, heatmap"]
     eda --> stats["pi-stats<br/>luminozitate, contrast, grupe"]
     stats --> choice{"strategie"}
     choice -- "640 px" --> t640["pi-train configs/train.yaml"]
     choice -- "1024 px" --> t1024["pi-train imgsz=1024"]
     choice -- "tile-uri" --> tile["pi-tile<br/>ferestre 640 px, suprapunere 20%"] --> ttile["pi-train configs/train_tiled.yaml"]
     choice -- "CLAHE" --> clahe["pi-clahe --mode uniform / adaptive"] --> tile
-    t640 & t1024 & ttile --> eval["pi-eval<br/>mAP pe imagini întregi, pe clase și pe grupe"]
+    t640 & t1024 & ttile --> eval["pi-eval<br/>mAP pe imagini intregi, pe clase si pe grupe"]
     eval --> best["alege cel mai bun model<br/>runs/*/weights/best.pt"]
-    best --> app["dashboard: modelul apare automat în listă"]
-    app --> stop((sfârșit))
+    best --> app["dashboard: modelul apare automat in lista"]
+    app --> stop((sfarsit))
 ```
 
-## 7. Diagrama de stări: interfața
+## 7. Diagrama de stari: interfata
 
 ```mermaid
 stateDiagram-v2
     [*] --> Verificare: deschide pagina
-    Verificare --> Login: autentificare activă, fără sesiune
-    Verificare --> Pregătit: sesiune validă
-    Login --> Pregătit: cod corect
-    Login --> Login: cod greșit / prea multe încercări
+    Verificare --> Login: autentificare activa, fara sesiune
+    Verificare --> Pregatit: sesiune valida
+    Login --> Pregatit: cod corect
+    Login --> Login: cod gresit / prea multe incercari
 
-    state Pregătit {
-        [*] --> FărăSursă
-        FărăSursă --> Încărcare: alege fișier
-        Încărcare --> SursăAleasă: upload reușit
-        Încărcare --> FărăSursă: eroare / peste 100 MB
-        FărăSursă --> SursăAleasă: alege din Bibliotecă
+    state Pregatit {
+        [*] --> FaraSursa
+        FaraSursa --> Incarcare: alege fisier
+        Incarcare --> SursaAleasa: upload reusit
+        Incarcare --> FaraSursa: eroare / peste 100 MB
+        FaraSursa --> SursaAleasa: alege din Biblioteca
     }
 
-    Pregătit --> Conectare: Pornește
-    Conectare --> Rulare: primește meta
-    Conectare --> Pregătit: serverul refuză
-    Rulare --> Pauză: click / Space
-    Pauză --> Rulare: click / Space
-    Rulare --> Terminat: video terminat / Oprește
-    Pauză --> Terminat: Oprește
-    Terminat --> Pregătit: rezultate disponibile
-    Rulare --> Login: sesiune expirată (4401)
-    Pregătit --> Login: Ieșire
+    Pregatit --> Conectare: Porneste
+    Conectare --> Rulare: primeste meta
+    Conectare --> Pregatit: serverul refuza
+    Rulare --> Pauza: click / Space
+    Pauza --> Rulare: click / Space
+    Rulare --> Terminat: video terminat / Opreste
+    Pauza --> Terminat: Opreste
+    Terminat --> Pregatit: rezultate disponibile
+    Rulare --> Login: sesiune expirata (4401)
+    Pregatit --> Login: Iesire
 ```

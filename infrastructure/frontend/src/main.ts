@@ -49,7 +49,7 @@ async function loadModels(): Promise<void> {
 function setPaused(value: boolean): void {
   paused = value;
   ui.pause.classList.toggle("paused", paused);
-  ui.pause.setAttribute("aria-label", paused ? "Continuă" : "Pauză");
+  ui.pause.setAttribute("aria-label", paused ? "Continua" : "Pauza");
   ui.pausedLabel.hidden = !paused;
 }
 
@@ -57,7 +57,7 @@ function togglePause(): void {
   if (socket?.readyState !== WebSocket.OPEN || !started) return;
   socket.send(JSON.stringify({ action: paused ? "resume" : "pause" }));
   setPaused(!paused);
-  say(paused ? "Pauză" : "Procesare în curs");
+  say(paused ? "Pauza" : "Procesare in curs");
 }
 
 function setRunning(running: boolean): void {
@@ -80,14 +80,14 @@ function onMessage(msg: ServerMessage): void {
     case "meta":
       started = true;
       showMeta(msg);
-      say("Procesare în curs");
+      say("Procesare in curs");
       sendParams();
       break;
     case "metrics":
       showMetrics(msg);
       break;
     case "done":
-      say("Procesare încheiată");
+      say("Procesare incheiata");
       showDownloads(msg.files);
       break;
     case "error":
@@ -115,16 +115,16 @@ function start(): void {
       }),
     );
   ws.onmessage = (e) => (typeof e.data === "string" ? onMessage(JSON.parse(e.data)) : showImage(e.data));
-  ws.onerror = () => say("Conexiunea cu serverul s-a întrerupt", true);
+  ws.onerror = () => say("Conexiunea cu serverul s-a intrerupt", true);
   ws.onclose = (e) => {
     if (e.code === 4401) showLogin("Sesiunea a expirat");
-    if (!started && !ui.message.classList.contains("error")) say("Serverul a închis conexiunea înainte de pornire", true);
+    if (!started && !ui.message.classList.contains("error")) say("Serverul a inchis conexiunea inainte de pornire", true);
     socket = null;
     setRunning(false);
   };
   socket = ws;
   setRunning(true);
-  say("Se pregătește modelul…");
+  say("Se pregateste modelul…");
 }
 
 ui.file.addEventListener("change", async () => {
@@ -134,8 +134,8 @@ ui.file.addEventListener("change", async () => {
   source = null;
   ui.start.disabled = true;
   try {
-    source = { video: await upload(file, (p) => say(`Se încarcă ${p}%`)) };
-    say("Video încărcat. Apasă Pornește.");
+    source = { video: await upload(file, (p) => say(`Se incarca ${p}%`)) };
+    say("Video incarcat. Apasa Porneste.");
     ui.start.disabled = false;
   } catch (e) {
     say((e as Error).message, true);
@@ -175,7 +175,7 @@ initLibrary((name) => {
   ui.file.value = "";
   ui.fileName.textContent = name;
   ui.start.disabled = !!socket;
-  say("Video din bibliotecă selectat. Apasă Pornește.");
+  say("Video din biblioteca selectat. Apasa Porneste.");
 });
 
 boot(() => {

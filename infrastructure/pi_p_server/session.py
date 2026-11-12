@@ -24,7 +24,7 @@ PREDICT_CONF = 0.05
 OVERLAP = 0.2
 JPEG = [cv2.IMWRITE_JPEG_QUALITY, 82]
 GPU = threading.Lock()
-# afișate ca o singură clasă, ca eticheta unui vehicul să nu sară între ele de la un cadru la altul
+# afisate ca o singura clasa, ca eticheta unui vehicul sa nu sara intre ele de la un cadru la altul
 SAME_CLASS = {"van": "car"}
 
 
@@ -158,7 +158,7 @@ class Session:
             writer = cv2.VideoWriter(str(self.out_dir / "detectii.mp4"), cv2.VideoWriter_fourcc(*codec), self.fps, (w, h))
             if writer.isOpened():
                 return writer
-        raise RuntimeError("Nu pot crea fișierul video de ieșire")
+        raise RuntimeError("Nu pot crea fisierul video de iesire")
 
     def close(self) -> list[str]:
         self.cap.release()

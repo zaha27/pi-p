@@ -1,5 +1,3 @@
-"""Verificarea unui set de date YOLO înainte de antrenare (`pi-check`)."""
-
 import argparse
 from collections import defaultdict
 from pathlib import Path
@@ -8,12 +6,11 @@ from PIL import Image
 
 from pi_p.data import NAMES, ROOT, images, label_path
 
-# Toleranță la comparația cu marginile imaginii, pentru erorile de rotunjire.
+# Toleranta la comparatia cu marginile imaginii, pentru erorile de rotunjire.
 EPS = 1e-3
 
 
 def check_label_file(path: Path, nc: int) -> list[tuple[str, int]]:
-    """Verifică un fișier de etichete; întoarce perechi (tipul problemei, numărul liniei)."""
     issues = []
     seen = set()
     for line_no, line in enumerate(path.read_text().splitlines(), 1):
@@ -29,7 +26,7 @@ def check_label_file(path: Path, nc: int) -> list[tuple[str, int]]:
             continue
 
         if not 0 <= cls < nc:
-            issues.append(("clasă invalidă", line_no))
+            issues.append(("clasa invalida", line_no))
 
         if w <= 0 or h <= 0:
             issues.append(("arie zero", line_no))
@@ -37,7 +34,7 @@ def check_label_file(path: Path, nc: int) -> list[tuple[str, int]]:
             left, top = x - w / 2, y - h / 2
             right, bottom = x + w / 2, y + h / 2
             if min(left, top) < -EPS or max(right, bottom) > 1 + EPS:
-                issues.append(("în afara imaginii", line_no))
+                issues.append(("in afara imaginii", line_no))
 
         if line in seen:
             issues.append(("duplicat", line_no))
@@ -46,7 +43,6 @@ def check_label_file(path: Path, nc: int) -> list[tuple[str, int]]:
 
 
 def check_split(root: Path, split: str, nc: int) -> dict[str, list[str]]:
-    """Verifică un subset întreg; întoarce, pe tipuri de probleme, unde au apărut."""
     found = defaultdict(list)
     imgs = images(root, split)
 
@@ -55,25 +51,25 @@ def check_split(root: Path, split: str, nc: int) -> dict[str, list[str]]:
             with Image.open(img) as im:
                 im.verify()
         except Exception:
-            found["imagine coruptă"].append(img.name)
+            found["imagine corupta"].append(img.name)
 
         lbl = label_path(img)
         if not lbl.is_file():
-            found["fără etichetă"].append(img.name)
+            found["fara eticheta"].append(img.name)
             continue
         for kind, line_no in check_label_file(lbl, nc):
             found[kind].append(f"{lbl.name}:{line_no}")
 
-    # Și invers: fișiere de etichete pentru care nu există imagine.
+    # Si invers: fisiere de etichete pentru care nu exista imagine.
     stems = {p.stem for p in imgs}
     for lbl in (root / "labels" / split).glob("*.txt"):
         if lbl.stem not in stems:
-            found["etichetă fără imagine"].append(lbl.name)
+            found["eticheta fara imagine"].append(lbl.name)
     return found
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Verifică un set de date în format YOLO")
+    ap = argparse.ArgumentParser(description="Verifica un set de date in format YOLO")
     ap.add_argument("--root", type=Path, default=ROOT)
     ap.add_argument("--splits", nargs="+", default=["train", "val"])
     args = ap.parse_args()

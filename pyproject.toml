@@ -1,7 +1,7 @@
 [project]
 name = "pi-p"
 version = "0.1.0"
-description = "Detecție de obiecte în imagini de dronă (VisDrone) cu YOLO26"
+description = "Detectie de obiecte in imagini de drona (VisDrone) cu YOLO26"
 requires-python = ">=3.12"
 dependencies = [
     "ultralytics>=8.4.171",

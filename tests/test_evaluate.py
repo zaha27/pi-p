@@ -11,7 +11,7 @@ from pi_p import evaluate
 from pi_p.data import write_labels
 
 NAMES = {i: f"class{i}" for i in range(10)}
-# nume -> (lățime, înălțime, [(clasă, x1, y1, x2, y2), ...]); obiectele din "a" sunt depărtate între ele
+# nume -> (latime, inaltime, [(clasa, x1, y1, x2, y2), ...]); obiectele din "a" sunt departate intre ele
 IMAGES = {
     "a": (200, 100, [(0, 10, 10, 40, 40), (3, 150, 50, 190, 90)]),
     "b": (160, 120, [(3, 60, 40, 100, 80)]),
@@ -20,7 +20,7 @@ ORACLE = {
     (h, w): torch.tensor([[x1, y1, x2, y2, 0.9, c] for c, x1, y1, x2, y2 in boxes], dtype=torch.float32)
     for w, h, boxes in IMAGES.values()
 }
-# interpolarea în 101 puncte din ultralytics (compute_ap) dă 0.995, nu 1.0, chiar și pentru predicții perfecte
+# interpolarea in 101 puncte din ultralytics (compute_ap) da 0.995, nu 1.0, chiar si pentru predictii perfecte
 PERFECT_AP = 0.995
 CONFIG = "mask_size: 640\ndilate_kernel: 3\nmargin: 0\nmin_size: 640\nprelim_imgsz: 640\nprelim_conf: 0.25\nwindow_imgsz: 640\nconf: 0.25\niou: 0.5\n"
 
@@ -35,7 +35,7 @@ class FakeModel:
         source = [source] if isinstance(source, np.ndarray) else source
         out = []
         for img in source:
-            # decupajele ferestrelor nu au intrare în ORACLE: modelul nu vede nimic în ele
+            # decupajele ferestrelor nu au intrare in ORACLE: modelul nu vede nimic in ele
             det = ORACLE.get(img.shape[:2], torch.zeros((0, 6))).clone()
             junk = torch.tensor([[0, 0, 5, 5, 0.99, 7]], dtype=torch.float32).repeat(self.junk, 1)
             out.append(SimpleNamespace(boxes=SimpleNamespace(data=torch.cat([det, junk]))))
@@ -72,7 +72,7 @@ def test_full_mode_perfect_predictions_give_perfect_map(val, tmp_path, monkeypat
 
 
 def test_cap_keeps_highest_scores(val, tmp_path, monkeypatch):
-    # 301 casete false cu scor mai mare decât cele bune ocupă tot plafonul de 300
+    # 301 casete false cu scor mai mare decat cele bune ocupa tot plafonul de 300
     result = run_cli(monkeypatch, tmp_path, "--mode", "full", "--data", str(val), model=FakeModel(junk=301))
     assert result["max_det"] == 300
     assert result["map50_95"] == pytest.approx(0.0)

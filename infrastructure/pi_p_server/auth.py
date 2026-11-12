@@ -74,18 +74,18 @@ def save_secret(secret: str, path: Path = Path(".env")) -> None:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--force", action="store_true", help="înlocuiește secretul existent")
+    ap.add_argument("--force", action="store_true", help="inlocuieste secretul existent")
     args = ap.parse_args()
     if load_env().get("PI_P_TOTP_SECRET") and not args.force:
-        raise SystemExit("Există deja un secret în .env; folosește --force ca să-l înlocuiești (codurile vechi nu vor mai merge)")
+        raise SystemExit("Exista deja un secret in .env; foloseste --force ca sa-l inlocuiesti (codurile vechi nu vor mai merge)")
     secret = pyotp.random_base32()
     uri = pyotp.TOTP(secret).provisioning_uri(name="pi-p", issuer_name="Proiect Prelucrarea Imaginilor")
     qr = qrcode.QRCode(border=1)
     qr.add_data(uri)
     qr.print_ascii(invert=True)
     save_secret(secret)
-    print(f"\nScanează codul cu Google Authenticator (sau introdu manual cheia {secret}).")
-    print("Secretul a fost salvat în .env. Repornește serverul ca să-l folosească.")
+    print(f"\nScaneaza codul cu Google Authenticator (sau introdu manual cheia {secret}).")
+    print("Secretul a fost salvat in .env. Reporneste serverul ca sa-l foloseasca.")
 
 
 if __name__ == "__main__":

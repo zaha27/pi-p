@@ -37,7 +37,7 @@ def list_videos(root: Path) -> list[dict]:
 def resolve(root: Path, name: str) -> Path:
     path = root / name
     if Path(name).name != name or path.suffix.lower() not in VIDEO_EXT or not path.is_file():
-        raise ValueError("Video inexistent în bibliotecă")
+        raise ValueError("Video inexistent in biblioteca")
     return path
 
 

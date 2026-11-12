@@ -10,7 +10,7 @@ def test_check_label_file_finds_issues(tmp_path):
     p = tmp_path / "a.txt"
     p.write_text("3 0.5 0.5 0.1 0.1\n12 0.5 0.5 0.1 0.1\n3 0.99 0.5 0.1 0.1\n3 0.5 0.5 0 0.1\n3 0.5\n3 0.5 0.5 0.1 0.1\n")
     kinds = [k for k, _ in check_label_file(p, len(NAMES))]
-    assert kinds == ["clasă invalidă", "în afara imaginii", "arie zero", "format", "duplicat"]
+    assert kinds == ["clasa invalida", "in afara imaginii", "arie zero", "format", "duplicat"]
 
 
 def test_prepared_dataset_is_clean_and_tiles_are_valid(raw_visdrone, tmp_path):

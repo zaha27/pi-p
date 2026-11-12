@@ -1,12 +1,12 @@
 # Codul, explicat
 
-Ghid pentru prezentare: ideile importante din cod, în ordinea pipeline-ului, fiecare cu fragmentul care o implementează și un exemplu. Legătura dintre comenzi e în [pipeline.md](pipeline.md).
+Ghid pentru prezentare: ideile importante din cod, in ordinea pipeline-ului, fiecare cu fragmentul care o implementeaza si un exemplu. Legatura dintre comenzi e in [pipeline.md](pipeline.md).
 
 ## 1. Datele
 
-Etichetele sunt în formatul YOLO: un fișier `.txt` pentru fiecare imagine, cu câte un rând `clasă x_centru y_centru lățime înălțime` pentru fiecare obiect. Coordonatele sunt împărțite la dimensiunile imaginii, deci sunt între 0 și 1. Funcțiile de citire și scriere sunt în [data.py](../src/pi_p/data.py), iar restul modulelor le folosesc doar pe acestea.
+Etichetele sunt in formatul YOLO: un fisier `.txt` pentru fiecare imagine, cu cate un rand `clasa x_centru y_centru latime inaltime` pentru fiecare obiect. Coordonatele sunt impartite la dimensiunile imaginii, deci sunt intre 0 si 1. Functiile de citire si scriere sunt in [data.py](../src/pi_p/data.py), iar restul modulelor le folosesc doar pe acestea.
 
-VisDrone marchează unele zone ca „ignored” (mulțimi pe care adnotatorii nu le-au etichetat) și are o clasă „others” pe care nu o folosim. Dacă rămân în imagine, modelul e penalizat pentru obiecte reale pe care le găsește acolo. `pi-prepare` le acoperă cu gri, dar lasă neatinse obiectele etichetate care se suprapun cu ele ([prepare.py](../src/pi_p/prepare.py)):
+VisDrone marcheaza unele zone ca „ignored” (multimi pe care adnotatorii nu le-au etichetat) si are o clasa „others” pe care nu o folosim. Daca raman in imagine, modelul e penalizat pentru obiecte reale pe care le gaseste acolo. `pi-prepare` le acopera cu gri, dar lasa neatinse obiectele etichetate care se suprapun cu ele ([prepare.py](../src/pi_p/prepare.py)):
 
 ```python
 def mask_ignored(img, keep, ignore):
@@ -15,12 +15,12 @@ def mask_ignored(img, keep, ignore):
         m[y1:y2, x1:x2] = True
     for x1, y1, x2, y2 in keep:
         m[y1:y2, x1:x2] = False
-    img[m] = FILL  # 114, griul folosit și de YOLO la completarea imaginilor
+    img[m] = FILL  # 114, griul folosit si de YOLO la completarea imaginilor
 ```
 
-## 2. Analiza statistică
+## 2. Analiza statistica
 
-Pentru fiecare imagine se calculează media și abaterea standard a canalului L din spațiul de culoare LAB, adică luminozitatea și contrastul ([stats.py](../src/pi_p/stats.py)). Imaginea e citită micșorată de 4 ori, pentru că media și abaterea abia se schimbă, iar citirea e mult mai rapidă.
+Pentru fiecare imagine se calculeaza media si abaterea standard a canalului L din spatiul de culoare LAB, adica luminozitatea si contrastul ([stats.py](../src/pi_p/stats.py)). Imaginea e citita micsorata de 4 ori, pentru ca media si abaterea abia se schimba, iar citirea e mult mai rapida.
 
 ```python
 def group(brightness, contrast, dark=70, low_contrast=35):
@@ -31,7 +31,7 @@ def group(brightness, contrast, dark=70, low_contrast=35):
     return "normal"
 ```
 
-Pragurile 70 și 35 se pot schimba cu `--dark` și `--low-contrast`, iar histogramele din `stats.png` arată unde cad față de distribuție. Rezultatul pe VisDrone:
+Pragurile 70 si 35 se pot schimba cu `--dark` si `--low-contrast`, iar histogramele din `stats.png` arata unde cad fata de distributie. Rezultatul pe VisDrone:
 
 | Split | normal | dark | low_contrast |
 |---|---|---|---|
@@ -39,11 +39,11 @@ Pragurile 70 și 35 se pot schimba cu `--dark` și `--low-contrast`, iar histogr
 | val | 431 | 13 | 104 |
 | test-dev | 1032 | 501 | 77 |
 
-Pe val sunt doar 13 imagini întunecate, așa că mAP-ul pe grupa `dark` din val e foarte zgomotos. Concluziile despre imaginile întunecate trebuie verificate pe test-dev, unde sunt 501.
+Pe val sunt doar 13 imagini intunecate, asa ca mAP-ul pe grupa `dark` din val e foarte zgomotos. Concluziile despre imaginile intunecate trebuie verificate pe test-dev, unde sunt 501.
 
 ## 3. CLAHE
 
-CLAHE egalizează histograma pe bucăți de imagine (grilă de 8×8) și limitează cât poate crește contrastul (`clip=2.0`), ca să nu amplifice zgomotul. Se aplică doar pe canalul L, deci culorile rămân aceleași ([enhance.py](../src/pi_p/enhance.py)):
+CLAHE egalizeaza histograma pe bucati de imagine (grila de 8×8) si limiteaza cat poate creste contrastul (`clip=2.0`), ca sa nu amplifice zgomotul. Se aplica doar pe canalul L, deci culorile raman aceleasi ([enhance.py](../src/pi_p/enhance.py)):
 
 ```python
 def clahe(img, clip=2.0, grid=8):
@@ -56,11 +56,11 @@ def needs_clahe(name, mode, groups):
     return mode == "uniform" or groups.get(name) in {"dark", "low_contrast"}
 ```
 
-Varianta `uniform` aplică CLAHE pe toate imaginile, iar `adaptive` doar pe cele din grupele slabe. Etichetele se copiază neschimbate, pentru că CLAHE nu mută pixelii.
+Varianta `uniform` aplica CLAHE pe toate imaginile, iar `adaptive` doar pe cele din grupele slabe. Etichetele se copiaza neschimbate, pentru ca CLAHE nu muta pixelii.
 
 ## 4. Grila de ferestre
 
-Ferestrele au 640 px și se suprapun 20%, deci pasul e 512 px. Ultima fereastră de pe fiecare axă e lipită de marginea imaginii, ca să nu rămână o bandă neacoperită ([slicing.py](../src/pi_p/slicing.py)):
+Ferestrele au 640 px si se suprapun 20%, deci pasul e 512 px. Ultima fereastra de pe fiecare axa e lipita de marginea imaginii, ca sa nu ramana o banda neacoperita ([slicing.py](../src/pi_p/slicing.py)):
 
 ```python
 def starts(length, size, step):
@@ -69,34 +69,34 @@ def starts(length, size, step):
     return [*range(0, length - size, step), length - size]
 ```
 
-Exemplu: o imagine VisDrone de 1360×765 primește ferestrele care încep la x ∈ {0, 512, 720} și y ∈ {0, 125}, adică 6 ferestre.
+Exemplu: o imagine VisDrone de 1360×765 primeste ferestrele care incep la x ∈ {0, 512, 720} si y ∈ {0, 125}, adica 6 ferestre.
 
-La antrenarea pe felii, `pi-tile` decupează aceleași ferestre și păstrează un obiect doar dacă cel puțin jumătate din el se vede în fereastră (`--min-visibility 0.5`). Altfel, modelul ar învăța să recunoască bucăți mici de mașini ca mașini întregi. Ferestrele fără obiecte se păstrează doar în proporție de 10% (`--empty 0.1`), ca modelul să vadă și fundal, dar fără să fie copleșit de el.
+La antrenarea pe felii, `pi-tile` decupeaza aceleasi ferestre si pastreaza un obiect doar daca cel putin jumatate din el se vede in fereastra (`--min-visibility 0.5`). Altfel, modelul ar invata sa recunoasca bucati mici de masini ca masini intregi. Ferestrele fara obiecte se pastreaza doar in proportie de 10% (`--empty 0.1`), ca modelul sa vada si fundal, dar fara sa fie coplesit de el.
 
-## 5. Fuziunea detecțiilor
+## 5. Fuziunea detectiilor
 
-Detecțiile dintr-o fereastră sunt în coordonatele ferestrei. Înainte de unire se fac doi pași ([predict.py](../src/pi_p/predict.py)):
+Detectiile dintr-o fereastra sunt in coordonatele ferestrei. Inainte de unire se fac doi pasi ([predict.py](../src/pi_p/predict.py)):
 
 ```python
 def to_image(det, win, w, h):
     return drop_cut(det, win, w, h) + torch.tensor([win[0], win[1], win[0], win[1], 0, 0])
 ```
 
-1. `drop_cut` aruncă detecțiile care ating o margine a ferestrei aflată în interiorul imaginii: obiectul e tăiat acolo și apare întreg în fereastra vecină. O detecție lipită de marginea reală a imaginii rămâne. De exemplu, în fereastra care începe la x = 512, o casetă cu x1 = 0 e aruncată.
-2. Se adună colțul stânga-sus al ferestrei, ca să ajungă în coordonatele imaginii.
+1. `drop_cut` arunca detectiile care ating o margine a ferestrei aflata in interiorul imaginii: obiectul e taiat acolo si apare intreg in fereastra vecina. O detectie lipita de marginea reala a imaginii ramane. De exemplu, in fereastra care incepe la x = 512, o caseta cu x1 = 0 e aruncata.
+2. Se aduna coltul stanga-sus al ferestrei, ca sa ajunga in coordonatele imaginii.
 
-Apoi `merge` elimină dublurile: ia detecțiile în ordinea scorului și o suprimă pe fiecare care se suprapune prea mult cu una mai bună de aceeași clasă. Suprapunerea se măsoară cu **IOS** (intersecția împărțită la aria casetei mai mici), nu cu IoU:
+Apoi `merge` elimina dublurile: ia detectiile in ordinea scorului si o suprima pe fiecare care se suprapune prea mult cu una mai buna de aceeasi clasa. Suprapunerea se masoara cu **IOS** (intersectia impartita la aria casetei mai mici), nu cu IoU:
 
 ```python
 ios = inter / torch.minimum(area[:, None], area[None, :])
 suppress = (ios > thr) & (det[:, None, 5] == det[None, :, 5])
 ```
 
-Motivul: aceeași mașină poate apărea întreagă într-o fereastră și pe jumătate în alta. Caseta mică e cuprinsă complet în cea mare, deci IOS = 1, dar IoU = 0.5 și NMS-ul obișnuit le-ar păstra pe amândouă.
+Motivul: aceeasi masina poate aparea intreaga intr-o fereastra si pe jumatate in alta. Caseta mica e cuprinsa complet in cea mare, deci IOS = 1, dar IoU = 0.5 si NMS-ul obisnuit le-ar pastra pe amandoua.
 
 ## 6. Ferestrele adaptive
 
-În loc de grilă, ferestrele se pun doar unde detecția preliminară a găsit obiecte ([adaptive.py](../src/pi_p/adaptive.py)):
+In loc de grila, ferestrele se pun doar unde detectia preliminara a gasit obiecte ([adaptive.py](../src/pi_p/adaptive.py)):
 
 ```python
 def window_stages(boxes, width, height, params):
@@ -107,39 +107,39 @@ def window_stages(boxes, width, height, params):
     windows = rects_to_windows(rects, scale, params.margin, params.min_size, width, height)
 ```
 
-1. **Masca:** casetele preliminare sunt desenate cu alb pe o mască neagră micșorată la 640 px pe latura mare. Pentru 1360×765, `scale = 2.125`. Masca mică face dilatarea și etichetarea mult mai rapide.
-2. **Dilatarea** cu un nucleu de 15×15 unește obiectele apropiate într-o singură pată. Nucleul trebuie să fie impar, ca pata să crească la fel în toate direcțiile.
-3. **Componentele conexe** (`cv2.connectedComponentsWithStats`): fiecare pată devine un dreptunghi.
-4. **Ferestrele:** dreptunghiurile se readuc la scara imaginii, se lărgesc cu o margine de 32 px, se măresc până la cel puțin 640 px și se mută în interiorul imaginii.
+1. **Masca:** casetele preliminare sunt desenate cu alb pe o masca neagra micsorata la 640 px pe latura mare. Pentru 1360×765, `scale = 2.125`. Masca mica face dilatarea si etichetarea mult mai rapide.
+2. **Dilatarea** cu un nucleu de 15×15 uneste obiectele apropiate intr-o singura pata. Nucleul trebuie sa fie impar, ca pata sa creasca la fel in toate directiile.
+3. **Componentele conexe** (`cv2.connectedComponentsWithStats`): fiecare pata devine un dreptunghi.
+4. **Ferestrele:** dreptunghiurile se readuc la scara imaginii, se largesc cu o margine de 32 px, se maresc pana la cel putin 640 px si se muta in interiorul imaginii.
 
-Detecția completă ([adaptive_trace](../src/pi_p/adaptive.py)):
+Detectia completa ([adaptive_trace](../src/pi_p/adaptive.py)):
 
-- prima trecere, pe imaginea întreagă, la pragul cel mai mic dintre `prelim_conf` și `conf`;
-- doar casetele cu scor de cel puțin `prelim_conf` (0.25) devin semințe pentru ferestre, ca zgomotul să nu producă ferestre;
-- detecțiile primei treceri peste `conf` se păstrează în rezultat, la fel ca la grilă, unde imaginea întreagă e mereu inclusă;
-- detecțiile din ferestre și cele din prima trecere se unesc cu același `merge` ca la grilă.
+- prima trecere, pe imaginea intreaga, la pragul cel mai mic dintre `prelim_conf` si `conf`;
+- doar casetele cu scor de cel putin `prelim_conf` (0.25) devin seminte pentru ferestre, ca zgomotul sa nu produca ferestre;
+- detectiile primei treceri peste `conf` se pastreaza in rezultat, la fel ca la grila, unde imaginea intreaga e mereu inclusa;
+- detectiile din ferestre si cele din prima trecere se unesc cu acelasi `merge` ca la grila.
 
-`pi-eval --mode adaptive` raportează și câte ferestre au fost pe imagine și câți pixeli s-au procesat față de imaginea întreagă, ca să se vadă cât se câștigă față de grilă.
+`pi-eval --mode adaptive` raporteaza si cate ferestre au fost pe imagine si cati pixeli s-au procesat fata de imaginea intreaga, ca sa se vada cat se castiga fata de grila.
 
 ## 7. Evaluarea
 
-Toate modurile se evaluează cu același cod ([evaluate.py](../src/pi_p/evaluate.py) și [metrics.py](../src/pi_p/metrics.py)), pe imaginea întreagă, cu etichetele originale:
+Toate modurile se evalueaza cu acelasi cod ([evaluate.py](../src/pi_p/evaluate.py) si [metrics.py](../src/pi_p/metrics.py)), pe imaginea intreaga, cu etichetele originale:
 
-- **același prag**, `conf = 0.001`: mAP-ul are nevoie de toată curba precizie-recall, deci și de detecțiile cu scor mic;
-- **același plafon de detecții**, 300 pe imagine, sau numărul maxim de obiecte dintr-o imagine a setului, dacă e mai mare, ca variantele cu multe ferestre să nu fie avantajate de numărul mare de casete;
-- **aceeași potrivire**: o detecție e corectă dacă are clasa bună și IoU peste prag cu un obiect încă nepotrivit; detecțiile se iau în ordinea scorului, deci un dublu cu scor mai mic devine fals pozitiv;
+- **acelasi prag**, `conf = 0.001`: mAP-ul are nevoie de toata curba precizie-recall, deci si de detectiile cu scor mic;
+- **acelasi plafon de detectii**, 300 pe imagine, sau numarul maxim de obiecte dintr-o imagine a setului, daca e mai mare, ca variantele cu multe ferestre sa nu fie avantajate de numarul mare de casete;
+- **aceeasi potrivire**: o detectie e corecta daca are clasa buna si IoU peste prag cu un obiect inca nepotrivit; detectiile se iau in ordinea scorului, deci un dublu cu scor mai mic devine fals pozitiv;
 - **mAP50-95** e media AP-ului pe pragurile de IoU 0.50, 0.55, …, 0.95, iar **mAP50** e doar pragul 0.50. Calculul final al AP-ului e cel din Ultralytics (`ap_per_class`).
 
-Timpul pe imagine se măsoară după 3 imagini de încălzire, iar pe GPU se așteaptă terminarea calculului (`torch.cuda.synchronize`), altfel timpul ar ieși prea mic.
+Timpul pe imagine se masoara dupa 3 imagini de incalzire, iar pe GPU se asteapta terminarea calculului (`torch.cuda.synchronize`), altfel timpul ar iesi prea mic.
 
-## 8. Întrebări probabile
+## 8. Intrebari probabile
 
-**De ce nu folosim direct `model.val()` din Ultralytics?** Pentru că lucrează doar pe imaginea întreagă. Variantele cu ferestre produc detecțiile altfel, iar ca să fie comparabile, toate trebuie evaluate cu același cod. `--mode val` rămâne pentru verificări rapide.
+**De ce nu folosim direct `model.val()` din Ultralytics?** Pentru ca lucreaza doar pe imaginea intreaga. Variantele cu ferestre produc detectiile altfel, iar ca sa fie comparabile, toate trebuie evaluate cu acelasi cod. `--mode val` ramane pentru verificari rapide.
 
-**De ce IOS la fuziune și IoU la evaluare?** La fuziune căutăm bucăți ale aceluiași obiect, iar o bucată e conținută în obiectul întreg. La evaluare măsurăm cât de bine se potrivește o casetă cu adevărul, deci contează și cât de mult o depășește.
+**De ce IOS la fuziune si IoU la evaluare?** La fuziune cautam bucati ale aceluiasi obiect, iar o bucata e continuta in obiectul intreg. La evaluare masuram cat de bine se potriveste o caseta cu adevarul, deci conteaza si cat de mult o depaseste.
 
-**Ce se pierde la ferestrele adaptive?** Obiectele pe care prima trecere nu le vede deloc nu primesc fereastră. De aceea e planificată și varianta în care ferestrele adaptive se adaugă grilei.
+**Ce se pierde la ferestrele adaptive?** Obiectele pe care prima trecere nu le vede deloc nu primesc fereastra. De aceea e planificata si varianta in care ferestrele adaptive se adauga grilei.
 
-**De ce CLAHE pe canalul L?** Pe canalele R, G, B separat, CLAHE ar schimba culorile. Pe L schimbă doar luminozitatea.
+**De ce CLAHE pe canalul L?** Pe canalele R, G, B separat, CLAHE ar schimba culorile. Pe L schimba doar luminozitatea.
 
-**De ce imaginea întreagă e inclusă și la grilă?** Obiectele mari pot fi mai mari decât o fereastră, deci în ferestre apar mereu tăiate și sunt aruncate de `drop_cut`. Pe imaginea întreagă micșorată se văd complet.
+**De ce imaginea intreaga e inclusa si la grila?** Obiectele mari pot fi mai mari decat o fereastra, deci in ferestre apar mereu taiate si sunt aruncate de `drop_cut`. Pe imaginea intreaga micsorata se vad complet.

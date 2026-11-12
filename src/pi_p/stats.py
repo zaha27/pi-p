@@ -1,5 +1,3 @@
-"""Luminozitatea, contrastul și grupa de iluminare a fiecărei imagini (`pi-stats`)."""
-
 import argparse
 import csv
 from collections import Counter
@@ -21,13 +19,11 @@ LOW_CONTRAST = 35
 
 
 def brightness_contrast(img: np.ndarray) -> tuple[float, float]:
-    """Media și abaterea standard a canalului L (luminanța) din spațiul Lab."""
     l = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)[:, :, 0]
     return float(l.mean()), float(l.std())
 
 
 def group(brightness: float, contrast: float, dark: float = DARK, low_contrast: float = LOW_CONTRAST) -> str:
-    """Regula de încadrare: întâi luminozitatea, apoi contrastul."""
     if brightness < dark:
         return "dark"
     if contrast < low_contrast:
@@ -36,21 +32,18 @@ def group(brightness: float, contrast: float, dark: float = DARK, low_contrast: 
 
 
 def measure(path: Path) -> tuple[float, float]:
-    """Luminozitatea și contrastul unei imagini de pe disc."""
-    # imaginea micșorată de 4 ori ajunge pentru medie și abatere și se citește mult mai repede
+    # imaginea micsorata de 4 ori ajunge pentru medie si abatere si se citeste mult mai repede
     return brightness_contrast(cv2.imread(str(path), cv2.IMREAD_REDUCED_COLOR_4))
 
 
 def read_groups(path: Path) -> dict[str, str]:
-    """Citește stats.csv: numele imaginii -> grupa ei."""
     if not path.is_file():
-        raise SystemExit(f"Lipsește {path}, rulează întâi pi-stats")
+        raise SystemExit(f"Lipseste {path}, ruleaza intai pi-stats")
     with open(path, newline="") as f:
         return {row["image"]: row["group"] for row in csv.DictReader(f)}
 
 
 def plot(rows: list[dict], dark: float, low_contrast: float, out: Path) -> None:
-    """Histogramele luminozității și contrastului, cu pragurile desenate."""
     fig, ax = plt.subplots(1, 3, figsize=(18, 4.5))
     b = np.array([r["brightness"] for r in rows])
     c = np.array([r["contrast"] for r in rows])
@@ -74,8 +67,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", type=Path, default=ROOT)
     ap.add_argument("--splits", nargs="+", default=["train", "val", "test"])
-    ap.add_argument("--dark", type=float, default=DARK, help="sub această luminozitate imaginea e întunecată")
-    ap.add_argument("--low-contrast", type=float, default=LOW_CONTRAST, help="sub acest contrast imaginea e slab contrastată")
+    ap.add_argument("--dark", type=float, default=DARK, help="sub aceasta luminozitate imaginea e intunecata")
+    ap.add_argument("--low-contrast", type=float, default=LOW_CONTRAST, help="sub acest contrast imaginea e slab contrastata")
     ap.add_argument("--workers", type=int, default=8)
     args = ap.parse_args()
     rows = []
@@ -92,7 +85,7 @@ def main():
         writer.writeheader()
         writer.writerows(rows)
     plot([r for r in rows if r["split"] == "train"], args.dark, args.low_contrast, args.root / "stats.png")
-    print(f"Statistici în {args.root / 'stats.csv'}, histograme în {args.root / 'stats.png'}")
+    print(f"Statistici in {args.root / 'stats.csv'}, histograme in {args.root / 'stats.png'}")
 
 
 if __name__ == "__main__":

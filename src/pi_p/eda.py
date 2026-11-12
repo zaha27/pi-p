@@ -1,5 +1,3 @@
-"""Analiza exploratorie a setului de date: clase, mărimi și densitatea obiectelor (`pi-eda`)."""
-
 import argparse
 import json
 import random
@@ -69,13 +67,13 @@ def plot(objs: np.ndarray, per_img: np.ndarray, sizes: list[int], imgs: list[Pat
 
     fig, ax = plt.subplots(1, 3, figsize=(18, 4.5))
     ax[0].barh(np.array(NAMES)[order], counts[order], color=COLORS[order] / 255)
-    ax[0].set_title("Instanțe pe clasă")
+    ax[0].set_title("Instante pe clasa")
     ax[1].hist(side, bins=bins, histtype="step", lw=2, label="nativ (tiling)")
     for sz in sizes:
         ax[1].hist(side * sz / longest, bins=bins, histtype="step", lw=2, label=f"imgsz {sz}")
     ax[1].set_xscale("log")
     ax[1].axvline(16, color="r", ls="--", lw=1)
-    ax[1].set_title("Latura obiectului (px) văzută de model")
+    ax[1].set_title("Latura obiectului (px) vazuta de model")
     ax[1].legend()
     ax[2].hist(per_img, bins=50)
     ax[2].set_title("Obiecte pe imagine")
@@ -86,11 +84,11 @@ def plot(objs: np.ndarray, per_img: np.ndarray, sizes: list[int], imgs: list[Pat
     ax[0].boxplot([side[cls == c] for c in range(len(NAMES))], tick_labels=NAMES, showfliers=False)
     ax[0].set_yscale("log")
     ax[0].tick_params(axis="x", rotation=45)
-    ax[0].set_title("Latura nativă (px) pe clasă")
+    ax[0].set_title("Latura nativa (px) pe clasa")
     ax[1].hist2d(objs[:, 1], objs[:, 2], bins=64, range=[[0, 1], [0, 1]], cmap="magma")
     ax[1].invert_yaxis()
     ax[1].set_aspect("equal")
-    ax[1].set_title("Unde apar obiectele în cadru")
+    ax[1].set_title("Unde apar obiectele in cadru")
     fig.tight_layout()
     fig.savefig(out / "sizes_heatmap.png", dpi=110)
 
@@ -120,7 +118,7 @@ def main():
     (args.out / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False))
     plot(objs, per_img, args.imgsz, imgs, args.out)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
-    print(f"Grafice în {args.out}/")
+    print(f"Grafice in {args.out}/")
 
 
 if __name__ == "__main__":
