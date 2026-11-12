@@ -124,7 +124,7 @@ def detect(model: YOLO, imgs: list[np.ndarray], imgsz: int, conf: float, device)
 def window_detections(model: YOLO, img: np.ndarray, windows: np.ndarray, params: AdaptiveParams, device) -> list[torch.Tensor]:
     h, w = img.shape[:2]
     wins = windows.tolist()
-    dets = detect(model, [img[y1:y2, x1:x2] for x1, y1, x2, y2 in wins], params.window_imgsz, params.conf, device)
+    dets = detect(model, [np.ascontiguousarray(img[y1:y2, x1:x2]) for x1, y1, x2, y2 in wins], params.window_imgsz, params.conf, device)
     return [to_image(d, tuple(win), w, h) for d, win in zip(dets, wins)]
 
 
