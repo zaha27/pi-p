@@ -1,13 +1,4 @@
-"""Analiza exploratorie a setului de date (EDA).
-
-`pi-eda` răspunde la întrebările de dinaintea antrenării: câte obiecte are
-fiecare clasă, cât de mici sunt obiectele și câte sunt pe imagine. Scrie
-`summary.json` și trei grafice în `eda_out/`.
-
-Cel mai important rezultat este mărimea obiectelor „văzută de model”: la
-imgsz 640 imaginea e micșorată, iar multe obiecte ajung sub 16 pixeli. Asta
-motivează felierea. Detalii în docs/pipeline/01-pregatirea-datelor.md.
-"""
+"""Analiza exploratorie a setului de date: clase, mărimi și densitatea obiectelor (`pi-eda`)."""
 
 import argparse
 import json

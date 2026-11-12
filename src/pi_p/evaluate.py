@@ -1,14 +1,4 @@
-"""Evaluarea: mAP și timp pe imagine, pe imaginile întregi, în aceleași condiții pentru toate variantele.
-
-    --mode val        validarea Ultralytics (model.val), ca în timpul antrenării
-    --mode full       modelul pe imaginea întreagă, micșorată
-    --mode slice      grila de ferestre, cu fuziunea proprie (predict.sliced_predict)
-    --mode sahi       aceleași ferestre, cu biblioteca SAHI
-    --mode adaptive   ferestre doar unde sunt obiecte (adaptive.adaptive_predict)
-
-Cu --groups, mAP-ul se calculează și pe fiecare grupă de iluminare din stats.csv.
-Detalii în docs/pipeline/08-evaluarea.md.
-"""
+"""Evaluarea pe imaginile întregi, în modurile val, full, slice, sahi și adaptive (`pi-eval`)."""
 
 import argparse
 import json
@@ -56,7 +46,6 @@ def sahi_detect(sahi_model, img: np.ndarray, args) -> np.ndarray:
 
 def detect(model, img: np.ndarray, args) -> tuple[np.ndarray, np.ndarray]:
     """Detecțiile în modul cerut și ferestrele procesate în plus (doar la adaptive)."""
-    # întoarce detecțiile și ferestrele procesate în plus față de imaginea întreagă (doar la adaptive)
     if args.mode == "full":
         return model.predict(img, imgsz=args.imgsz, conf=args.conf, device=args.device, verbose=False)[0].boxes.data.cpu().numpy(), NO_WINDOWS
     if args.mode == "slice":

@@ -1,15 +1,4 @@
-"""Taie imaginile unui set de date în felii, pentru antrenarea pe felii.
-
-`pi-tile` pornește de la un set în format YOLO (făcut de `pi-prepare` sau de
-`pi-clahe`) și scrie unul nou, în care fiecare imagine e înlocuită de:
-
-  - imaginea întreagă (ca modelul să vadă și obiecte mari);
-  - feliile ei de 640 x 640, cu etichetele mutate în coordonatele feliei.
-
-Feliile fără niciun obiect sunt păstrate doar într-o proporție mică
-(`--empty`), ca modelul să vadă și fundal, dar să nu fie dominat de el.
-Detalii în docs/pipeline/04-felierea-pe-grila.md.
-"""
+"""Tăierea unui set de date în felii de antrenare, cu imaginea întreagă păstrată (`pi-tile`)."""
 
 import argparse
 import random

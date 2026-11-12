@@ -1,14 +1,4 @@
-"""Îmbunătățirea contrastului cu CLAHE, pe tot setul de date.
-
-CLAHE egalizează histograma pe regiuni mici (grilă 8 x 8), cu o limită de
-contrast (2.0), doar pe canalul L din Lab, ca nuanțele să rămână neschimbate.
-
-    pi-clahe --mode uniform    CLAHE pe toate imaginile -> datasets/VisDrone-clahe
-    pi-clahe --mode adaptive   doar pe grupele dark și low_contrast -> datasets/VisDrone-clahe-adaptive
-
-Etichetele nu se schimbă și sunt copiate ca atare. Detalii în
-docs/pipeline/03-imbunatatirea-contrastului.md.
-"""
+"""CLAHE pe canalul L, pe toate imaginile sau doar pe cele slabe (`pi-clahe`)."""
 
 import argparse
 import shutil

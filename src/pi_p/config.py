@@ -1,11 +1,4 @@
-"""Citirea fișierelor de configurare YAML din `configs/`.
-
-Un fișier de configurare conține parametrii unei antrenări (model, date,
-număr de epoci etc.). Orice parametru poate fi schimbat din linia de comandă
-cu `cheie=valoare`, fără să editezi fișierul:
-
-    pi-train configs/train.yaml epochs=50 batch=8
-"""
+"""Configurări YAML din configs/, cu suprascrieri `cheie=valoare` din linia de comandă."""
 
 from pathlib import Path
 

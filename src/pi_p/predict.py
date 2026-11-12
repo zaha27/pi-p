@@ -1,13 +1,4 @@
-"""Detecția pe grila de ferestre și fuziunea detecțiilor.
-
-Imaginea întreagă, micșorată, prinde obiectele mari; ferestrele de 640 px,
-rulate la rezoluția lor reală, prind obiectele mici. Detecțiile din ferestre
-sunt mutate în coordonatele imaginii (`to_image`), cele tăiate de marginea unei
-ferestre sunt aruncate (`drop_cut`), iar dublurile sunt eliminate (`merge`).
-
-`pi-predict` rulează un model pe imagini sau video și salvează rezultatul
-desenat. Detalii în docs/pipeline/06-detectia-pe-ferestre.md și 07-fuziunea-detectiilor.md.
-"""
+"""Detecția pe grila de ferestre și fuziunea detecțiilor (`pi-predict`)."""
 
 import argparse
 from collections import Counter
@@ -24,8 +15,7 @@ from pi_p.slicing import windows
 
 
 def merge(det: torch.Tensor, thr: float) -> torch.Tensor:
-    """Elimină dublurile: din fiecare grup de chenare de aceeași clasă care se suprapun
-    peste `thr` (măsurat cu IOS, aria comună / aria chenarului mai mic) rămâne cel cu scorul cel mai mare."""
+    """Păstrează cel mai bun chenar din fiecare grup de aceeași clasă cu IOS peste `thr`."""
     det = det[det[:, 4].argsort(descending=True)]
     lt = torch.maximum(det[:, None, :2], det[None, :, :2])
     rb = torch.minimum(det[:, None, 2:4], det[None, :, 2:4])
@@ -41,8 +31,7 @@ def merge(det: torch.Tensor, thr: float) -> torch.Tensor:
 
 
 def drop_cut(det: torch.Tensor, win: tuple[int, int, int, int], w: int, h: int, margin: int = 2) -> torch.Tensor:
-    """Aruncă detecțiile lipite (la cel mult `margin` px) de o margine a ferestrei aflată în interiorul
-    imaginii: sunt bucăți de obiecte, iar obiectul întreg apare în fereastra vecină."""
+    """Aruncă detecțiile lipite de o margine interioară a ferestrei (obiecte tăiate)."""
     x1, y1, x2, y2 = win
     cut = torch.zeros(len(det), dtype=torch.bool)
     if x1 > 0:
@@ -58,7 +47,6 @@ def drop_cut(det: torch.Tensor, win: tuple[int, int, int, int], w: int, h: int, 
 
 def to_image(det: torch.Tensor, win: tuple[int, int, int, int], w: int, h: int) -> torch.Tensor:
     """Mută detecțiile unei ferestre în coordonatele imaginii întregi, după ce le aruncă pe cele tăiate."""
-    # din coordonatele ferestrei în cele ale imaginii, fără casetele tăiate de marginea ferestrei
     return drop_cut(det, win, w, h) + torch.tensor([win[0], win[1], win[0], win[1], 0, 0])
 
 

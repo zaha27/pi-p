@@ -1,12 +1,4 @@
-"""Verifică un set de date în format YOLO, înainte de antrenare.
-
-`pi-check` caută greșelile care strică o antrenare fără să dea eroare:
-imagini corupte, imagini fără etichetă, etichete fără imagine, clase
-inexistente, chenare cu arie zero sau în afara imaginii, linii duplicate.
-
-Se rulează după `pi-prepare` și după `pi-tile`. Dacă găsește ceva, comanda
-se termină cu cod de eroare.
-"""
+"""Verificarea unui set de date YOLO înainte de antrenare (`pi-check`)."""
 
 import argparse
 from collections import defaultdict

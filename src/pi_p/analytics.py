@@ -1,14 +1,4 @@
-"""Statistici de trafic calculate din detecții, pentru dashboard-ul web.
-
-Nu face parte din pipeline-ul de detecție: primește detecțiile gata făcute,
-cadru cu cadru, și ține evidența a ce se întâmplă în video:
-
-  - câte obiecte din fiecare clasă sunt în cadru, acum și în ultimele secunde;
-  - pe unde stau obiectele mult timp (harta de ocupare, pentru aglomerație);
-  - încotro și cât de repede se mișcă (doar când urmărirea e pornită).
-
-`summary()` întoarce totul ca dicționar, trimis de server către browser.
-"""
+"""Statistici de trafic din detecții, cadru cu cadru, pentru dashboard."""
 
 from collections import Counter, deque
 
