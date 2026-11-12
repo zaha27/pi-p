@@ -1,0 +1,25 @@
+50/548
+100/548
+150/548
+200/548
+250/548
+300/548
+350/548
+400/548
+450/548
+500/548
+mod slice, 548 imagini, 60 ms/imagine (3 de încălzire)
+mAP50-95: 0.174  mAP50: 0.305
+        pedestrian: 0.187
+            people: 0.078
+           bicycle: 0.009
+               car: 0.514
+               van: 0.231
+             truck: 0.162
+          tricycle: 0.097
+   awning-tricycle: 0.045
+               bus: 0.275
+             motor: 0.138
+grupa dark (13 imagini): mAP50-95: 0.242  mAP50: 0.398
+grupa low_contrast (104 imagini): mAP50-95: 0.172  mAP50: 0.299
+grupa normal (431 imagini): mAP50-95: 0.172  mAP50: 0.304
