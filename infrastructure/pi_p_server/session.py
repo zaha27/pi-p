@@ -24,6 +24,8 @@ PREDICT_CONF = 0.05
 OVERLAP = 0.2
 JPEG = [cv2.IMWRITE_JPEG_QUALITY, 82]
 GPU = threading.Lock()
+# afișate ca o singură clasă, ca eticheta unui vehicul să nu sară între ele de la un cadru la altul
+SAME_CLASS = {"van": "car"}
 
 
 def device() -> str:
@@ -60,10 +62,13 @@ class Session:
         with GPU:
             self.model.predict(np.zeros((64, 64, 3), dtype=np.uint8), device=self.dev, verbose=False)
         self.scores = ScoreMap(self.model.predictor.model.model)
+        by_name = {v: k for k, v in self.model.names.items()}
+        self.relabel = {by_name[a]: by_name[b] for a, b in SAME_CLASS.items() if a in by_name and b in by_name}
+        self.names = {k: v for k, v in self.model.names.items() if k not in self.relabel}
         self.slice = slice_size
         self.track = track and not slice_size
         self.params = Params()
-        self.analytics = Analytics(self.model.names, self.width, self.height, self.fps)
+        self.analytics = Analytics(self.names, self.width, self.height, self.fps)
         self.trails = defaultdict(lambda: deque(maxlen=30))
         self.out_dir = out_dir
         self.writer = None
@@ -75,8 +80,8 @@ class Session:
         return {
             "type": "meta",
             "model": Path(weights).stem if Path(weights).name != "best.pt" else Path(weights).parents[1].name,
-            "names": {int(k): v for k, v in self.model.names.items()},
-            "colors": {int(k): "#%02x%02x%02x" % COLORS[int(k) % len(COLORS)] for k in self.model.names},
+            "names": {int(k): v for k, v in self.names.items()},
+            "colors": {int(k): "#%02x%02x%02x" % COLORS[int(k) % len(COLORS)] for k in self.names},
             "fps": self.fps,
             "total": self.total,
             "width": self.width,
@@ -105,6 +110,8 @@ class Session:
         with GPU:
             t = time.perf_counter()
             xyxy, conf, cls, ids = self.detect(frame)
+            for src, dst in self.relabel.items():
+                cls[cls == src] = dst
             ms = (time.perf_counter() - t) * 1000
             cam = self.scores.heatmap(*small.shape[:2]) if self.params.view == "scores" else None
         self.last = (small, s, xyxy, conf, cls, ids)
@@ -115,7 +122,7 @@ class Session:
             self.writer = self._open_writer(view.shape[1], view.shape[0])
         self.writer.write(view)
         counts = Counter(cls[keep].tolist())
-        self.rows.append({"frame": len(self.rows), **{name: counts.get(k, 0) for k, name in self.model.names.items()}})
+        self.rows.append({"frame": len(self.rows), **{name: counts.get(k, 0) for k, name in self.names.items()}})
 
         congestion = None
         now = time.perf_counter()
@@ -130,7 +137,7 @@ class Session:
         keep = conf >= self.params.conf
         base = small if cam is None else heat_overlay(small, cam)
         view = draw_frame(base, xyxy[keep] * s, conf[keep], cls[keep], ids[keep] if ids is not None else None,
-                          self.trails, self.model.names)
+                          self.trails, self.names)
         if self.slice:
             draw_grid(view, [tuple(round(v * s) for v in win) for win in windows(self.width, self.height, self.slice, OVERLAP)])
         return view
