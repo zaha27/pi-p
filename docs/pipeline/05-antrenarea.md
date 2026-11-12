@@ -20,7 +20,7 @@ parametri"] --> T
     T --> B["best.pt
 10 clase VisDrone"]
     T --> R["results.csv, grafice
-în runs/detect/runs/<name>/"]
+în runs/<name>/"]
 ```
 
 ## Configurațiile
@@ -71,7 +71,7 @@ Comparația corectă se face cu `pi-eval`, care rulează toate modelele pe acele
 ## Rezultatul
 
 ```
-runs/detect/runs/yolo26n_640/
+runs/yolo26n_640/
     weights/best.pt      cel mai bun model
     weights/last.pt      modelul de la ultima epocă
     results.csv          loss și mAP la fiecare epocă

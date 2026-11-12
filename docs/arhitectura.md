@@ -39,17 +39,15 @@ o linie pentru fiecare variantă testată, comparată cu baseline-ul`"]
     classDef prep fill:#DBEAFE,stroke:#1D4ED8,stroke-width:2px,color:#111827
     classDef det fill:#DCFCE7,stroke:#15803D,stroke-width:2px,color:#111827
     classDef eva fill:#FEF3C7,stroke:#B45309,stroke-width:2px,color:#111827
-    classDef plan fill:#F3E8FF,stroke:#7E22CE,stroke-width:2px,stroke-dasharray:6 4,color:#111827
     classDef leg fill:#FFFFFF,stroke:#D1D5DB,stroke-width:1px,color:#374151,font-size:12px
 
     class A inp
-    class B,C,D prep
+    class B,C,D,K,L prep
     class E,F,G det
     class H,I,J eva
-    class K,L det
     class LEG leg
 ```
 
-Drumul de sus (feliere pe grilă) și cel de jos (detecție preliminară și ferestre adaptive) sunt două feluri de a alege ferestrele; se folosesc separat sau împreună (`--mode grila`, `adaptiv`, `adaptiv+grila`).
+Drumul de sus (feliere pe grilă) și cel de jos (detecție preliminară și ferestre adaptive) sunt două feluri de a alege ferestrele; se folosesc separat sau împreună (`pi-eval --mode slice`, `sahi` sau `adaptive`).
 
 Fiecare casetă din schemă este explicată pas cu pas în [pipeline/README.md](pipeline/README.md).

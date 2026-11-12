@@ -16,7 +16,7 @@ Cele trei subseturi au roluri distincte în acest proiect. Subsetul train este f
 
 ## 3. Arhitectura sistemului
 
-Arhitectura este prezentată în figura de mai jos. Ea descrie drumul unei singure imagini prin sistem, de la intrare până la detecțiile finale și la evaluarea lor. Componentele cu contur continuu fac parte din prototip; cele cu contur punctat sunt planificate pentru etapele următoare. Fiecare componentă poate fi oprită sau înlocuită din fișierul de configurare, iar combinațiile alese formează experimentele descrise în secțiunea 5.
+Arhitectura este prezentată în figura de mai jos. Ea descrie drumul unei singure imagini prin sistem, de la intrare până la detecțiile finale și la evaluarea lor. Fiecare componentă poate fi oprită sau înlocuită din fișierul de configurare, iar combinațiile alese formează experimentele descrise în secțiunea 5.
 
 
 
@@ -94,7 +94,7 @@ Experimentele urmează schema din figura de mai jos. Ele sunt organizate în eta
 
 În etapa 2 se evaluează îmbunătățirea contrastului, pe configurația selectată în etapa 1. Pentru fiecare dintre cele două variante, uniformă și adaptivă, CLAHE este aplicat imaginilor de antrenare înainte de tăiere, modelul este reantrenat, iar testarea pe setul de validare se face în același mod ca în configurația selectată. CLAHE este păstrat doar dacă îmbunătățește rezultatul. Un rezultat negativ, care ar arăta că îmbunătățirea contrastului nu ajută pe acest set de date, este și el o concluzie valabilă și este raportat ca atare.
 
-Etapa 3 este planificată și evaluează ferestrele adaptive pe configurația selectată în etapa 2, în două variante: în locul grilei fixe și împreună cu ea.
+Etapa 3 evaluează ferestrele adaptive pe configurația selectată în etapa 2, în două variante: în locul grilei fixe și împreună cu ea (a doua variantă este planificată).
 
 După ce toate deciziile au fost luate pe setul de validare, toate variantele sunt rulate o singură dată pe test-dev. Pentru că această rulare nu cere reantrenare, costul ei este doar timpul de inferență. Tabelul final conține, pentru fiecare variantă, valorile pe setul de validare, care justifică alegerile, și valorile pe test-dev, care sunt rezultatele raportate.
 
@@ -105,16 +105,16 @@ După ce toate deciziile au fost luate pe setul de validare, toate variantele su
 | 1 | Feliere pe grilă fixă | ferestre | ferestre și imaginea întreagă micșorată |
 | 2 | CLAHE uniform | ca în configurația selectată, cu CLAHE pe toate imaginile | la fel |
 | 2 | CLAHE adaptiv | ca în configurația selectată, cu CLAHE pe grupele care îl cer | la fel |
-| 3 (planificat) | Ferestre adaptive | ca în configurația selectată | ferestre adaptive |
+| 3 | Ferestre adaptive | ca în configurația selectată | ferestre adaptive |
 | 3 (planificat) | Ferestre adaptive și grilă | ca în configurația selectată | ferestre adaptive și grilă |
 
 Metodologia are o limită asumată. Selecția pe etape nu verifică toate combinațiile posibile. De exemplu, nu arată dacă CLAHE ar fi avut un efect mai mare pe o variantă de împărțire care nu a fost selectată în etapa 1. Testarea tuturor combinațiilor ar multiplica numărul de antrenări și rămâne o direcție pentru continuarea proiectului.
 
 ## 6. Starea implementării
 
-Toate componentele din arhitectură au cod și teste: pregătirea datelor, analiza statistică a imaginilor (`pi-stats`), îmbunătățirea contrastului în cele două variante (`pi-clahe`), tăierea ferestrelor pentru antrenare, antrenarea, inferența pe grilă și pe ferestre adaptive, fuziunea detecțiilor și evaluarea prin mAP pe imagini întregi, pe tot setul și pe grupe (`pi-eval`). Fiecare este explicată pas cu pas în [pipeline/README.md](pipeline/README.md).
+Sunt implementate pregătirea datelor, analiza statistică a imaginilor, îmbunătățirea contrastului în cele două variante, configurațiile de antrenare pe imagini întregi și pe ferestre, tăierea ferestrelor pentru antrenare, inferența pe ferestre cu fuziunea detecțiilor (eliminarea detecțiilor tăiate și suprimarea dublurilor prin IOS), integrarea bibliotecii SAHI, detecția preliminară cu ferestrele adaptive și un evaluator comun, care calculează mAP-ul pe imaginea întreagă în aceleași condiții pentru toate variantele. Urmează rularea experimentelor din secțiunea 5 și varianta în care ferestrele adaptive se adaugă grilei. Legătura dintre comenzi și module este descrisă în [pipeline.md](pipeline.md), iar fiecare etapă este explicată pas cu pas în [pipeline/README.md](pipeline/README.md).
 
-Dintre experimente, etapa 1 este rulată, iar ferestrele adaptive au o primă măsurătoare; valorile sunt în [rezultate.md](rezultate.md). Rămân de rulat cele două reantrenări cu CLAHE din etapa 2, integrarea bibliotecii SAHI (în locul ei a fost măsurată varianta „baseline + grilă”, care face același lucru cu codul propriu) și testul final pe test-dev.
+Din experimente sunt rulate până acum: etapa 1 (imagini întregi față de felii) cu antrenări complete de 100 de epoci, o primă reglare a ferestrelor adaptive și reantrenarea cu CLAHE uniform; reantrenarea cu CLAHE adaptiv este în curs. Valorile sunt în [rezultate.md](rezultate.md).
 
 ## Bibliografie
 

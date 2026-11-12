@@ -1,6 +1,6 @@
 # 6. Detecția pe ferestre
 
-**Cod:** `src/pi_p/predict.py` · **Comandă:** `pi-predict`
+**Cod:** `sliced_predict` din `src/pi_p/predict.py` · **Comandă:** `pi-predict`
 
 ## Ideea
 
@@ -13,35 +13,33 @@ Pe lângă ferestre, modelul vede și **imaginea întreagă, micșorată**. Ea p
 ```mermaid
 flowchart TB
     I["Imagine întreagă
-ex. 1920 × 1080"] --> W1["detect_whole
-imaginea micșorată la 640"]
-    I --> G["alegerea ferestrelor
-grilă sau adaptive"]
-    G --> W2["detect_in_windows
-modelul pe fiecare fereastră"]
-    W2 --> DC["drop_cut
-aruncă detecțiile tăiate de fereastră"]
-    DC --> SH["mutare în coordonatele imaginii
-+ colțul ferestrei"]
+ex. 1920 × 1080"] --> W1["imaginea întreagă
+micșorată la 640"]
+    I --> G["windows
+ferestrele grilei"]
+    G --> W2["modelul pe fiecare fereastră
+(toate într-un singur apel)"]
+    W2 --> DC["to_image = drop_cut
++ mutare în coordonatele imaginii"]
     W1 --> M["merge
 elimină dublurile"]
-    SH --> M
+    DC --> M
     M --> O["Detecții finale
 x1, y1, x2, y2, scor, clasă"]
 ```
 
-## Cele patru moduri
+## Unde e folosită
 
-Funcția `detect` este punctul comun de intrare. Aceeași funcție e folosită de `pi-predict`, de `pi-eval` și de serverul web, deci ce evaluăm este exact ce rulează.
+Aceeași funcție, `sliced_predict`, e folosită de `pi-predict --slice`, de `pi-eval --mode slice` și de serverul web, deci ce evaluăm este exact ce rulează.
 
-| Mod | Ce vede modelul | Funcția |
+| `pi-eval --mode` | Ce vede modelul | Cod |
 |---|---|---|
-| `intreg` | doar imaginea micșorată | `detect_whole` |
-| `grila` | imaginea micșorată + toate ferestrele grilei | `sliced_predict` |
-| `adaptiv` | imaginea micșorată + ferestre doar unde sunt obiecte | `adaptive_predict` |
-| `adaptiv+grila` | imaginea micșorată + ferestrele adaptive + grila | `adaptive_predict(with_grid=True)` |
+| `full` | doar imaginea micșorată | `model.predict` |
+| `slice` | imaginea micșorată + toate ferestrele grilei | `sliced_predict` |
+| `sahi` | aceleași ferestre, cu biblioteca SAHI | `sahi_detect` din `evaluate.py` |
+| `adaptive` | imaginea micșorată + ferestre doar unde sunt obiecte | `adaptive_predict` din `adaptive.py` |
 
-Modurile adaptive sunt explicate în [etapa 9](09-ferestre-adaptive.md).
+Ferestrele adaptive sunt explicate în [etapa 9](09-ferestre-adaptive.md).
 
 ## Mutarea chenarelor în imaginea întreagă
 
@@ -53,11 +51,11 @@ chenar în fereastră:        (100, 50) – (140, 90)
 chenar în imaginea întreagă: (612, 50) – (652, 90)
 ```
 
-În cod este o singură adunare: `det + [x1, y1, x1, y1, 0, 0]`. Ultimele două zerouri lasă scorul și clasa neschimbate.
+În cod este o singură adunare, în `to_image`: `det + [x1, y1, x1, y1, 0, 0]`. Ultimele două zerouri lasă scorul și clasa neschimbate. Aceeași funcție e folosită și pentru ferestrele adaptive.
 
-## De ce `MAX_DET = 1000`
+## Câte detecții păstrăm
 
-Ultralytics întoarce implicit cel mult 300 de detecții pe imagine. Imaginile VisDrone au până la aproximativ 900 de obiecte, deci limita ar tăia detecții corecte. O ridicăm la 1000.
+Ultralytics întoarce implicit cel mult 300 de detecții pentru fiecare imagine sau fereastră. La evaluare, `pi-eval` păstrează pe imagine cel mult 300 de detecții, dar niciodată mai puține decât numărul de obiecte adnotate din cea mai aglomerată imagine (până la ~900 în VisDrone). Altfel, limita ar tăia detecții corecte.
 
 ## Cât costă
 
@@ -71,9 +69,6 @@ uv run pi-predict best.pt imagine.jpg
 
 # pe grila de ferestre de 640 px
 uv run pi-predict best.pt folder_cu_imagini/ --slice 640
-
-# ferestre adaptive
-uv run pi-predict best.pt imagine.jpg --slice 640 --windows adaptiv
 ```
 
 Imaginile cu detecțiile desenate ajung în `runs/predict/`.

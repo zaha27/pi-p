@@ -1,6 +1,6 @@
 # 9. Ferestrele adaptive
 
-**Cod:** `src/pi_p/adaptive.py` (folosit de `adaptive_predict` din `src/pi_p/predict.py`) · **Parametri:** `configs/adaptive.yaml` · **Folosire:** `--mode adaptiv` sau `--mode adaptiv+grila`
+**Cod:** `src/pi_p/adaptive.py` · **Parametri:** `configs/adaptive.yaml` · **Folosire:** `pi-eval --mode adaptive`
 
 ## De ce e nevoie de etapa asta
 
@@ -89,7 +89,7 @@ Nu antrenăm nimic în plus: metoda funcționează cu orice model deja antrenat.
 
 ## Limitele metodei
 
-**Obiectele nevăzute de detecția preliminară nu primesc fereastră.** Un grup de pietoni atât de mici încât pe imaginea micșorată nu apare niciunul rămâne nedetectat. Pentru asta există modul `adaptiv+grila`, în care grila rămâne ca plasă de siguranță. E cel mai lent mod, pentru că rulează ambele seturi de ferestre.
+**Obiectele nevăzute de detecția preliminară nu primesc fereastră.** Un grup de pietoni atât de mici încât pe imaginea micșorată nu apare niciunul rămâne nedetectat. O variantă în care grila rămâne ca plasă de siguranță, pe lângă ferestrele adaptive, a fost măsurată (vezi rezultatele), dar nu există încă în `pi-eval`.
 
 **Grupurile mici tot primesc o fereastră întreagă.** O singură mașină izolată primește o fereastră de 640 × 640. Într-o scenă cu multe grupuri mici, ferestrele se suprapun mult: pe val ies în medie 10,2 ferestre pe imagine, care acoperă împreună de 4,5 ori suprafața imaginii.
 
@@ -99,7 +99,7 @@ Nu antrenăm nimic în plus: metoda funcționează cu orice model deja antrenat.
 
 ## Parametri
 
-Sunt în `configs/adaptive.yaml`. Pragurile `conf` și `iou` sunt luate de `pi-eval` și `pi-predict` din linia de comandă, ca toate modurile să fie comparate cu același prag.
+Sunt în `configs/adaptive.yaml` și se pot schimba din linia de comandă, scriind `cheie=valoare` imediat după ponderi. Pragul `conf` e luat de `pi-eval` din `--conf`, ca toate modurile să fie comparate cu același prag.
 
 | Parametru | Valoare | Rol |
 |---|---|---|
@@ -116,14 +116,14 @@ Sunt în `configs/adaptive.yaml`. Pragurile `conf` și `iou` sunt luate de `pi-e
 ## Comenzi
 
 ```bash
-# în aceleași condiții ca celelalte moduri (imagini întregi, prag 0,01, pe grupe)
-uv run pi-eval best.pt --mode adaptiv
-uv run pi-eval best.pt --mode adaptiv+grila
+# în aceleași condiții ca celelalte moduri (imagini întregi, prag 0,001)
+uv run pi-eval weights/yolo26n_tiled.pt --mode adaptive
 
-# evaluatorul propriu al metodei: plain sau adaptive, cu parametri schimbați din linia de comandă
-uv run pi-adaptive-eval best.pt dilate_kernel=31 --mode adaptive --out logs/eval/adaptiv_k31.json
+# cu parametri schimbați
+uv run pi-eval weights/yolo26n_tiled.pt dilate_kernel=31 min_size=480 --mode adaptive --out logs/eval/adaptiv_k31.json
 
-uv run pi-predict best.pt imagine.jpg --slice 640 --windows adaptiv
+# figurile cu pașii metodei
+uv run python -m pi_p.adaptive_figure --help
 ```
 
 Ce a ieșit la măsurători este în [../rezultate.md](../rezultate.md).

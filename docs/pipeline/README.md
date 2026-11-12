@@ -50,15 +50,15 @@ pi-eval: mAP și timp pe imagine`"]
 |---|---|---|---|---|
 | 1 | [Pregătirea datelor](01-pregatirea-datelor.md) | descarcă VisDrone, îl convertește în format YOLO, îl verifică | `prepare.py`, `check.py`, `eda.py` | `pi-prepare`, `pi-check`, `pi-eda` |
 | 2 | [Analiza statistică](02-analiza-statistica.md) | măsoară luminozitatea și contrastul, împarte imaginile pe grupe | `stats.py` | `pi-stats` |
-| 3 | [Îmbunătățirea contrastului](03-imbunatatirea-contrastului.md) | aplică CLAHE, pe toate imaginile sau doar pe cele care îl cer | `clahe.py` | `pi-clahe` |
+| 3 | [Îmbunătățirea contrastului](03-imbunatatirea-contrastului.md) | aplică CLAHE, pe toate imaginile sau doar pe cele care îl cer | `enhance.py` | `pi-clahe` |
 | 4 | [Felierea pe grilă](04-felierea-pe-grila.md) | taie imaginea în ferestre suprapuse de 640 px | `slicing.py`, `tile.py` | `pi-tile` |
 | 5 | [Antrenarea](05-antrenarea.md) | fine-tuning YOLO26n pe imagini întregi sau pe felii | `train.py`, `config.py` | `pi-train` |
 | 6 | [Detecția pe ferestre](06-detectia-pe-ferestre.md) | rulează modelul pe fiecare fereastră și mută chenarele în imaginea întreagă | `predict.py` | `pi-predict` |
-| 7 | [Fuziunea detecțiilor](07-fuziunea-detectiilor.md) | elimină obiectele tăiate și dublurile dintre ferestre | `fusion.py` | (parte din 6) |
-| 8 | [Evaluarea](08-evaluarea.md) | compară detecțiile cu etichetele și calculează mAP | `evaluate.py` | `pi-eval` |
-| 9 | [Ferestrele adaptive](09-ferestre-adaptive.md) | pune ferestre doar unde sunt obiecte | `adaptive.py` | `--mode adaptiv` |
+| 7 | [Fuziunea detecțiilor](07-fuziunea-detectiilor.md) | elimină obiectele tăiate și dublurile dintre ferestre | `predict.py` | (parte din 6) |
+| 8 | [Evaluarea](08-evaluarea.md) | compară detecțiile cu etichetele și calculează mAP | `evaluate.py`, `metrics.py` | `pi-eval` |
+| 9 | [Ferestrele adaptive](09-ferestre-adaptive.md) | pune ferestre doar unde sunt obiecte | `adaptive.py` | `pi-eval --mode adaptive` |
 
-Rezultatele măsurate până acum sunt în [../rezultate.md](../rezultate.md), iar planul experimentelor în [../benchmarkuri.md](../benchmarkuri.md).
+Rezultatele măsurate până acum sunt în [../rezultate.md](../rezultate.md), iar planul experimentelor în [../benchmarkuri.md](../benchmarkuri.md). Un rezumat pe o singură pagină, cu legătura dintre comenzi, este în [../pipeline.md](../pipeline.md), iar codul explicat funcție cu funcție în [../cod.md](../cod.md).
 
 ## Cum depind modulele unele de altele
 
@@ -72,31 +72,32 @@ formatul YOLO pe disc"]
 grila de ferestre"]
     stats["stats.py
 indicatori și grupe"]
-    fusion["fusion.py
-drop_cut, merge"]
+    enhance["enhance.py
+CLAHE"]
+    predict["predict.py
+drop_cut, to_image, merge, sliced_predict"]
     adaptive["adaptive.py
 ferestre adaptive"]
-    clahe["clahe.py"]
+    metrics["metrics.py
+potrivire și mAP"]
     prepare["prepare.py"]
     tile["tile.py"]
-    predict["predict.py
-detect()"]
     evaluate["evaluate.py"]
     train["train.py"]
     config["config.py"]
 
     prepare --> data
     stats --> data
-    clahe --> stats
-    clahe --> data
+    enhance --> stats
+    enhance --> data
     tile --> slicing
     tile --> data
-    adaptive --> slicing
-    fusion --> slicing
-    predict --> fusion
-    predict --> adaptive
-    predict --> clahe
+    predict --> slicing
+    adaptive --> predict
+    adaptive --> config
     evaluate --> predict
+    evaluate --> adaptive
+    evaluate --> metrics
     evaluate --> stats
     train --> config
 ```
@@ -122,19 +123,20 @@ uv run pi-tile                            # felii pentru antrenare
 uv run pi-train configs/train_tiled.yaml  # model pe felii
 
 # evaluare, mereu pe imaginile întregi din val
-uv run pi-eval runs/detect/runs/yolo26n_640/weights/best.pt --mode intreg
-uv run pi-eval runs/detect/runs/yolo26n_640/weights/best.pt --mode grila
-uv run pi-eval runs/detect/runs/yolo26n_tiled/weights/best.pt --mode grila
+G="--groups datasets/VisDrone/stats.csv"
+uv run pi-eval weights/yolo26n_baseline_640.pt --mode full  $G
+uv run pi-eval weights/yolo26n_baseline_640.pt --mode slice $G
+uv run pi-eval weights/yolo26n_baseline_640.pt --mode sahi  $G
+uv run pi-eval weights/yolo26n_tiled.pt        --mode slice $G
 
 # etapa 2 din plan: CLAHE (cere reantrenare)
-uv run pi-clahe uniform
-uv run pi-tile --src datasets/VisDrone-clahe-uniform --dst datasets/VisDrone-clahe-uniform-tiled
-uv run pi-train configs/train_tiled.yaml data=datasets/VisDrone-clahe-uniform-tiled/data.yaml name=yolo26n_tiled_clahe_uniform
-uv run pi-eval runs/detect/runs/yolo26n_tiled_clahe_uniform/weights/best.pt --mode grila --data datasets/VisDrone-clahe-uniform/data.yaml
+uv run pi-clahe --mode uniform
+uv run pi-tile --src datasets/VisDrone-clahe --dst datasets/VisDrone-clahe-tiled
+uv run pi-train configs/train_tiled.yaml data=datasets/VisDrone-clahe-tiled/data.yaml name=yolo26n_tiled_clahe_uniform
+uv run pi-eval runs/yolo26n_tiled_clahe_uniform/weights/best.pt --mode slice --data datasets/VisDrone-clahe/data.yaml $G
 
 # etapa 3 din plan: ferestre adaptive (fără reantrenare)
-uv run pi-eval runs/detect/runs/yolo26n_tiled/weights/best.pt --mode adaptiv
-uv run pi-eval runs/detect/runs/yolo26n_tiled/weights/best.pt --mode adaptiv+grila
+uv run pi-eval weights/yolo26n_tiled.pt --mode adaptive $G
 ```
 
 ## Testele
@@ -149,7 +151,9 @@ uv run pytest
 |---|---|
 | `test_prepare.py` | conversia adnotărilor și acoperirea regiunilor ignorate |
 | `test_check_tile.py` | verificarea setului de date și felierea pentru antrenare |
-| `test_stats_clahe.py` | indicatorii, grupele, pragurile și CLAHE |
+| `test_enhance.py` | indicatorii, grupele și CLAHE |
 | `test_slicing.py` | grila de ferestre, `drop_cut` și `merge` |
 | `test_adaptive.py` | gruparea obiectelor și ferestrele adaptive |
-| `test_evaluate.py` | potrivirea detecțiilor și calculul mAP |
+| `test_metrics.py` | potrivirea detecțiilor și calculul mAP |
+| `test_evaluate.py` | evaluatorul, pe toate modurile și pe grupe |
+| `test_adaptive_figure.py` | figurile ferestrelor adaptive |

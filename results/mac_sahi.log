@@ -1,0 +1,615 @@
+[33;20m2026-11-12 15:15:12,327 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:13,416 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:13,568 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:13,716 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:13,867 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:14,015 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:14,165 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:14,314 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:14,464 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:14,617 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:14,774 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:14,980 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,126 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,350 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,394 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 3.1273655891418457, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:15,407 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,460 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,516 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,572 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,631 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,687 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,745 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,797 - sahi - WARNING - ignoring invalid prediction with bbox: [0.0902409553527832, 0, 3.231034755706787, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:15,811 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,881 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,941 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:15,997 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:16,053 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:16,107 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:16,162 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:16,263 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:16,368 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:16,476 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:16,583 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:16,691 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:16,802 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:16,909 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:17,019 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:17,127 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:17,247 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:17,346 - sahi - WARNING - ignoring invalid prediction with bbox: [0.256850004196167, 0, 4.232521057128906, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:17,364 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:17,420 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:17,477 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:17,589 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:17,702 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:17,822 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:17,943 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,064 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,187 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,305 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,424 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,519 - sahi - WARNING - ignoring invalid prediction with bbox: [0.0839739739894867, 0, 3.731691598892212, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:18,535 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,586 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,636 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,688 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,739 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,792 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,843 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:18,940 - sahi - WARNING - ignoring invalid prediction with bbox: [0.06302949786186218, 0, 4.299229145050049, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:18,955 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:19,066 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:19,175 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:19,294 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:19,411 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:19,520 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:19,624 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:19,726 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:19,817 - sahi - WARNING - ignoring invalid prediction with bbox: [0.3651857376098633, 0, 158.13192749023438, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:19,831 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:19,940 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:19,994 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:20,049 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:20,105 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:20,162 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:20,218 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:20,274 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:20,329 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:20,437 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:20,548 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:20,642 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 3.9227757453918457, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:20,659 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:20,773 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:20,888 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,030 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,084 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,142 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,200 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,257 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,315 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,372 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,428 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,484 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,541 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,593 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,652 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,710 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,767 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,824 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,887 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:21,949 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,005 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,062 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,118 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,170 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,226 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,286 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,343 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,403 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,549 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,757 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,813 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,869 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,926 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:22,978 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,031 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,086 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,144 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,201 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,258 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,310 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,367 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,428 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,493 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,553 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,613 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,678 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,821 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,875 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:23,991 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:24,107 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:24,222 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:24,336 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:24,449 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:24,561 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:24,675 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:24,789 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:24,902 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:25,010 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:25,119 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:25,227 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:25,320 - sahi - WARNING - ignoring invalid prediction with bbox: [0.49489355087280273, 0, 4.796483516693115, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:25,336 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:25,447 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:25,560 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:25,671 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:25,783 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:25,902 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,044 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,183 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,238 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,294 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,351 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,407 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,453 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,508 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,564 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,617 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,667 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,718 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,772 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,823 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,875 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,915 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 3.0000672340393066, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:26,928 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:26,985 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,041 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,094 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,148 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,201 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,257 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,310 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,365 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,417 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,467 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,518 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,574 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,629 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,683 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,739 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,794 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,851 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,901 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:27,950 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,002 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,052 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,103 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,160 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,216 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,269 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,325 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,378 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,436 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,493 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,549 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,601 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,716 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,809 - sahi - WARNING - ignoring invalid prediction with bbox: [0.2996002435684204, 0, 3.452725648880005, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:28,825 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:28,930 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:29,043 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:29,157 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:29,270 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:29,462 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:29,579 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:29,692 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:29,806 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:29,952 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:30,079 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:30,196 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:30,308 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:30,423 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:30,535 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:30,646 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:30,758 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:30,871 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:30,964 - sahi - WARNING - ignoring invalid prediction with bbox: [595.2380981445312, 122.28422546386719, 594.7560424804688, 133.9166259765625] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:30,980 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:31,095 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:31,206 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:31,318 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:31,432 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:31,542 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:31,653 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:31,771 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:31,904 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:32,024 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:32,144 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:32,316 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:32,429 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:32,542 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:32,657 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:32,768 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:32,895 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:33,016 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:33,133 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:33,241 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:33,364 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:33,487 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:33,606 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:33,724 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:33,840 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:33,956 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:34,075 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:34,189 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:34,305 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:34,428 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:34,548 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:34,667 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:34,787 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:34,899 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:35,014 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:35,110 - sahi - WARNING - ignoring invalid prediction with bbox: [629.6524047851562, 0, 647.412841796875, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:35,125 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:35,235 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:35,351 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:35,505 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 5.049016952514648, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:35,523 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:35,653 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:35,775 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:35,890 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:36,005 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:36,119 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:36,233 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:36,352 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:36,466 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:36,586 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:36,693 - sahi - WARNING - ignoring invalid prediction with bbox: [0.5254439115524292, 0, 4.713982582092285, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:36,711 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:36,833 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:36,965 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:37,089 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:37,205 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:37,329 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:37,449 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:37,566 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:37,683 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:37,798 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:37,914 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:38,034 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:38,216 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:38,331 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:38,444 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:38,562 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:38,677 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:38,800 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:38,922 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:39,041 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:39,154 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:39,267 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:39,380 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:39,497 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:39,612 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:39,734 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:39,850 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:39,968 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:40,088 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:40,207 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:40,343 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:40,482 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:40,627 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:40,765 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:40,877 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:40,990 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:41,104 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:41,224 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:41,341 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:41,459 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:41,582 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:41,699 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:41,817 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:41,947 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:42,069 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:42,186 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:42,297 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:42,415 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:42,595 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:42,705 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:42,822 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:42,940 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:43,053 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:43,172 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:43,287 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:43,406 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:43,529 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:43,651 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:43,770 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:43,888 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:44,006 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:44,121 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:44,241 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:44,360 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:44,459 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 5.056691646575928, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:44,477 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:44,577 - sahi - WARNING - ignoring invalid prediction with bbox: [0.04551193118095398, 0, 4.106542110443115, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:44,596 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:44,717 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:44,833 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:44,943 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:45,055 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:45,169 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:45,318 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:45,443 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:45,557 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:45,673 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:45,794 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:45,973 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:46,085 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:46,199 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:46,317 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:46,434 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:46,548 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:46,660 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:46,773 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:46,884 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:46,997 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:47,109 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:47,222 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:47,336 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:47,448 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:47,561 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:47,674 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:47,787 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:47,902 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:48,017 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:48,133 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:48,248 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:48,359 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:48,475 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:48,594 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:48,707 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:48,821 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:48,936 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:49,048 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:49,162 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:49,274 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:49,385 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:49,499 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:49,610 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:49,724 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:49,838 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:49,951 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:50,065 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:50,186 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:50,306 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:50,427 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:50,552 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:50,679 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:50,861 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:50,978 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:51,095 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:51,215 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:51,337 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:51,457 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:51,576 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:51,695 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:51,806 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:51,932 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:52,051 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:52,170 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:52,292 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:52,426 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:52,552 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:52,680 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:52,814 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:52,939 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:53,052 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:53,169 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:53,286 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:53,401 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:53,519 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:53,647 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:53,772 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:53,896 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:54,016 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:54,200 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:54,316 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:54,428 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:54,539 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:54,653 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:54,764 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:54,872 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:54,987 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:55,099 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:55,213 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:55,321 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:55,448 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:55,566 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:55,682 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:55,795 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:55,910 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:56,022 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:56,136 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:56,247 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:56,359 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:56,472 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:56,583 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:56,692 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:56,805 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:56,928 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:57,056 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:57,183 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:57,311 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:57,428 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:57,542 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:57,658 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:57,785 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:57,964 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:58,076 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:58,190 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:58,309 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:58,468 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:58,616 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:58,746 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:58,891 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:59,015 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:59,116 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 4.128959655761719, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:59,134 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:59,254 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:59,349 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 4.718937397003174, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:59,349 - sahi - WARNING - ignoring invalid prediction with bbox: [612.90478515625, 0, 625.7968139648438, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:59,349 - sahi - WARNING - ignoring invalid prediction with bbox: [599.9246826171875, 0, 616.2559814453125, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:59,349 - sahi - WARNING - ignoring invalid prediction with bbox: [663.3167724609375, 0, 683.89208984375, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:59,364 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:59,457 - sahi - WARNING - ignoring invalid prediction with bbox: [0.2011784315109253, 0, 5.167323589324951, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:59,473 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:59,566 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 4.7018938064575195, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:59,582 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:59,676 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 4.207417964935303, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:59,693 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:59,782 - sahi - WARNING - ignoring invalid prediction with bbox: [0.1249535083770752, 0, 4.995613098144531, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:59,782 - sahi - WARNING - ignoring invalid prediction with bbox: [1172.6033935546875, 0, 1209.19482421875, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:15:59,798 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:15:59,917 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:00,019 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 4.004683017730713, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:00,035 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:00,160 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:00,284 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:00,409 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:00,533 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:00,661 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:00,783 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:00,909 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:01,030 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:01,152 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:01,275 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:01,399 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:01,585 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:01,703 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:01,813 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:01,939 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:02,051 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:02,144 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 4.524872303009033, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:02,159 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:02,269 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:02,381 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:02,491 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:02,605 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:02,719 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:02,835 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:02,951 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:03,065 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:03,174 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:03,284 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:03,379 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 4.341466426849365, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:03,395 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:03,486 - sahi - WARNING - ignoring invalid prediction with bbox: [0.02994289994239807, 0, 4.714343070983887, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:03,501 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:03,608 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:03,717 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:03,821 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:03,910 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 4.276957035064697, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:03,925 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:04,016 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 4.6429901123046875, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:04,031 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:04,135 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:04,248 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:04,366 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:04,482 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:04,592 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:04,689 - sahi - WARNING - ignoring invalid prediction with bbox: [0.47828084230422974, 0, 4.122898101806641, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:04,707 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:04,817 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:04,930 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:05,042 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:05,152 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:05,265 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:05,378 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:05,508 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:05,647 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:05,780 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:05,910 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:06,042 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:06,171 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:06,297 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:06,419 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:06,535 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:06,632 - sahi - WARNING - ignoring invalid prediction with bbox: [0.0538334846496582, 0, 4.424962997436523, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:06,651 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:06,766 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:06,891 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:07,080 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:07,205 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:07,333 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:07,460 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:07,593 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:07,717 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:07,840 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:07,963 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:08,087 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:08,207 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:08,307 - sahi - WARNING - ignoring invalid prediction with bbox: [565.3135986328125, 0, 665.8032836914062, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:08,321 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:08,419 - sahi - WARNING - ignoring invalid prediction with bbox: [926.476806640625, 0, 1028.3829345703125, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:08,434 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:08,558 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:08,661 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 4.024087429046631, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:08,676 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:08,815 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:08,928 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:09,040 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:09,159 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:09,278 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:09,399 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:09,514 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:09,633 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:09,753 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:09,865 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:09,984 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:10,104 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:10,224 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:10,337 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:10,458 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:10,565 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:10,673 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:10,785 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:10,902 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:11,017 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:11,130 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:11,240 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:11,332 - sahi - WARNING - ignoring invalid prediction with bbox: [0.06374183297157288, 0, 4.594034671783447, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:11,348 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:11,440 - sahi - WARNING - ignoring invalid prediction with bbox: [0, 0, 5.262004375457764, 0] (ultralytics.py:285)[0m
+[33;20m2026-11-12 15:16:11,454 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:11,557 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:11,612 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:11,665 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:11,720 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+[33;20m2026-11-12 15:16:11,774 - sahi - WARNING - Switching postprocess type/metric to NMS/IOU since model confidence threshold is low (0.001). (predict.py:325)[0m
+50/548
+100/548
+150/548
+200/548
+250/548
+300/548
+350/548
+400/548
+450/548
+500/548
+mod sahi, 548 imagini, 103 ms/imagine (3 de încălzire)
+mAP50-95: 0.166  mAP50: 0.298
+        pedestrian: 0.188
+            people: 0.077
+           bicycle: 0.009
+               car: 0.497
+               van: 0.216
+             truck: 0.152
+          tricycle: 0.093
+   awning-tricycle: 0.041
+               bus: 0.249
+             motor: 0.139
+grupa dark (13 imagini): mAP50-95: 0.226  mAP50: 0.380
+grupa low_contrast (104 imagini): mAP50-95: 0.167  mAP50: 0.295
+grupa normal (431 imagini): mAP50-95: 0.164  mAP50: 0.296
