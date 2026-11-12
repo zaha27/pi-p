@@ -57,7 +57,7 @@ Configurația selectată pentru etapele următoare: **model pe felii + grilă**.
 | bus | 0,274 | 0,477 | +0,203 |
 | motor | 0,159 | 0,293 | +0,134 |
 
-Toate clasele cresc. Bicycle aproape se înmulțește cu 4.5, iar pedestrian se dublează. Creșterea la clasele cu obiecte mici este în acord cu ipoteza de la care a pornit felierea; nu am măsurat însă separat pe mărimi de obiecte, deci nu putem spune cât din câștig vine de la ele.
+Toate clasele cresc. Bicycle crește de aproximativ 4,5 ori, iar pedestrian aproape se dublează. Creșterea la clasele cu obiecte mici este în acord cu ipoteza de la care a pornit felierea; nu am măsurat însă separat pe mărimi de obiecte, deci nu putem spune cât din câștig vine de la ele.
 
 ### Pe grupe de iluminare (mAP50)
 
