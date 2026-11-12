@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-from pi_p import coco
+from pi_p import adaptive_eval, coco
 from pi_p.data import images, label_path, read_labels
 from pi_p.metrics import mean_ap
 from pi_p.predict import sliced_predict
@@ -83,14 +83,17 @@ def evaluate(args) -> None:
                 print(f"grupa {g} ({len(subset)} imagini): mAP50-95: {g50_95:.3f}  mAP50: {g50:.3f}")
 
 
+def val_data(model, args):
+    if not args.coco:
+        return args.data, None
+    if len(model.names) != 80:
+        raise SystemExit(f"--coco cere un model cu cele 80 de clase COCO, {args.weights} are {len(model.names)}")
+    return coco.build(Path(args.data).parent, "val", model.names), sorted(set(coco.TO_COCO.values()))
+
+
 def validate(args) -> None:
     model = YOLO(args.weights)
-    data, classes = args.data, None
-    if args.coco:
-        if len(model.names) != 80:
-            raise SystemExit(f"--coco cere un model cu cele 80 de clase COCO, {args.weights} are {len(model.names)}")
-        data = coco.build(Path(args.data).parent, "val", model.names)
-        classes = sorted(set(coco.TO_COCO.values()))
+    data, classes = val_data(model, args)
     m = model.val(data=str(data), imgsz=args.imgsz, device=args.device, classes=classes)
     print(f"mAP50-95: {m.box.map:.3f}  mAP50: {m.box.map50:.3f}")
     for c in m.box.ap_class_index:
@@ -104,8 +107,9 @@ def main():
     ap.add_argument("--imgsz", type=int, default=640)
     ap.add_argument("--device", default=None)
     ap.add_argument("--coco", action="store_true", help="model cu clase COCO: mapează etichetele VisDrone pe COCO")
-    ap.add_argument("--mode", choices=["val", "full", "slice", "sahi"], default="val",
-                    help="val = model.val() Ultralytics; full/slice/sahi = mAP calculat de noi pe imaginea întreagă")
+    ap.add_argument("--mode", choices=["val", "full", "slice", "sahi", "plain", "adaptive"], default="val",
+                    help="val = model.val() Ultralytics; full/slice/sahi = mAP calculat de noi pe imaginea întreagă; "
+                         "plain/adaptive = evaluatorul ferestrelor adaptive (imgsz din config)")
     ap.add_argument("--split", default="val")
     ap.add_argument("--conf", type=float, default=0.001, help="același prag mic pentru toate variantele")
     ap.add_argument("--iou", type=float, default=0.5, help="prag IOS la combinarea detecțiilor din ferestre")
@@ -113,8 +117,18 @@ def main():
     ap.add_argument("--overlap", type=float, default=0.2)
     ap.add_argument("--groups", type=Path, default=None, help="stats.csv de la pi-stats: mAP și pe fiecare grupă")
     ap.add_argument("--limit", type=int, default=0, help="doar primele N imagini (0 = toate)")
+    ap.add_argument("--adaptive-config", default="configs/adaptive.yaml")
+    ap.add_argument("--out", type=Path, default=None, help="fișier JSON cu rezultatele (plain/adaptive)")
+    ap.add_argument("overrides", nargs="*", help="key=value pentru config (plain/adaptive); se scriu imediat după weights")
     args = ap.parse_args()
-    if args.mode == "val":
+    if args.mode == "val" and (args.limit or args.out or args.overrides):
+        raise SystemExit("--limit, --out și overrides nu se folosesc cu --mode val")
+    if args.mode in ("plain", "adaptive"):
+        model = YOLO(args.weights)
+        data, classes = val_data(model, args)
+        adaptive_eval.run(model, args.mode, data, args.adaptive_config, tuple(args.overrides), args.limit or None,
+                          args.device, args.out, classes)
+    elif args.mode == "val":
         validate(args)
     elif args.coco:
         raise SystemExit("--coco merge doar cu --mode val")
