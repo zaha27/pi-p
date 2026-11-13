@@ -1,0 +1,27 @@
+Copyright (c) 2026 Zaharia Andrei, Lavinia Manolescu. All rights reserved.
+
+This repository and everything in it (source code, documentation, figures,
+presentations, videos, trained weights and experiment results; the "Work") is
+the exclusive property of the copyright holders named above.
+
+No license or other right is granted, expressly or by implication. Without the
+prior written permission of the copyright holders, you may not:
+
+  1. copy, reproduce or redistribute the Work, in whole or in part;
+  2. modify, adapt, translate or create derivative works from the Work;
+  3. use the Work, or any part of it, in another project, product, service,
+     coursework, thesis or publication;
+  4. sublicense, sell or otherwise make the Work available to third parties;
+  5. use the Work to train, fine-tune or evaluate machine learning models.
+
+Viewing the Work where the copyright holders have made it available, for the
+sole purpose of reading it, does not grant any of the rights listed above.
+
+Third-party software, models and datasets that the Work depends on or refers
+to are not covered by this notice and remain subject to their own licenses.
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH THE WORK.
+
+Permission requests: contact the copyright holders.

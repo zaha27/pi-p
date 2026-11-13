@@ -39,6 +39,10 @@ docs/               documentatia
 infrastructure/     aplicatia web: server FastAPI, dashboard, Docker
 ```
 
+## Licenta
+
+Toate drepturile rezervate. Codul, documentatia, figurile si rezultatele nu pot fi copiate, modificate, redistribuite sau folosite in alte proiecte fara acordul scris al autorilor. Detalii in [LICENSE](LICENSE).
+
 ## Analiza literaturii de specialitate (state-of-the-art)
 
 | Nr. | Autor(i) / An | Titlul articolului / proiectului | Aplicatie / Domeniu<sup>1</sup> | Tehnologii utilizate<sup>2</sup> | Metodologie / Abordare<sup>3</sup> | Rezultate<sup>4</sup> | Limitari<sup>5</sup> | Comentarii suplimentare<sup>6</sup> |
