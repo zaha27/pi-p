@@ -43,3 +43,15 @@ def test_without_tracking_there_is_no_flow():
     a.update(*frame([[10, 10, 20, 20]], [0]), 1.0)
     s = a.summary()
     assert s["unique"] == 0 and s["flow"] == [] and s["mean_flow"] == 0
+
+
+def test_skipped_frames_count_as_elapsed_time():
+    box = frame([[100, 100, 140, 130]], [0])
+    every, skipping = Analytics({0: "car"}, 960, 540, 5), Analytics({0: "car"}, 960, 540, 5)
+    for _ in range(12):
+        every.update(*box, 1.0)
+    for _ in range(4):
+        skipping.update(*box, 1.0, frames=3)
+    assert skipping.frame == every.frame == 12
+    assert len(skipping.history) == len(every.history)
+    assert np.allclose(skipping.dwell, every.dwell)

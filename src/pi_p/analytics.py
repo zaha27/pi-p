@@ -27,20 +27,21 @@ class Analytics:
         self.frame = 0
         self.inference_ms = 0.0
 
-    def update(self, xyxy: np.ndarray, cls: np.ndarray, ids: np.ndarray | None, inference_ms: float) -> None:
-        self.frame += 1
+    def update(self, xyxy: np.ndarray, cls: np.ndarray, ids: np.ndarray | None, inference_ms: float, frames: int = 1) -> None:
+        self.frame += frames
         self.inference_ms = inference_ms
-        self.history.append(Counter(cls.tolist()))
+        self.history.extend([Counter(cls.tolist())] * frames)
         self.classes.update(cls.tolist())
-        self._accumulate(xyxy)
+        self._accumulate(xyxy, frames)
         self._update_tracks(xyxy, cls, ids)
 
-    def _accumulate(self, xyxy: np.ndarray) -> None:
-        self.dwell *= self.decay
+    def _accumulate(self, xyxy: np.ndarray, frames: int) -> None:
+        decay = self.decay**frames
+        self.dwell *= decay
         gh, gw = self.dwell.shape
         cells = np.floor(xyxy * self.scale).astype(int)
         for x1, y1, x2, y2 in cells:
-            self.dwell[max(y1, 0) : min(y2 + 1, gh), max(x1, 0) : min(x2 + 1, gw)] += 1 - self.decay
+            self.dwell[max(y1, 0) : min(y2 + 1, gh), max(x1, 0) : min(x2 + 1, gw)] += 1 - decay
 
     def _update_tracks(self, xyxy: np.ndarray, cls: np.ndarray, ids: np.ndarray | None) -> None:
         self.flow = []

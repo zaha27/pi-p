@@ -213,11 +213,12 @@ async def run_session(ws: WebSocket, video: Path, out_dir: Path, weights: str, t
                 await playing.wait()
                 t0 += time.perf_counter() - paused_at
                 continue
-            out = await asyncio.to_thread(session.step)
+            skip = max(0, int((time.perf_counter() - t0) * session.fps) - i) if realtime else 0
+            out = await asyncio.to_thread(session.step, skip)
             if out is None:
                 break
             live, congestion, summary = out
-            i += 1
+            i += skip + 1
             if realtime and (delay := t0 + i / session.fps - time.perf_counter()) > 0:
                 await asyncio.sleep(delay)
             await ws.send_bytes(LIVE + live)

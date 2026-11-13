@@ -104,7 +104,10 @@ class Session:
         ids = b.id.int().numpy() if b.id is not None else None
         return b.xyxy.numpy(), b.conf.numpy(), b.cls.int().numpy(), ids
 
-    def step(self) -> tuple[bytes, bytes | None, dict] | None:
+    def step(self, skip: int = 0) -> tuple[bytes, bytes | None, dict] | None:
+        for _ in range(skip):
+            if not self.cap.grab():
+                return None
         ok, frame = self.cap.read()
         if not ok:
             return None
@@ -118,13 +121,14 @@ class Session:
             cam = self.scores.heatmap(*small.shape[:2]) if self.params.view == "scores" else None
         self.last = (small, s, xyxy, conf, cls, ids)
         keep = conf >= self.params.conf
-        self.analytics.update(xyxy[keep], cls[keep], ids[keep] if ids is not None else None, ms)
+        self.analytics.update(xyxy[keep], cls[keep], ids[keep] if ids is not None else None, ms, skip + 1)
         view = self.render(cam)
         if self.writer is None:
             self.writer = self._open_writer(view.shape[1], view.shape[0])
-        self.writer.write(view)
+        for _ in range(skip + 1):
+            self.writer.write(view)
         counts = Counter(cls[keep].tolist())
-        self.rows.append({"frame": len(self.rows), **{name: counts.get(k, 0) for k, name in self.names.items()}})
+        self.rows.append({"frame": self.analytics.frame - 1, **{name: counts.get(k, 0) for k, name in self.names.items()}})
 
         congestion = None
         now = time.perf_counter()
