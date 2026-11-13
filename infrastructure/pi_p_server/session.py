@@ -17,12 +17,12 @@ from pi_p.predict import sliced_predict
 from pi_p.scoremap import ScoreMap
 from pi_p.slicing import windows
 
-DISPLAY_WIDTH = 1280
+DISPLAY_WIDTH = 960
 CONGESTION_WIDTH = 720
 CONGESTION_EVERY = 1.0
 PREDICT_CONF = 0.05
 OVERLAP = 0.2
-JPEG = [cv2.IMWRITE_JPEG_QUALITY, 82]
+JPEG = [cv2.IMWRITE_JPEG_QUALITY, 70]
 GPU = threading.Lock()
 # afisate ca o singura clasa, ca eticheta unui vehicul sa nu sara intre ele de la un cadru la altul
 SAME_CLASS = {"van": "car"}
